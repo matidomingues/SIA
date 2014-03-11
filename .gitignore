@@ -1,0 +1,13 @@
+# Eclipse
+.settings/
+.project
+
+# IntelliJ Idea
+
+*.iml
+.idea/
+
+# Binaries
+
+*.class
+target/
