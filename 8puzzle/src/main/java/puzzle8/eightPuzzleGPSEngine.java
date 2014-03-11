@@ -1,4 +1,4 @@
-package eightPuzzle;
+package puzzle8;
 
 import gps.GPSEngine;
 import gps.GPSNode;
