@@ -19,9 +19,8 @@ public class moveUpGPSRule implements GPSRule{
 			eightPuzzleGPSState _state = (eightPuzzleGPSState)state;
 			if (_state.getEmptySpace().getY() > 0) {
 				int[][] newBoard = _state.getBoard();
-				int tmp = newBoard[_state.getEmptySpace().getX()][_state.getEmptySpace().getY() -1];
-				newBoard[_state.getEmptySpace().getX()][_state.getEmptySpace().getY() - 1] = eightPuzzleGPSState.EMPTY;
-				newBoard[_state.getEmptySpace().getX()][_state.getEmptySpace().getY()] = tmp;
+                newBoard[_state.getEmptySpace().getX()][_state.getEmptySpace().getY()] = newBoard[_state.getEmptySpace().getX()][_state.getEmptySpace().getY() - 1];
+                newBoard[_state.getEmptySpace().getX()][_state.getEmptySpace().getY() - 1] = eightPuzzleGPSState.EMPTY;
 				return new eightPuzzleGPSState(newBoard);
 			}
 		}
