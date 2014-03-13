@@ -110,6 +110,14 @@ public abstract class GPSEngine {
 				|| state.compare(parent.getState());
 	}
 
+	public SearchStrategy getStrategy() {
+		return strategy;
+	}
+	
+	public List<GPSNode> getOpenBranches() {
+		return open;
+	}
+	
 	public abstract  void addNode(GPSNode node);
 	
 }
