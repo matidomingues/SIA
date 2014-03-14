@@ -24,7 +24,7 @@ public class eightPuzzleGPSState implements GPSState {
     public boolean compare(GPSState state) {
 		if (state instanceof GPSState) {
 			eightPuzzleGPSState eState = (eightPuzzleGPSState) state;
-			return this.hashCode()==eState.hashCode();
+			return this.hashCode() == eState.hashCode();
 		} else {
 			return false;
 		}
