@@ -15,8 +15,16 @@ public class moveLeftGPSRule implements GPSRule{
 	}
 
 	public GPSState evalRule(GPSState state) throws NotAppliableException {
-		// TODO Auto-generated method stub
-		return null;
+        if (state instanceof eightPuzzleGPSState) {
+            eightPuzzleGPSState _state = (eightPuzzleGPSState)state;
+            if (_state.getEmptySpace().getX() > 0) {
+                int[][] newBoard = _state.getBoard();
+                newBoard[_state.getEmptySpace().getX()][_state.getEmptySpace().getY()] = newBoard[_state.getEmptySpace().getX() -1][_state.getEmptySpace().getY()];
+                newBoard[_state.getEmptySpace().getX() -1][_state.getEmptySpace().getY()] = eightPuzzleGPSState.EMPTY;
+                return new eightPuzzleGPSState(newBoard);
+            }
+        }
+        throw new NotAppliableException();
 	}
 
 }

@@ -17,7 +17,7 @@ public class eightPuzzleGPSProblem implements GPSProblem{
 			eightPuzzleGPSState goalState) {
 		this.initialState = initialState;
 		this.goalState = goalState;
-		this.rules = new ArrayList<GPSRule>(4);
+		this.rules = new ArrayList<>(4);
 		this.rules.add(new moveDownGPSRule());
 		this.rules.add(new moveLeftGPSRule());
 		this.rules.add(new moveRightGPSRule());

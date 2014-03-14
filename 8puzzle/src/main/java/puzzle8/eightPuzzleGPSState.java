@@ -10,17 +10,16 @@ public class eightPuzzleGPSState implements GPSState {
 		{7, 11, 13},
 		{17, 19, 23}
 	};
-	private int[][] board;
+	private final int[][] board;
 	private int hash = -1;
 	private Point emptySpace;
 
 	public eightPuzzleGPSState(int[][] board) {
-		
 		this.board = board;
-		hashCode();
+        init();
 	}
 
-	public boolean compare(GPSState state) {
+    public boolean compare(GPSState state) {
 		if (state instanceof GPSState) {
 			eightPuzzleGPSState eState = (eightPuzzleGPSState) state;
 			return this.hashCode()==eState.hashCode();
@@ -30,23 +29,27 @@ public class eightPuzzleGPSState implements GPSState {
 
 	}
 
+    private void init() {
+        hash=0;
+        for(int i = 0; i <board.length;i++){
+            for(int j=0;j<board[i].length;j++){
+                if (board[i][j] == EMPTY) {
+                    if (emptySpace != null) throw new IllegalStateException();
+                    this.emptySpace = new Point(i, j);
+                }
+                hash+=PRIMES[i][j]*board[i][j];
+            }
+        }
+    }
+
 	@Override
 	public int hashCode() {
 		if (hash == -1) {
-			hash=0;
-			for(int i = 0; i <board.length;i++){
-				for(int j=0;j<board[i].length;j++){
-					if (board[i][j] == EMPTY) {
-						if (emptySpace != null) throw new IllegalStateException();
-						this.emptySpace = new Point(i, j);
-					}
-					hash+=PRIMES[i][j]*board[i][j];
-				}
-			}
+			init();
 		}
 		return hash;
 	}
-	
+
 	public int[][] getBoard(){
 		return this.board;
 	}
