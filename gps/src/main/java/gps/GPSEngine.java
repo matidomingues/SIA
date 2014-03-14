@@ -120,4 +120,8 @@ public abstract class GPSEngine {
 	
 	public abstract  void addNode(GPSNode node);
 	
+	protected void addOpenNode(GPSNode node){
+		this.open.add(node);
+	}
+	
 }

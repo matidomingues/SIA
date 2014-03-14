@@ -18,7 +18,7 @@ public class moveRightGPSRule implements GPSRule {
         if (state instanceof eightPuzzleGPSState) {
             eightPuzzleGPSState _state = (eightPuzzleGPSState)state;
             if (_state.getEmptySpace().getX() < _state.getBoard().length - 1) {
-                int[][] newBoard = _state.getBoard();
+                int[][] newBoard = cloneMatrix(_state.getBoard());
                 newBoard[_state.getEmptySpace().getX()][_state.getEmptySpace().getY()] = newBoard[_state.getEmptySpace().getX() +1][_state.getEmptySpace().getY()];
                 newBoard[_state.getEmptySpace().getX() +1][_state.getEmptySpace().getY()] = eightPuzzleGPSState.EMPTY;
                 return new eightPuzzleGPSState(newBoard);
@@ -26,5 +26,13 @@ public class moveRightGPSRule implements GPSRule {
         }
         throw new NotAppliableException();
 	}
-
+	
+	private int[][] cloneMatrix(int[][] matrix){
+		int [][] copy = new int[matrix.length][];
+		for(int i = 0; i < matrix.length; i++){
+		    copy[i] = matrix[i].clone();
+		}
+		return copy;
+	}
+	
 }
