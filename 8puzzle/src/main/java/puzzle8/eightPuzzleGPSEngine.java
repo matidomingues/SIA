@@ -8,6 +8,7 @@ public class eightPuzzleGPSEngine extends GPSEngine{
 	@Override
 	public void addNode(GPSNode node) {
 		this.addOpenNode(node);
+		System.out.println("Added node: " + node.getState().hashCode() );
 	}
 
 }
