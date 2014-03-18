@@ -1,11 +1,11 @@
-package game;
+package deeptrip.game;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import stategies.Strategy;
+import deeptrip.stategies.Strategy;
 
 public class Board {
 
@@ -20,10 +20,11 @@ public class Board {
 	}
 
 	public List<Integer> getRow(int x) {
-		if (x > board.size() || x < 0) {
+		if (x >= board.size() || x < 0) {
 			throw new IllegalArgumentException();
 		}
 		return board.get(x);
+
 	}
 
 	public void applyStrategy(Strategy strategy) {

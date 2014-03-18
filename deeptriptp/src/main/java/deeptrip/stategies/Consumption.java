@@ -1,6 +1,6 @@
-package stategies;
+package deeptrip.stategies;
 
-import game.Board;
+import deeptrip.game.Board;
 
 public class Consumption implements Strategy{
 

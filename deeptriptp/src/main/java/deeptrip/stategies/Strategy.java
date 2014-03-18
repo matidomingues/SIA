@@ -1,6 +1,6 @@
-package stategies;
+package deeptrip.stategies;
 
-import game.Board;
+import deeptrip.game.Board;
 
 public interface Strategy {
 	public void execute(Board board);
