@@ -7,7 +7,8 @@ public class queensGPSEngine extends GPSEngine{
 
 	@Override
 	public void addNode(GPSNode node) {
-		// TODO Auto-generated method stub
+		System.out.println(node.getState());
+		this.addOpenNode(node);
 		
 	}
 
