@@ -35,7 +35,7 @@ public class putQueenGPSRule implements GPSRule{
 		for(int i = 0; i< board.length; i++){
 			for(int w = 0; w < board[i].length; w++){
 				if(board[i][w] == 0){
-					if(checkQueenLocationElegibility(board, i, w)){
+					if(checkQueenLocationElegibility(state, i, w)){
 						return new Point(i,w);
 					}
 				}
@@ -44,53 +44,36 @@ public class putQueenGPSRule implements GPSRule{
 		return null;
 	}
 	
-	private boolean checkQueenLocationElegibility(int[][] board, int x, int y){
-		return checkDiagonal(board, x, y) && checkHorinzontal(board, x) && checkVertical(board, y);
-	}
+	/* 1 - 4
+	 * 1 - 2
+	 * 2 - 3
+	000000000
+	000000000
+	000000000
+	001000000
+	000000000
+	000000000
+	000000000
+	000000000
+	000000000
 	
-	private boolean checkHorinzontal(int[][] board, int x){
-		for(int i = 0; i< board[x].length; i++){
-			if(board[x][i] == 1){
+	100000000
+	001000000
+	010000000
+	000001000
+	000000010
+	000100000
+	000000000
+	000010000
+	000000000
+	*/
+	
+	private boolean checkQueenLocationElegibility(queensGPSState state, int x, int y){
+		for(Point p: state.getQueens()){
+			if(x == p.getX() || y == p.getY()){
 				return false;
-			}
-		}
-		return true;
-	}
-	
-	private boolean checkVertical(int[][] board, int y){
-		for(int i = 0; i<board.length; i++){
-			if(board[i][y] == 1){
+			}else if(Math.abs(x-p.getX()) == Math.abs(y-p.getY())){
 				return false;
-			}
-		}
-		return true;
-	}
-	
-	private boolean checkDiagonal(int[][] board, int x, int y){
-		for(int i = 0; i< board.length; i++){
-			if(x+i < board.length){
-				if(y+i <board[x].length){
-					if(board[x+i][y+i] == 1){
-						return false;
-					}
-				}
-				if(y-i >= 0){
-					if(board[x+i][y-i] == 1){
-						return false;
-					}
-				}
-			}
-			if(x-i >= 0 ){
-				if(y+i < board[x].length){
-					if(board[x-i][y+i] == 1){
-						return false;
-					}
-				}
-				if(y-i >= 0){
-					if(board[x-i][y-i] == 1){
-						return false;
-					}
-				}
 			}
 		}
 		return true;
