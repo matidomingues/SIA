@@ -29,7 +29,7 @@ public class DowntripAIRule implements GPSRule {
         if (!(gpsState instanceof DowntripAIRule)) throw new NotAppliableException();
 
         try {
-            return new DowntripAIState(new ShiftRow(row, shift).execute((DowntripAIState)gpsState).getBoard());
+            return new DowntripAIState(new ShiftRow(row, shift).execute(((DowntripAIState)gpsState).getBoard()));
         } catch (IllegalArgumentException iae) {
             throw new NotAppliableException();
         }

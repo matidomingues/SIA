@@ -4,8 +4,9 @@ import deeptrip.game.Board;
 
 public class Consumption implements Strategy{
 
-	public void execute(Board board) {
+	public Board execute(Board board) {
 		
+		return board;
 	}
 
 }

@@ -13,11 +13,11 @@ public class DropDown implements Strategy{
 		this.x = x;
 	}
 
-	public void execute(final Board board) {
+	public Board execute(final Board board) {
 		boolean dropUpper = false;
 		boolean dropLower = false;
 		if(x == 0){
-			return;
+			return board;
 		}
 		List<Integer> lowerRow = board.getRow(x-1);
 		List<Integer> upperRow = board.getRow(x+1);
@@ -40,6 +40,7 @@ public class DropDown implements Strategy{
 		if(dropUpper){
 			new DropDown(x+1).execute(board);
 		}
+		return board;
 	}
 
 }

@@ -3,5 +3,5 @@ package deeptrip.stategies;
 import deeptrip.game.Board;
 
 public interface Strategy {
-	public void execute(Board board);
+	public Board execute(Board board);
 }
