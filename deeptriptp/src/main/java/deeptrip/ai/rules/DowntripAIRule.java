@@ -16,17 +16,15 @@ public class DowntripAIRule implements GPSRule {
         this.shift = shift;
     }
 
-    @Override
+
     public Integer getCost() {
         return 1;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    @Override
     public String getName() {
-        return String.format("SHIFT ROW $d $d SPACES", row, shift);  //To change body of implemented methods use File | Settings | File Templates.
+        return String.format("SHIFT ROW $d $d SPACES", row, shift);
     }
 
-    @Override
     public GPSState evalRule(GPSState gpsState) throws NotAppliableException {
         if (!(gpsState instanceof DowntripAIRule)) throw new NotAppliableException();
 

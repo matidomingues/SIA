@@ -11,7 +11,7 @@ public class DowntripAIState implements GPSState{
         this.board = board;
     }
 
-    @Override
+
     public boolean compare(GPSState gpsState) {
         if (!(gpsState instanceof DowntripAIState)) {
             throw new IllegalArgumentException();

@@ -124,4 +124,8 @@ public abstract class GPSEngine {
 		this.open.add(node);
 	}
 	
+	protected void addOpenNodeFirst(GPSNode node){
+		this.open.add(0, node);
+	}
+	
 }
