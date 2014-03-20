@@ -15,9 +15,10 @@ public class ShiftRow implements Strategy {
 	}
 	
 	public void execute(final Board board) {
+		Board newBoard = board.getClonedBoard();
 		Collections.rotate(board.getRow(x), shift);
 		new DropDown(x).execute(board);
 		
 	}
-
+	
 }
