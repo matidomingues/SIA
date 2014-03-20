@@ -7,6 +7,8 @@ import java.util.List;
 
 import deeptrip.stategies.Strategy;
 import deeptrip.utils.Point;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 public class Board {
 
@@ -56,4 +58,18 @@ public class Board {
 		}
 		return new Board(newBoard);
 	}
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || !(obj instanceof Board)) { return false; }
+        if (obj == this) { return true; }
+        Board b = (Board)obj;
+        if (board.equals(b.board)) { return true; }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(this.board).build();
+    }
 }
