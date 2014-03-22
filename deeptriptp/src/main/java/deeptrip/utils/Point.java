@@ -42,6 +42,11 @@ public class Point {
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return "Point [x=" + x + ", y=" + y + "]";
+	}
 	
 	
 }

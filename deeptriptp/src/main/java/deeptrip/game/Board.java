@@ -9,7 +9,6 @@ import java.util.List;
 import deeptrip.stategies.Strategy;
 import deeptrip.utils.Point;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 public class Board {
@@ -21,7 +20,7 @@ public class Board {
 		modifications = new HashSet<Point>();
 		board = new LinkedList<List<Integer>>();
 		for (int i = 0; i < matrix.length; i++) {
-			board.set(i, new LinkedList<Integer>());
+			board.add(i, new LinkedList<Integer>());
 			board.get(i).addAll(Arrays.asList(matrix[i]));
 		}
 	}
@@ -46,7 +45,7 @@ public class Board {
 	public Board getClonedBoard() {
 		List<List<Integer>> newBoard = new LinkedList<List<Integer>>();
 		for (int i = 0; i < board.size(); i++) {
-			newBoard.set(i, new LinkedList<Integer>());
+			newBoard.add(i, new LinkedList<Integer>());
 			newBoard.get(i).addAll(board.get(i));
 		}
 		return new Board(newBoard);
@@ -68,6 +67,9 @@ public class Board {
 	}
 
 	public Integer getPoint(Point p) {
+		if(!insideBoundaries(p)){
+			throw new IllegalArgumentException();
+		}
 		return board.get(p.getX()).get(p.getY());
 	}
 
@@ -84,7 +86,11 @@ public class Board {
 	}
 
 	public void removeColor(Point p) {
+		if(!insideBoundaries(p)){
+			throw new IllegalArgumentException();
+		}
 		board.get(p.getX()).set(p.getY(), 0);
+		modifications.add(p);
 	}
 
 	public void shiftRow(int row, int shift) {
@@ -95,6 +101,9 @@ public class Board {
 	}
 	
 	public void swapColour(Point loc, Point dest){
+		if(!insideBoundaries(loc) || !insideBoundaries(dest)){
+			throw new IllegalArgumentException();
+		}
 		board.get(dest.getX()).set(dest.getY(), this.getPoint(loc));
 		this.removeColor(loc);
 		modifications.add(dest);
@@ -116,4 +125,11 @@ public class Board {
     public int getRowsSize(){
     	return board.size();
     }
+
+	@Override
+	public String toString() {
+		return "Board [board=" + board + "]";
+	}
+    
+    
 }

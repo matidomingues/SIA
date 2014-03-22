@@ -17,8 +17,8 @@ public class ShiftRow implements Strategy {
 	
 	public Board execute(final Board board) {
 		Board newBoard = board.getClonedBoard();
-		board.shiftRow(x, shift);
-		while(board.getModifications().size() != 0){
+		newBoard.shiftRow(x, shift);
+		while(newBoard.getModifications().size() != 0){
 			new DropDown().execute(newBoard);
 			new Consumption().execute(newBoard);
 		}

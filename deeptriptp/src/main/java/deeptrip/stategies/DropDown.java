@@ -1,5 +1,6 @@
 package deeptrip.stategies;
 
+import java.util.HashSet;
 import java.util.List;
 
 import deeptrip.game.Board;
@@ -11,8 +12,8 @@ public class DropDown implements Strategy {
 		Point finalPoint = getUpNotEmpty(board, p);
 		if(finalPoint != null){
 			board.swapColour(finalPoint, p);
-			if(board.getPointWithCoordinates(p.getX(), p.getY()+1) == 0){
-				lookUp(board, new Point(p.getX(),p.getY()+1));
+			if(board.getPointWithCoordinates(p.getX()+1, p.getY()) == 0){
+				lookUp(board, new Point(p.getX()+1,p.getY()));
 			}
 		}
 	}
@@ -20,7 +21,7 @@ public class DropDown implements Strategy {
 	private Point getUpNotEmpty(Board board, Point p){
 		int x = p.getX();
 		int y = p.getY();
-		for(; y < board.getColumnsSize() ; y++){
+		for(; x < board.getRowsSize(); x++){
 			if(board.getPointWithCoordinates(x, y) != 0){
 				return(new Point(x,y));
 			}
@@ -32,8 +33,8 @@ public class DropDown implements Strategy {
 		Point finalPoint = getDownEmpty(board, p);
 		if(finalPoint != null){
 			board.swapColour(p, finalPoint);
-			if(board.getPointWithCoordinates(finalPoint.getX(), finalPoint.getY()+1) == 0){
-				lookUp(board, new Point(finalPoint.getX(), finalPoint.getY()+1));
+			if(board.getPointWithCoordinates(finalPoint.getX()+1, finalPoint.getY()) == 0){
+				lookUp(board, new Point(finalPoint.getX()+1, finalPoint.getY()));
 			}
 		}
 	}
@@ -41,19 +42,24 @@ public class DropDown implements Strategy {
 	private Point getDownEmpty(Board board, Point p) {
 		int x = p.getX();
 		int y = p.getY();
-		for (; y >= 0; y--) {
-			if (board.getPointWithCoordinates(x, y) != 0) {
-				return new Point(x, y + 1);
+		int answer = -1;
+		for (; x >= 0; x--) {
+			if (board.getPointWithCoordinates(x, y) == 0) {
+				answer = x;
+			}else{
+				break;
 			}
 		}
-		if(y == -1 && p.getY() != 0){
-			return new Point(x,y+1);
+		if(answer == -1){
+			return null;
 		}
-		return null;
+		return new Point(answer,y);
 	}
 
 	public Board execute(final Board board) {
-		for(Point p : board.getModifications()){
+		HashSet<Point> modifications = new HashSet<Point>();
+		modifications.addAll(board.getModifications());
+		for(Point p : modifications){
 			if(board.getPoint(p) == 0){
 				Point down = getDownEmpty(board, p);
 				if(down != null){
