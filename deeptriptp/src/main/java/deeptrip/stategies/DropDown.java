@@ -5,42 +5,66 @@ import java.util.List;
 import deeptrip.game.Board;
 import deeptrip.utils.Point;
 
-public class DropDown implements Strategy{
+public class DropDown implements Strategy {
 
-	private final int x;
+	private void lookUp(Board board, Point p) {
+		Point finalPoint = getUpNotEmpty(board, p);
+		if(finalPoint != null){
+			board.swapColour(finalPoint, p);
+			if(board.getPointWithCoordinates(p.getX(), p.getY()+1) == 0){
+				lookUp(board, new Point(p.getX(),p.getY()+1));
+			}
+		}
+	}
 	
-	public DropDown(final int x) {
-		this.x = x;
+	private Point getUpNotEmpty(Board board, Point p){
+		int x = p.getX();
+		int y = p.getY();
+		for(; y < board.getYBoundary() ; y++){
+			if(board.getPointWithCoordinates(x, y) != 0){
+				return(new Point(x,y));
+			}
+		}
+		return null;
+	}
+
+	private void lookDown(Board board, Point p) {
+		Point finalPoint = getDownEmpty(board, p);
+		if(finalPoint != null){
+			board.swapColour(p, finalPoint);
+			if(board.getPointWithCoordinates(finalPoint.getX(), finalPoint.getY()+1) == 0){
+				lookUp(board, new Point(finalPoint.getX(), finalPoint.getY()+1));
+			}
+		}
+	}
+
+	private Point getDownEmpty(Board board, Point p) {
+		int x = p.getX();
+		int y = p.getY();
+		for (; y >= 0; y--) {
+			if (board.getPointWithCoordinates(x, y) != 0) {
+				return new Point(x, y + 1);
+			}
+		}
+		if(y == -1 && p.getY() != 0){
+			return new Point(x,y+1);
+		}
+		return null;
 	}
 
 	public Board execute(final Board board) {
-		boolean dropUpper = false;
-		boolean dropLower = false;
-		if(x == 0){
-			return board;
-		}
-		List<Integer> lowerRow = board.getRow(x-1);
-		List<Integer> upperRow = board.getRow(x+1);
-		List<Integer> row = board.getRow(x);
-		for(int i = 0; i< row.size(); i++){
-			if(row.get(i) != 0 && lowerRow.get(i) == 0){
-				lowerRow.set(i, row.get(i));
-				row.set(i, 0);
-				dropLower = true;
-				board.addModification(new Point(x,i));
+		for(Point p : board.getModifications()){
+			if(board.getPoint(p) == 0){
+				Point down = getDownEmpty(board, p);
+				if(down != null){
+					lookUp(board, down);
+				}else{
+					lookUp(board, p);
+				}
+			}else{
+				lookDown(board, p);
 			}
-			if(row.get(i) == 0 && upperRow.get(i) != 0){
-				dropUpper = true;
-			}
-		}
-		
-		if(dropLower){
-			new DropDown(x-1).execute(board);
-		}
-		if(dropUpper){
-			new DropDown(x+1).execute(board);
 		}
 		return board;
 	}
-
 }
