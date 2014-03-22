@@ -22,7 +22,8 @@ public class DeeptripAIProblem implements GPSProblem{
 		initialState.getBoard();
 		this.rules = new ArrayList<GPSRule>(4);
 		int maxColumn=initialState.getBoard().getRow(0).size();
-		int maxRow=9; //TODO en Board hay que hacer un método para obtener la cantidad de filas
+		
+		int maxRow=initialState.getBoard().getRowsSize();
 		for(int i=0;i<maxRow;i++){
 			for(int j=1;j<maxColumn;j++){
 				this.rules.add(new DowntripAIRule(i, j));

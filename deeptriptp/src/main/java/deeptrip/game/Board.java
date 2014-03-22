@@ -72,4 +72,8 @@ public class Board {
     public int hashCode() {
         return new HashCodeBuilder().append(this.board).build();
     }
+    
+    public int getRowsSize(){
+    	return board.size();
+    }
 }
