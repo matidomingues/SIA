@@ -100,7 +100,7 @@ public class Board {
 		modifications.add(dest);
 	}
 
-	public int getYBoundary(){
+	public int getColumnsSize(){
 		return board.get(0).size();
 	}
 	
@@ -112,4 +112,8 @@ public class Board {
 	public int hashCode() {
 		return new HashCodeBuilder().append(this.board).build();
 	}
+    
+    public int getRowsSize(){
+    	return board.size();
+    }
 }

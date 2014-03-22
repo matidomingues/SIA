@@ -20,7 +20,7 @@ public class DropDown implements Strategy {
 	private Point getUpNotEmpty(Board board, Point p){
 		int x = p.getX();
 		int y = p.getY();
-		for(; y < board.getYBoundary() ; y++){
+		for(; y < board.getColumnsSize() ; y++){
 			if(board.getPointWithCoordinates(x, y) != 0){
 				return(new Point(x,y));
 			}

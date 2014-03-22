@@ -9,6 +9,8 @@ public class DeeptripAIEngine extends GPSEngine {
 	@Override
 	public void addNode(GPSNode node) {
 		SearchStrategy strategy = getStrategy();
+		
+		
 		//TODO falta ver lo de los estados repetidos
 		switch (strategy) {
 		case DFS: {
