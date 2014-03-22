@@ -38,16 +38,15 @@ public class DropDown implements Strategy {
 			}
 		}
 	}
+	
 
 	private Point getDownEmpty(Board board, Point p) {
-		int x = p.getX();
+		int x = p.getX() - 1;
 		int y = p.getY();
 		int answer = -1;
 		for (; x >= 0; x--) {
 			if (board.getPointWithCoordinates(x, y) == 0) {
 				answer = x;
-			}else{
-				break;
 			}
 		}
 		if(answer == -1){
