@@ -26,7 +26,7 @@ public class DowntripAIRule implements GPSRule {
     }
 
     public GPSState evalRule(GPSState gpsState) throws NotAppliableException {
-        if (!(gpsState instanceof DowntripAIRule)) throw new NotAppliableException();
+        if (!(gpsState instanceof DowntripAIState)) throw new NotAppliableException();
 
         try {
             return new DowntripAIState(new ShiftRow(row, shift).execute(((DowntripAIState)gpsState).getBoard()));

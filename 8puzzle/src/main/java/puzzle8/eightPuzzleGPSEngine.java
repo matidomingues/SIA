@@ -8,6 +8,7 @@ import java.util.HashSet;
 public class eightPuzzleGPSEngine extends GPSEngine{
 
 	private HashSet<Integer> set = new HashSet<Integer>();
+	
 	@Override
 	public void addNode(GPSNode node) {
 		
