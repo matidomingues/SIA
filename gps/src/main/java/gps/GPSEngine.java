@@ -3,7 +3,7 @@ package gps;
 import gps.api.GPSProblem;
 import gps.api.GPSRule;
 import gps.api.GPSState;
-import gps.exception.NotAppliableException;
+import gps.exception.NotApplicableException;
 import gps.exception.SolutionNotFoundException;
 
 import java.util.ArrayList;
@@ -73,7 +73,7 @@ public abstract class GPSEngine {
 			GPSState newState = null;
 			try {
 				newState = rule.evalRule(node.getState());
-			} catch (NotAppliableException e) {
+			} catch (NotApplicableException e) {
 				// Do nothing
 			}
 			if (newState != null

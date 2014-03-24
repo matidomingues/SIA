@@ -1,6 +1,6 @@
 package gps.api;
 
-import gps.exception.NotAppliableException;
+import gps.exception.NotApplicableException;
 
 /**
  * GPSRule interface.
@@ -26,8 +26,8 @@ public interface GPSRule {
 	 * the previous state.
 	 * @param state The previous state of the problem.
 	 * @return The next state of the problem.
-	 * @throws NotAppliableException if the rule can not be
+	 * @throws gps.exception.NotApplicableException if the rule can not be
 	 * applied to the received state.
 	 */
-	GPSState evalRule(GPSState state) throws NotAppliableException;
+	GPSState evalRule(GPSState state) throws NotApplicableException;
 }

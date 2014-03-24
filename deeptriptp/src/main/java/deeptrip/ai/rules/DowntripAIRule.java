@@ -4,7 +4,7 @@ import deeptrip.ai.states.DowntripAIState;
 import deeptrip.stategies.ShiftRow;
 import gps.api.GPSRule;
 import gps.api.GPSState;
-import gps.exception.NotAppliableException;
+import gps.exception.NotApplicableException;
 
 public class DowntripAIRule implements GPSRule {
 
@@ -25,13 +25,13 @@ public class DowntripAIRule implements GPSRule {
         return String.format("SHIFT ROW $d $d SPACES", row, shift);
     }
 
-    public GPSState evalRule(GPSState gpsState) throws NotAppliableException {
-        if (!(gpsState instanceof DowntripAIState)) throw new NotAppliableException();
+    public GPSState evalRule(GPSState gpsState) throws NotApplicableException {
+        if (!(gpsState instanceof DowntripAIState)) throw new NotApplicableException();
 
         try {
-            return new DowntripAIState(new ShiftRow(row, shift).execute(((DowntripAIState)gpsState).getBoard()));
+            return new DowntripAIState(new ShiftRow(row, shift).execute(((DowntripAIState) gpsState).getBoard()));
         } catch (IllegalArgumentException iae) {
-            throw new NotAppliableException();
+            throw new NotApplicableException();
         }
     }
 }
