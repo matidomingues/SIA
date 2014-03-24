@@ -18,7 +18,7 @@ public class DowntripAIRule implements GPSRule {
 
 
     public Integer getCost() {
-        return 1;  //To change body of implemented methods use File | Settings | File Templates.
+        return 1;
     }
 
     public String getName() {

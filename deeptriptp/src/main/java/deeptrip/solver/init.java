@@ -39,15 +39,16 @@ public class init {
 		 * Integer[][] endBoard = new Integer[3][4]; for (int i = 0; i < 3; i++)
 		 * { for (int j = 0; j < 4; j++) { endBoard[i][j] = 0; } }
 		 */
-		Board start = new Board(startBoard);
-		// System.out.println(new ShiftRow(1, 1).execute(start));
-		System.out.println("begin the solver");
-		Board end = new Board(endBoard);
-		DowntripAIState startState = new DowntripAIState(start);
-		DowntripAIState endState = new DowntripAIState(end);
-		GPSProblem problem = new DeeptripAIProblem(startState, endState);
-		DeeptripAIEngine engine = new DeeptripAIEngine();
-		engine.engine(problem, SearchStrategy.BFS);
+		new init().solveBFS(startBoard);
+//		Board start = new Board(startBoard);
+//		// System.out.println(new ShiftRow(1, 1).execute(start));
+//		System.out.println("begin the solver");
+//		Board end = new Board(endBoard);
+//		DowntripAIState startState = new DowntripAIState(start);
+//		DowntripAIState endState = new DowntripAIState(end);
+//		GPSProblem problem = new DeeptripAIProblem(startState, endState);
+//		DeeptripAIEngine engine = new DeeptripAIEngine();
+//		engine.engine(problem, SearchStrategy.BFS);
 
 	}
 
@@ -57,7 +58,9 @@ public class init {
 		DowntripAIState endState = new DowntripAIState(init.getendBoard(start));
 		GPSProblem problem = new DeeptripAIProblem(startState, endState);
 		DeeptripAIEngine engine = new DeeptripAIEngine();
+		long timeInit=System.currentTimeMillis();
 		engine.engine(problem, SearchStrategy.BFS);
+		System.out.println("Elapsed time:"+ (System.currentTimeMillis()-timeInit)+" milliseconds");
 	}
 
 	public void solveDFS(Integer[][] startBoard) {
@@ -65,8 +68,10 @@ public class init {
 		DowntripAIState startState = new DowntripAIState(start);
 		DowntripAIState endState = new DowntripAIState(init.getendBoard(start));
 		GPSProblem problem = new DeeptripAIProblem(startState, endState);
+		long timeInit=System.currentTimeMillis();
 		DeeptripAIEngine engine = new DeeptripAIEngine();
 		engine.engine(problem, SearchStrategy.DFS);
+		System.out.println("Elapsed time:"+ (System.currentTimeMillis()-timeInit)+" milliseconds");
 	}
 
 	public void solveIterativeProfundization(Integer[][] startBoard) {

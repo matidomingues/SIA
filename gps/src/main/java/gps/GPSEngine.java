@@ -43,6 +43,8 @@ public abstract class GPSEngine {
 					finished = true;
 					System.out.println(currentNode.getSolution());
 					System.out.println("Expanded nodes: " + explosionCounter);
+					System.out.println("Border nodes: " + open.size());
+					System.out.println("");
 				} else {
 					explosionCounter++;
 					explode(currentNode);
@@ -54,6 +56,8 @@ public abstract class GPSEngine {
 			System.out.println("OK! solution found!");
 		} else if (failed) {
 			System.err.println("FAILED! solution not found!");
+			System.err.println("Expanded nodes: "+ explosionCounter);
+			
 			throw new SolutionNotFoundException();
 		}
 	}
