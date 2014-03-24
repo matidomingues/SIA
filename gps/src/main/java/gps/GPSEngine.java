@@ -4,6 +4,7 @@ import gps.api.GPSProblem;
 import gps.api.GPSRule;
 import gps.api.GPSState;
 import gps.exception.NotAppliableException;
+import gps.exception.SolutionNotFoundException;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -53,6 +54,7 @@ public abstract class GPSEngine {
 			System.out.println("OK! solution found!");
 		} else if (failed) {
 			System.err.println("FAILED! solution not found!");
+			throw new SolutionNotFoundException();
 		}
 	}
 
