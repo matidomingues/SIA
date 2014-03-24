@@ -28,7 +28,7 @@ public class DeeptripAIEngine extends GPSEngine {
 				break;
 			}
 			case AStar: {
-				// TODO
+				this.addOpenNodeA(node);
 				break;
 			}
 			default: {

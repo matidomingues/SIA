@@ -46,8 +46,12 @@ public class DeeptripAIProblem implements GPSProblem{
 	}
 
 	public Integer getHValue(GPSState state) {
+		if(state.compare(goalState)){
+			return 0;
+		}
+		
 		// TODO falta implementar de manera posta
-		return 0;
+		return 1;
 	}
 
 }

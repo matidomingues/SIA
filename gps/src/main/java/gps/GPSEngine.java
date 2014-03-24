@@ -30,7 +30,7 @@ public abstract class GPSEngine {
 		boolean finished = false;
 		boolean failed = false;
 		long explosionCounter = 0;
-		long depth=0;
+		long depth = 0;
 		open.add(rootNode);
 		while (!failed && !finished) {
 			if (open.size() <= 0) {
@@ -39,14 +39,15 @@ public abstract class GPSEngine {
 				GPSNode currentNode = open.get(0);
 				closed.add(currentNode);
 				open.remove(0);
-				depth=Math.max(depth, currentNode.getCost());
+				depth = Math.max(depth, currentNode.getCost());
 				if (isGoal(currentNode)) {
 					finished = true;
 					System.out.println(currentNode.getSolution());
 					System.out.println("Expanded nodes: " + explosionCounter);
 					System.out.println("Border nodes: " + open.size());
-					System.out.println("Generated nodes: "+ (open.size()+explosionCounter));
-					System.out.println("Max depth: "+depth);
+					System.out.println("Generated nodes: "
+							+ (open.size() + explosionCounter));
+					System.out.println("Max depth: " + depth);
 				} else {
 					explosionCounter++;
 					explode(currentNode);
@@ -58,25 +59,26 @@ public abstract class GPSEngine {
 			System.out.println("OK! solution found!");
 		} else if (failed) {
 			System.err.println("FAILED! solution not found!");
-			System.err.println("Expanded nodes: "+ explosionCounter);
+			System.err.println("Expanded nodes: " + explosionCounter);
 			System.out.println("Border nodes: " + open.size());
-			System.out.println("Generated nodes: "+ (open.size()+explosionCounter));
-			System.out.println("Max depth: "+depth);
+			System.out.println("Generated nodes: "
+					+ (open.size() + explosionCounter));
+			System.out.println("Max depth: " + depth);
 			throw new SolutionNotFoundException();
 		}
 	}
 
-	private  boolean isGoal(GPSNode currentNode) {
+	private boolean isGoal(GPSNode currentNode) {
 		return currentNode.getState() != null
 				&& currentNode.getState().compare(problem.getGoalState());
 	}
 
-	private  boolean explode(GPSNode node) {
-		if(problem.getRules() == null){
+	private boolean explode(GPSNode node) {
+		if (problem.getRules() == null) {
 			System.err.println("No rules!");
 			return false;
 		}
-		
+
 		for (GPSRule rule : problem.getRules()) {
 			GPSState newState = null;
 			try {
@@ -97,7 +99,7 @@ public abstract class GPSEngine {
 		return true;
 	}
 
-	private  boolean checkOpenAndClosed(Integer cost, GPSState state) {
+	private boolean checkOpenAndClosed(Integer cost, GPSState state) {
 		for (GPSNode openNode : open) {
 			if (openNode.getState().compare(state) && openNode.getCost() < cost) {
 				return true;
@@ -112,7 +114,7 @@ public abstract class GPSEngine {
 		return false;
 	}
 
-	private  boolean checkBranch(GPSNode parent, GPSState state) {
+	private boolean checkBranch(GPSNode parent, GPSState state) {
 		if (parent == null) {
 			return false;
 		}
@@ -123,19 +125,57 @@ public abstract class GPSEngine {
 	public SearchStrategy getStrategy() {
 		return strategy;
 	}
-	
+
 	public List<GPSNode> getOpenBranches() {
 		return open;
 	}
-	
-	public abstract  void addNode(GPSNode node);
-	
-	protected void addOpenNode(GPSNode node){
+
+	public abstract void addNode(GPSNode node);
+
+	protected void addOpenNode(GPSNode node) {
 		this.open.add(node);
 	}
-	
-	protected void addOpenNodeFirst(GPSNode node){
+
+	protected void addOpenNodeFirst(GPSNode node) {
 		this.open.add(0, node);
 	}
-	
+
+	protected void addOpenNodeA(GPSNode node){
+		GPSProblem prob=this.problem;
+		boolean inserted=false;
+		for(int i=0;i<open.size() && !inserted;i++){
+			GPSNode n=open.get(i);
+			int fN=prob.getHValue(n.getState())+n.getCost();
+			int fNode=prob.getHValue(node.getState())+node.getCost();
+			if(fNode<fN){
+				open.add(i, node);
+				inserted=true;
+			}
+			else if(fNode==fN){
+				int nCost=n.getCost();
+				int nodeCost=node.getCost();
+				while(nCost<=nodeCost && fN==fNode){
+					i++;
+					n=open.get(i);
+					fN=prob.getHValue(n.getState())+n.getCost();
+					fNode=prob.getHValue(node.getState())+node.getCost();
+					nCost=n.getCost();
+					nodeCost=node.getCost();
+				}
+				open.add(i, node);
+				inserted=true;
+			}
+		
+		}
+		
+		
+		for(GPSNode n:this.open){
+			int fN=prob.getHValue(n.getState())+n.getCost();
+			int fNode=prob.getHValue(node.getState())+node.getCost();
+			if(fNode<fN ){
+				
+			}
+			
+		}
+	}
 }
