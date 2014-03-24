@@ -30,7 +30,7 @@ public class init {
 		// System.out.println(board);
 		// System.out.println(new ShiftRow(1, 1).execute(board));
 
-		Integer[][] startBoard = { { 1, 0, 1, 0 }, { 1, 0, 0, 0 },
+		Integer[][] startBoard = { { 1, 0, 1,2 }, { 1, 0, 0,2 },
 				{ 0, 0, 0, 0 }, { 0, 0, 0, 0 } };
 
 		Integer[][] endBoard = { { 0, 0, 0, 0 }, { 0, 0, 0, 0 },

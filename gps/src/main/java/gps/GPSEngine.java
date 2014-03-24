@@ -30,7 +30,7 @@ public abstract class GPSEngine {
 		boolean finished = false;
 		boolean failed = false;
 		long explosionCounter = 0;
-
+		long depth=0;
 		open.add(rootNode);
 		while (!failed && !finished) {
 			if (open.size() <= 0) {
@@ -39,12 +39,14 @@ public abstract class GPSEngine {
 				GPSNode currentNode = open.get(0);
 				closed.add(currentNode);
 				open.remove(0);
+				depth=Math.max(depth, currentNode.getCost());
 				if (isGoal(currentNode)) {
 					finished = true;
 					System.out.println(currentNode.getSolution());
 					System.out.println("Expanded nodes: " + explosionCounter);
 					System.out.println("Border nodes: " + open.size());
-					System.out.println("");
+					System.out.println("Generated nodes: "+ (open.size()+explosionCounter));
+					System.out.println("Max depth: "+depth);
 				} else {
 					explosionCounter++;
 					explode(currentNode);
@@ -57,7 +59,9 @@ public abstract class GPSEngine {
 		} else if (failed) {
 			System.err.println("FAILED! solution not found!");
 			System.err.println("Expanded nodes: "+ explosionCounter);
-			
+			System.out.println("Border nodes: " + open.size());
+			System.out.println("Generated nodes: "+ (open.size()+explosionCounter));
+			System.out.println("Max depth: "+depth);
 			throw new SolutionNotFoundException();
 		}
 	}
