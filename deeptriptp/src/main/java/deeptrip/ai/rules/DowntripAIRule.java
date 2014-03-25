@@ -18,7 +18,7 @@ public class DowntripAIRule implements GPSRule {
 
 
     public Integer getCost() {
-        return 1;  //To change body of implemented methods use File | Settings | File Templates.
+        return 1;
     }
 
     public String getName() {
@@ -26,7 +26,7 @@ public class DowntripAIRule implements GPSRule {
     }
 
     public GPSState evalRule(GPSState gpsState) throws NotAppliableException {
-        if (!(gpsState instanceof DowntripAIRule)) throw new NotAppliableException();
+        if (!(gpsState instanceof DowntripAIState)) throw new NotAppliableException();
 
         try {
             return new DowntripAIState(new ShiftRow(row, shift).execute(((DowntripAIState)gpsState).getBoard()));
