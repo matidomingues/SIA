@@ -1,34 +1,34 @@
 package deeptrip.ai.problem;
 
+import deeptrip.ai.rules.DeeptripAIRule;
+import deeptrip.ai.states.DeeptripAIState;
 import java.util.ArrayList;
 import java.util.List;
 
 import deeptrip.ai.heuristics.Heuristic;
-import deeptrip.ai.rules.DowntripAIRule;
-import deeptrip.ai.states.DowntripAIState;
 import gps.api.GPSProblem;
 import gps.api.GPSRule;
 import gps.api.GPSState;
 
 public class DeeptripAIProblem implements GPSProblem{
 
-	private final DowntripAIState initialState;
-	private final DowntripAIState goalState;
+	private final DeeptripAIState initialState;
+	private final DeeptripAIState goalState;
 	private final List<GPSRule> rules;
 	private final Heuristic heuristic;
 	
-	public DeeptripAIProblem(DowntripAIState initialState,
-			DowntripAIState goalState,Heuristic heuristic ) {
+	public DeeptripAIProblem(DeeptripAIState initialState,
+			DeeptripAIState goalState, Heuristic heuristic) {
 		this.initialState = initialState;
 		this.goalState = goalState;
 		initialState.getBoard();
-		this.rules = new ArrayList<GPSRule>(4);
+		this.rules = new ArrayList<>(4);
 		int maxColumn=initialState.getBoard().getColumnsSize();
 		
 		int maxRow=initialState.getBoard().getRowsSize();
 		for(int i=0;i<maxRow;i++){
 			for(int j=1;j<maxColumn;j++){
-				this.rules.add(new DowntripAIRule(i, j));
+				this.rules.add(new DeeptripAIRule(i, j));
 			}
 		}
 		this.heuristic=heuristic;

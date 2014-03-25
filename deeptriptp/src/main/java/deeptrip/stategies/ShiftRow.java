@@ -1,6 +1,5 @@
 package deeptrip.stategies;
 
-
 import deeptrip.game.Board;
 
 public class ShiftRow implements Strategy {

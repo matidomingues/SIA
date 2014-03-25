@@ -1,9 +1,9 @@
 package deeptrip.stategies;
 
-import java.util.HashSet;
-
 import deeptrip.game.Board;
 import deeptrip.utils.Point;
+
+import java.util.HashSet;
 
 public class DropDown implements Strategy {
 
@@ -66,7 +66,7 @@ public class DropDown implements Strategy {
 	 * @return the board given with the modifications
 	 */
 	public Board execute(final Board board) {
-		HashSet<Point> modifications = new HashSet<Point>();
+		HashSet<Point> modifications = new HashSet<>();
 		modifications.addAll(board.getModifications());
 		for(Point p : modifications){
 			if(board.getPoint(p) == 0){

@@ -1,17 +1,13 @@
 package deeptrip.stategies;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
 import deeptrip.game.Board;
 import deeptrip.utils.Point;
 
+import java.util.*;
+
 public class Consumption implements Strategy{
 
-	Set<Point> evaluated = new HashSet<Point>();
+	Set<Point> evaluated = new HashSet<>();
 	
 	
 	/*
@@ -51,7 +47,7 @@ public class Consumption implements Strategy{
 			return Collections.EMPTY_LIST;
 		}
 		evaluated.add(p);
-		List<Point> points = new LinkedList<Point>();
+		List<Point> points = new LinkedList<>();
 		points.addAll(findColor(board,new Point(p.getX(), p.getY()-1), color));
 		points.addAll(findColor(board, new Point(p.getX(), p.getY()+1), color));
 		points.addAll(findColor(board, new Point(p.getX()-1, p.getY()), color));

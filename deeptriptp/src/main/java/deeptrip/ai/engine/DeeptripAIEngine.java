@@ -1,16 +1,21 @@
 package deeptrip.ai.engine;
 
-import java.util.HashSet;
-
 import gps.GPSEngine;
 import gps.GPSNode;
 import gps.SearchStrategy;
+import gps.api.GPSProblem;
+import gps.exception.NotApplicableException;
+
+import java.util.HashSet;
 
 public class DeeptripAIEngine extends GPSEngine {
-	private HashSet<Integer> set = new HashSet<Integer>();
+	private HashSet<Integer> set = new HashSet<>();
+
+    private static final int INFINITE = -1;
+    private int maxDepth = INFINITE;
 
 	@Override
-	public void addNode(GPSNode node) {
+	public void addNode(GPSNode node) throws NotApplicableException{
 
 		System.out.println(node.getState());
 		if (!set.contains(node.getState().hashCode())) {
@@ -18,27 +23,32 @@ public class DeeptripAIEngine extends GPSEngine {
 			this.addOpenNode(node);
 			SearchStrategy strategy = getStrategy();
 
-			switch (strategy) {
-			case DFS: {
-				this.addOpenNodeFirst(node);
-				break;
-			}
-			case BFS: {
-				this.addOpenNode(node);
-				break;
-			}
-			case AStar: {
-				this.addOpenNodeA(node);
-				break;
-			}
-			default: {
+            //TODO falta ver lo de los estados repetidos
+            switch (strategy) {
+            case DFS:
+                if (maxDepth != INFINITE) {
+                    if (node.getDepth() >= maxDepth) {
+                        throw  new NotApplicableException();
+                    }
+                }
+                this.addOpenNodeFirst(node);
+                break;
+            case BFS:
+                this.addOpenNode(node);
+                break;
+            case AStar:
+                this.addOpenNodeA(node);
+                break;
+            case Greedy:
+                break;
+            default:
 
-			}
-			}
+            }
+        }
+    }
 
-			
-		
-	}
-
-}
+    public void engine(GPSProblem problem, SearchStrategy searchStrategy, int maxDepth) {
+        this.maxDepth = maxDepth;
+        this.engine(problem, searchStrategy);
+    }
 }

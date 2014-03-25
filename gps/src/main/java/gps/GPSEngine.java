@@ -3,7 +3,7 @@ package gps;
 import gps.api.GPSProblem;
 import gps.api.GPSRule;
 import gps.api.GPSState;
-import gps.exception.NotAppliableException;
+import gps.exception.NotApplicableException;
 import gps.exception.SolutionNotFoundException;
 
 import java.util.ArrayList;
@@ -83,17 +83,22 @@ public abstract class GPSEngine {
 			GPSState newState = null;
 			try {
 				newState = rule.evalRule(node.getState());
-			} catch (NotAppliableException e) {
+			} catch (NotApplicableException e) {
 				// Do nothing
 			}
 			if (newState != null
 					&& !checkBranch(node, newState)
 					&& !checkOpenAndClosed(node.getCost() + rule.getCost(),
 							newState)) {
-				GPSNode newNode = new GPSNode(newState, node.getCost()
-						+ rule.getCost());
-				newNode.setParent(node);
-				addNode(newNode);
+                // TODO: Make it more efficient with Lazy Initialization. Maybe not throwing exception and using if?
+                try {
+                    GPSNode newNode = new GPSNode(newState, node.getCost()
+                            + rule.getCost());
+                    newNode.setParent(node);
+                    addNode(newNode);
+                } catch (NotApplicableException nae) {
+                    // Do nothing
+                }
 			}
 		}
 		return true;
@@ -130,16 +135,28 @@ public abstract class GPSEngine {
 		return open;
 	}
 
-	public abstract void addNode(GPSNode node);
-
-	protected void addOpenNode(GPSNode node) {
-		this.open.add(node);
+	public abstract  void addNode(GPSNode node) throws NotApplicableException;
+	
+	protected void addOpenNode(GPSNode node){
+        if (!open.contains(node)) {
+		    this.open.add(node);
+        }
+	}
+	
+	protected void addOpenNodeFirst(GPSNode node){
+        if (!open.contains(node)) {
+		    this.open.add(0, node);
+        }
 	}
 
-	protected void addOpenNodeFirst(GPSNode node) {
-		this.open.add(0, node);
-	}
+    protected void addOpenNodeFirstToDepth(GPSNode node, int depth) {
+        if (depth == 0) return;
 
+        if (!open.contains(node)) {
+            this.open.add(0,node);
+        }
+    }
+	
 	protected void addOpenNodeA(GPSNode node){
 		GPSProblem prob=this.problem;
 		boolean inserted=false;

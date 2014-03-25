@@ -3,23 +3,23 @@ package deeptrip.ai.states;
 import deeptrip.game.Board;
 import gps.api.GPSState;
 
-public class DowntripAIState implements GPSState{
+public class DeeptripAIState implements GPSState{
 
     private final Board board;
 
-    public DowntripAIState(Board board) {
+    public DeeptripAIState(Board board) {
         this.board = board;
     }
 
-
     public boolean compare(GPSState gpsState) {
-        if (!(gpsState instanceof DowntripAIState)) {
+        if (!(gpsState instanceof DeeptripAIState)) {
             throw new IllegalArgumentException();
         }
-        return board.equals(((DowntripAIState) gpsState).getBoard());
+        return board.equals(((DeeptripAIState) gpsState).getBoard());
     }
 
     public Board getBoard() {
         return board;
     }
+
 }

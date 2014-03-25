@@ -1,15 +1,10 @@
 package deeptrip.game;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import deeptrip.stategies.Strategy;
 import deeptrip.utils.Point;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
+import java.util.*;
 
 public class Board {
 
@@ -19,12 +14,12 @@ public class Board {
 	private Integer chips;
 
 	public Board(Integer[][] matrix) {
-		modifications = new HashSet<Point>();
-		colorsCounter = new HashMap<Integer, Integer>();
-		board = new LinkedList<List<Integer>>();
+		modifications = new HashSet<>();
+		colorsCounter = new HashMap<>();
+		board = new LinkedList<>();
 		chips = 0;
 		for (int i = 0; i < matrix.length; i++) {
-			List<Integer> interin = new LinkedList<Integer>();
+			List<Integer> interin = new LinkedList<>();
 			board.add(i, interin);
 			for (int w = 0; w < matrix[i].length; w++) {
 				interin.add(matrix[i][w]);
@@ -59,7 +54,7 @@ public class Board {
 
 	private Board(List<List<Integer>> board) {
 		this.board = board;
-		modifications = new HashSet<Point>();
+		modifications = new HashSet<>();
 	}
 
 	public void applyStrategy(Strategy strategy) {
@@ -75,7 +70,7 @@ public class Board {
 	}
 
 	public Board getClonedBoard() {
-		List<List<Integer>> newBoard = new LinkedList<List<Integer>>();
+		List<List<Integer>> newBoard = new LinkedList<>();
 		for (int i = 0; i < board.size(); i++) {
 			newBoard.add(i, new LinkedList<Integer>());
 			newBoard.get(i).addAll(board.get(i));
@@ -148,7 +143,7 @@ public class Board {
 	}
 
 	public void cleanModifications() {
-		modifications = new HashSet<Point>();
+		modifications = new HashSet<>();
 	}
 
 	public int getRowsSize() {
