@@ -10,19 +10,51 @@ public class Board {
 
 	private List<List<Integer>> board;
 	private HashSet<Point> modifications;
+	private HashMap<Integer, Integer> colorsCounter;
+	private Integer chips;
 
 	public Board(Integer[][] matrix) {
-		modifications = new HashSet<Point>();
-		board = new LinkedList<List<Integer>>();
+		modifications = new HashSet<>();
+		colorsCounter = new HashMap<>();
+		board = new LinkedList<>();
+		chips = 0;
 		for (int i = 0; i < matrix.length; i++) {
-			board.add(i, new LinkedList<Integer>());
-			board.get(i).addAll(Arrays.asList(matrix[i]));
+			List<Integer> interin = new LinkedList<>();
+			board.add(i, interin);
+			for (int w = 0; w < matrix[i].length; w++) {
+				interin.add(matrix[i][w]);
+				incrementChips();
+			}
+		}
+	}
+
+	private void incrementChips(){
+		chips++;
+	}
+	
+	private void decrementChips(){
+		chips--;
+	}
+	
+	private void addColorToCounter(Integer color) {
+		if (colorsCounter.containsKey(color)) {
+			colorsCounter.put(color, colorsCounter.get(color) + 1);
+		} else {
+			colorsCounter.put(color, 1);
+		}
+	}
+
+	private void removeColorToCounter(Integer color) {
+		if (colorsCounter.containsKey(color) && colorsCounter.get(color) > 0) {
+			colorsCounter.put(color, colorsCounter.get(color) - 1);
+		} else {
+			throw new IllegalArgumentException("Incorrect color");
 		}
 	}
 
 	private Board(List<List<Integer>> board) {
 		this.board = board;
-		modifications = new HashSet<Point>();
+		modifications = new HashSet<>();
 	}
 
 	public void applyStrategy(Strategy strategy) {
@@ -38,7 +70,7 @@ public class Board {
 	}
 
 	public Board getClonedBoard() {
-		List<List<Integer>> newBoard = new LinkedList<List<Integer>>();
+		List<List<Integer>> newBoard = new LinkedList<>();
 		for (int i = 0; i < board.size(); i++) {
 			newBoard.add(i, new LinkedList<Integer>());
 			newBoard.get(i).addAll(board.get(i));
@@ -62,7 +94,7 @@ public class Board {
 	}
 
 	public Integer getPoint(Point p) {
-		if(!insideBoundaries(p)){
+		if (!insideBoundaries(p)) {
 			throw new IllegalArgumentException();
 		}
 		return board.get(p.getX()).get(p.getY());
@@ -81,11 +113,13 @@ public class Board {
 	}
 
 	public void removeColor(Point p) {
-		if(!insideBoundaries(p)){
+		if (!insideBoundaries(p)) {
 			throw new IllegalArgumentException();
 		}
+		removeColorToCounter(this.getPoint(p));
 		board.get(p.getX()).set(p.getY(), 0);
 		modifications.add(p);
+		decrementChips();
 	}
 
 	public void shiftRow(int row, int shift) {
@@ -94,9 +128,9 @@ public class Board {
 			this.addModification(new Point(row, i));
 		}
 	}
-	
-	public void swapColour(Point loc, Point dest){
-		if(!insideBoundaries(loc) || !insideBoundaries(dest)){
+
+	public void swapColor(Point loc, Point dest) {
+		if (!insideBoundaries(loc) || !insideBoundaries(dest)) {
 			throw new IllegalArgumentException();
 		}
 		board.get(dest.getX()).set(dest.getY(), this.getPoint(loc));
@@ -104,27 +138,34 @@ public class Board {
 		modifications.add(dest);
 	}
 
-	public int getColumnsSize(){
+	public int getColumnsSize() {
 		return board.get(0).size();
 	}
+
+	public void cleanModifications() {
+		modifications = new HashSet<>();
+	}
+
+	public int getRowsSize() {
+		return board.size();
+	}
 	
-	public void cleanModifications(){
-		modifications = new HashSet<Point>();
+	public int getChipsAmount(){
+		return this.chips;
+	}
+	
+	public int getColorAmount(Integer color){
+		return this.colorsCounter.get(color);
 	}
 	
 	@Override
 	public int hashCode() {
 		return new HashCodeBuilder().append(this.board).build();
 	}
-    
-    public int getRowsSize(){
-    	return board.size();
-    }
 
 	@Override
 	public String toString() {
 		return "Board [board=" + board + "]";
 	}
-    
-    
+
 }

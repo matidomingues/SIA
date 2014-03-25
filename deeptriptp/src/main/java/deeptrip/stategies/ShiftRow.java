@@ -12,6 +12,10 @@ public class ShiftRow implements Strategy {
 		this.shift = shift;
 	}
 	
+	/**
+	 * Executes the ShiftRow Strategy
+	 * @return a new Board with the modifications
+	 */
 	public Board execute(final Board board) {
 		Board newBoard = board.getClonedBoard();
 		newBoard.shiftRow(x, shift);

@@ -1,24 +1,24 @@
 package deeptrip.ai.rules;
 
-import deeptrip.ai.states.DowntripAIState;
+import deeptrip.ai.states.DeeptripAIState;
 import deeptrip.stategies.ShiftRow;
 import gps.api.GPSRule;
 import gps.api.GPSState;
 import gps.exception.NotApplicableException;
 
-public class DowntripAIRule implements GPSRule {
+public class DeeptripAIRule implements GPSRule {
 
     private final int row;
     private final int shift;
 
-    public DowntripAIRule(int row, int shift) {
+    public DeeptripAIRule(int row, int shift) {
         this.row = row;
         this.shift = shift;
     }
 
 
     public Integer getCost() {
-        return 1;  //To change body of implemented methods use File | Settings | File Templates.
+        return 1;
     }
 
     public String getName() {
@@ -26,10 +26,10 @@ public class DowntripAIRule implements GPSRule {
     }
 
     public GPSState evalRule(GPSState gpsState) throws NotApplicableException {
-        if (!(gpsState instanceof DowntripAIState)) throw new NotApplicableException();
+        if (!(gpsState instanceof DeeptripAIState)) throw new NotApplicableException();
 
         try {
-            return new DowntripAIState(new ShiftRow(row, shift).execute(((DowntripAIState) gpsState).getBoard()));
+            return new DeeptripAIState(new ShiftRow(row, shift).execute(((DeeptripAIState) gpsState).getBoard()));
         } catch (IllegalArgumentException iae) {
             throw new NotApplicableException();
         }
