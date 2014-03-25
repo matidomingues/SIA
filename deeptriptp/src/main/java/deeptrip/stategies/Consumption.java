@@ -1,5 +1,6 @@
 package deeptrip.stategies;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -45,11 +46,12 @@ public class Consumption implements Strategy{
 
 	
 	private List<Point> findColor(Board board, Point p, int color){
-		List<Point> points = new LinkedList<Point>();
+		
 		if(!board.insideBoundaries(p) || board.getPoint(p) != color || evaluated.contains(p)){
-			return points;
+			return Collections.EMPTY_LIST;
 		}
 		evaluated.add(p);
+		List<Point> points = new LinkedList<Point>();
 		points.addAll(findColor(board,new Point(p.getX(), p.getY()-1), color));
 		points.addAll(findColor(board, new Point(p.getX(), p.getY()+1), color));
 		points.addAll(findColor(board, new Point(p.getX()-1, p.getY()), color));

@@ -1,9 +1,7 @@
 package deeptrip.stategies;
 
-import java.util.Collections;
 
 import deeptrip.game.Board;
-import deeptrip.utils.Point;
 
 public class ShiftRow implements Strategy {
 
@@ -15,6 +13,10 @@ public class ShiftRow implements Strategy {
 		this.shift = shift;
 	}
 	
+	/**
+	 * Executes the ShiftRow Strategy
+	 * @return a new Board with the modifications
+	 */
 	public Board execute(final Board board) {
 		Board newBoard = board.getClonedBoard();
 		newBoard.shiftRow(x, shift);
