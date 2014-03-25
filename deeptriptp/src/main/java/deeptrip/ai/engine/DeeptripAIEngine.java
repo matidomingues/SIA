@@ -47,8 +47,8 @@ public class DeeptripAIEngine extends GPSEngine {
         }
     }
 
-
-    public void engine(GPSProblem problem, SearchStrategy strategy, int depth) {
-        this.engine(problem, strategy);
+    public void engine(GPSProblem problem, SearchStrategy searchStrategy, int maxDepth) {
+        this.maxDepth = maxDepth;
+        this.engine(problem, searchStrategy);
     }
 }

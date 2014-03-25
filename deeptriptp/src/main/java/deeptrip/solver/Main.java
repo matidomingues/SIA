@@ -1,6 +1,7 @@
 package deeptrip.solver;
 
 import deeptrip.ai.engine.DeeptripAIEngine;
+import deeptrip.ai.heuristics.HeuristicOne;
 import deeptrip.ai.problem.DeeptripAIProblem;
 import deeptrip.ai.states.DeeptripAIState;
 import deeptrip.game.Board;
@@ -19,7 +20,7 @@ public class Main {
         start = new Board(startBoard);
         startState = new DeeptripAIState(start);
         endState = new DeeptripAIState(Main.getEndBoard(start));
-        problem = new DeeptripAIProblem(startState, endState);
+        problem = new DeeptripAIProblem(startState, endState, new HeuristicOne());
         engine = new DeeptripAIEngine();
     }
 	public static Board getEndBoard(Board board) {
@@ -42,7 +43,7 @@ public class Main {
 
 		Integer[][] endBoard = { { 0, 0, 0, 0 }, { 0, 0, 0, 0 },
 				{ 0, 0, 0, 0 }, { 0, 0, 0, 0 } };
-        SearchStrategy searchStrategy = SearchStrategy.BFS;
+        SearchStrategy searchStrategy = SearchStrategy.IDDFS;
 
         switch (searchStrategy) {
             case IDDFS:
@@ -56,12 +57,19 @@ public class Main {
                 break;
             case Greedy:
             case AStar:
+                new Main(startBoard).solveAStar();
             default:
         }
 
 	}
 
-	public void solveBFS() {
+    private void solveAStar() {
+        long timeInit=System.currentTimeMillis();
+        engine.engine(problem, SearchStrategy.DFS);
+        System.out.println("Elapsed time:"+ (System.currentTimeMillis()-timeInit)+" milliseconds");
+    }
+
+    public void solveBFS() {
 		long timeInit=System.currentTimeMillis();
 		engine.engine(problem, SearchStrategy.BFS);
 		System.out.println("Elapsed time:" + (System.currentTimeMillis() - timeInit) + " milliseconds");
