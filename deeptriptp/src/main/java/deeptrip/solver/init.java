@@ -1,12 +1,11 @@
 package deeptrip.solver;
 
-import gps.SearchStrategy;
-import gps.api.GPSProblem;
 import deeptrip.ai.engine.DeeptripAIEngine;
 import deeptrip.ai.problem.DeeptripAIProblem;
 import deeptrip.ai.states.DowntripAIState;
 import deeptrip.game.Board;
-import deeptrip.stategies.ShiftRow;
+import gps.SearchStrategy;
+import gps.api.GPSProblem;
 
 public class init {
 
@@ -43,11 +42,24 @@ public class init {
 		// System.out.println(new ShiftRow(1, 1).execute(start));
 		System.out.println("begin the solver");
 		Board end = new Board(endBoard);
+        SearchStrategy searchStrategy = SearchStrategy.BFS;
 		DowntripAIState startState = new DowntripAIState(start);
 		DowntripAIState endState = new DowntripAIState(end);
 		GPSProblem problem = new DeeptripAIProblem(startState, endState);
 		DeeptripAIEngine engine = new DeeptripAIEngine();
-		engine.engine(problem, SearchStrategy.BFS);
+
+        switch (searchStrategy) {
+            case IDDFS:
+                for (int i = 0; i < Integer.MAX_VALUE; i++) {
+                    engine.engine(problem, SearchStrategy.DFS, i);
+                }
+            case BFS:
+            case DFS:
+            case Greedy:
+            case AStar:
+            default:
+                engine.engine(problem, searchStrategy);
+        }
 
 	}
 

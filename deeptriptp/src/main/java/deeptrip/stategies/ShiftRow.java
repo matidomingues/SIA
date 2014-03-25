@@ -1,9 +1,6 @@
 package deeptrip.stategies;
 
-import java.util.Collections;
-
 import deeptrip.game.Board;
-import deeptrip.utils.Point;
 
 public class ShiftRow implements Strategy {
 

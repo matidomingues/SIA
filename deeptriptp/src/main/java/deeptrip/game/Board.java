@@ -1,15 +1,10 @@
 package deeptrip.game;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-
 import deeptrip.stategies.Strategy;
 import deeptrip.utils.Point;
-
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+
+import java.util.*;
 
 public class Board {
 

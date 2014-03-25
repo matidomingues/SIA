@@ -1,12 +1,12 @@
 package deeptrip.stategies;
 
+import deeptrip.game.Board;
+import deeptrip.utils.Point;
+
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-
-import deeptrip.game.Board;
-import deeptrip.utils.Point;
 
 public class Consumption implements Strategy{
 

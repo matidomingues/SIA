@@ -1,10 +1,9 @@
 package deeptrip.stategies;
 
-import java.util.HashSet;
-import java.util.List;
-
 import deeptrip.game.Board;
 import deeptrip.utils.Point;
+
+import java.util.HashSet;
 
 public class DropDown implements Strategy {
 
