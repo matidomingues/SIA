@@ -3,6 +3,7 @@ package deeptrip.ai.problem;
 import java.util.ArrayList;
 import java.util.List;
 
+import deeptrip.ai.heuristics.Heuristic;
 import deeptrip.ai.rules.DowntripAIRule;
 import deeptrip.ai.states.DowntripAIState;
 import gps.api.GPSProblem;
@@ -14,9 +15,10 @@ public class DeeptripAIProblem implements GPSProblem{
 	private final DowntripAIState initialState;
 	private final DowntripAIState goalState;
 	private final List<GPSRule> rules;
+	private final Heuristic heuristic;
 	
 	public DeeptripAIProblem(DowntripAIState initialState,
-			DowntripAIState goalState) {
+			DowntripAIState goalState,Heuristic heuristic ) {
 		this.initialState = initialState;
 		this.goalState = goalState;
 		initialState.getBoard();
@@ -29,6 +31,7 @@ public class DeeptripAIProblem implements GPSProblem{
 				this.rules.add(new DowntripAIRule(i, j));
 			}
 		}
+		this.heuristic=heuristic;
 		
 	}
 	
@@ -46,12 +49,13 @@ public class DeeptripAIProblem implements GPSProblem{
 	}
 
 	public Integer getHValue(GPSState state) {
-		if(state.compare(goalState)){
-			return 0;
-		}
-		
-		// TODO falta implementar de manera posta
-		return 1;
+//		if(state.compare(goalState)){
+//			return 0;
+//		}
+//		
+//		// TODO falta implementar de manera posta
+//		return 1;
+		return heuristic.getHValue(state, this.goalState);
 	}
 
 }

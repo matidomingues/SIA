@@ -3,6 +3,9 @@ package deeptrip.solver;
 import gps.SearchStrategy;
 import gps.api.GPSProblem;
 import deeptrip.ai.engine.DeeptripAIEngine;
+import deeptrip.ai.enumerators.HeuristicType;
+import deeptrip.ai.heuristics.Heuristic;
+import deeptrip.ai.heuristics.HeuristicOne;
 import deeptrip.ai.problem.DeeptripAIProblem;
 import deeptrip.ai.states.DowntripAIState;
 import deeptrip.game.Board;
@@ -56,7 +59,7 @@ public class init {
 		Board start = new Board(startBoard);
 		DowntripAIState startState = new DowntripAIState(start);
 		DowntripAIState endState = new DowntripAIState(init.getendBoard(start));
-		GPSProblem problem = new DeeptripAIProblem(startState, endState);
+		GPSProblem problem = new DeeptripAIProblem(startState, endState,new HeuristicOne());
 		DeeptripAIEngine engine = new DeeptripAIEngine();
 		long timeInit=System.currentTimeMillis();
 		engine.engine(problem, SearchStrategy.BFS);
@@ -67,7 +70,7 @@ public class init {
 		Board start = new Board(startBoard);
 		DowntripAIState startState = new DowntripAIState(start);
 		DowntripAIState endState = new DowntripAIState(init.getendBoard(start));
-		GPSProblem problem = new DeeptripAIProblem(startState, endState);
+		GPSProblem problem = new DeeptripAIProblem(startState, endState, new HeuristicOne());
 		long timeInit=System.currentTimeMillis();
 		DeeptripAIEngine engine = new DeeptripAIEngine();
 		engine.engine(problem, SearchStrategy.DFS);
@@ -76,6 +79,18 @@ public class init {
 
 	public void solveIterativeProfundization(Integer[][] startBoard) {
 
+	}
+	
+	public void solveAStar(Integer[][] startBoard, HeuristicType heuristicType){
+		Board start = new Board(startBoard);
+		DowntripAIState startState = new DowntripAIState(start);
+		DowntripAIState endState = new DowntripAIState(init.getendBoard(start));
+		GPSProblem problem = new DeeptripAIProblem(startState, endState, new HeuristicOne());
+		long timeInit=System.currentTimeMillis();
+		DeeptripAIEngine engine = new DeeptripAIEngine();
+		engine.engine(problem, SearchStrategy.DFS);
+		System.out.println("Elapsed time:"+ (System.currentTimeMillis()-timeInit)+" milliseconds");
+		
 	}
 
 }
