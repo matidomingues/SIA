@@ -1,19 +1,39 @@
 package deeptrip.ai.heuristics;
 
-import gps.api.GPSState;
+import java.util.HashMap;
 
-public class HeuristicTwo implements Heuristic{
+import gps.api.GPSState;
+import deeptrip.ai.states.DowntripAIState;
+import deeptrip.game.Board;
+
+public class HeuristicTwo implements Heuristic {
 
 	@Override
 	public Integer getHValue(GPSState stateFrom, GPSState goalState) {
-		if(stateFrom.compare(goalState)){
-			return 0;
+		if (!(stateFrom instanceof DowntripAIState))
+			return Integer.MAX_VALUE;
+
+		DowntripAIState state = (DowntripAIState) stateFrom;
+		Board board = state.getBoard();
+		int sumValue = 0;
+
+		HashMap<Integer, Integer> map = board.getColorMap();
+		for (Integer key : map.keySet()) {
+			
 		}
-		
-		// TODO falta implementar de manera posta
+
+		return sumValue;
+	}
+	
+	private int calculateCoinProblem(int amount){
+		int sum = 0;
+		while(amount >= 10){
+			sum++;
+			amount -= 5;
+		}
+		while(amount >= 8);
 		return 1;
 	}
-
 	
 
 }
