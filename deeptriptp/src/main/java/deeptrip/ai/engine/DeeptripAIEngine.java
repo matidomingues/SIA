@@ -20,7 +20,6 @@ public class DeeptripAIEngine extends GPSEngine {
 		System.out.println(node.getState());
 		if (!set.contains(node.getState().hashCode())) {
 			set.add(node.getState().hashCode());
-			this.addOpenNode(node);
 			SearchStrategy strategy = getStrategy();
 
             //TODO falta ver lo de los estados repetidos

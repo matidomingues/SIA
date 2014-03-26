@@ -13,11 +13,16 @@ public class Board {
 	private HashMap<Integer, Integer> colorsCounter;
 	private Integer chips;
 
-	public Board(Integer[][] matrix) {
+	public Board(List<List<Integer>> board) {
+        modifications = new HashSet<>();
+        colorsCounter = new HashMap<>();
+        chips = 0;
+		this.board = board;
 		modifications = new HashSet<>();
-		colorsCounter = new HashMap<>();
-		board = new LinkedList<>();
-		chips = 0;
+	}
+
+	public Board(Integer[][] matrix) {
+        this(new LinkedList<List<Integer>>());
 		for (int i = 0; i < matrix.length; i++) {
 			List<Integer> interin = new LinkedList<>();
 			board.add(i, interin);
@@ -31,11 +36,11 @@ public class Board {
 	private void incrementChips(){
 		chips++;
 	}
-	
+
 	private void decrementChips(){
 		chips--;
 	}
-	
+
 	private void addColorToCounter(Integer color) {
 		if (colorsCounter.containsKey(color)) {
 			colorsCounter.put(color, colorsCounter.get(color) + 1);
@@ -52,10 +57,6 @@ public class Board {
 		}
 	}
 
-	private Board(List<List<Integer>> board) {
-		this.board = board;
-		modifications = new HashSet<>();
-	}
 
 	public void applyStrategy(Strategy strategy) {
 

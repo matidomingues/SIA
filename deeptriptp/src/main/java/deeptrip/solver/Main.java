@@ -7,6 +7,7 @@ import deeptrip.ai.states.DeeptripAIState;
 import deeptrip.game.Board;
 import gps.SearchStrategy;
 import gps.api.GPSProblem;
+import gps.exception.SolutionNotFoundException;
 
 public class Main {
 
@@ -47,7 +48,7 @@ public class Main {
 
         switch (searchStrategy) {
             case IDDFS:
-                new Main(startBoard).solveIterativeProfundization();
+                new Main(startBoard).solveIterativeDeepening();
                 break;
             case BFS:
                 new Main(startBoard).solveBFS();
@@ -81,10 +82,13 @@ public class Main {
 		System.out.println("Elapsed time:" + (System.currentTimeMillis() - timeInit) + " milliseconds");
 	}
 
-	public void solveIterativeProfundization() {
+	public void solveIterativeDeepening() {
         long timeInit = System.currentTimeMillis();
         for (int i = 0; i < Integer.MAX_VALUE; i++) {
-            engine.engine(problem, SearchStrategy.DFS, i);
+            System.out.println("==== Starting Iterative Deepening DFS with a maximum depth of " + i + " ====");
+            try {
+                engine.engine(problem, SearchStrategy.DFS, i);
+            } catch (SolutionNotFoundException snfe) { /* Do nothing */ }
         }
         System.out.println("Elapsed time: " + (System.currentTimeMillis() - timeInit) + " milliseconds");
 
