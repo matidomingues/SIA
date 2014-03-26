@@ -16,6 +16,7 @@ public class GPSNode {
 		super();
 		this.state = state;
 		this.cost = cost;
+        this.depth = 0;
 	}
 
 	public GPSNode getParent() {

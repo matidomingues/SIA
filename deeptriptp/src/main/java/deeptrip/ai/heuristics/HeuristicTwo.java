@@ -4,6 +4,7 @@ import gps.api.GPSState;
 
 import java.util.HashMap;
 
+import gps.api.GPSState;
 import deeptrip.ai.states.DeeptripAIState;
 import deeptrip.game.Board;
 

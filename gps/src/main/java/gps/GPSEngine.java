@@ -31,7 +31,7 @@ public abstract class GPSEngine {
 		boolean failed = false;
 		long explosionCounter = 0;
 		long depth = 0;
-		open.add(rootNode);
+		addOpenNode(rootNode);
 		while (!failed && !finished) {
 			if (open.size() <= 0) {
 				failed = true;
@@ -135,7 +135,7 @@ public abstract class GPSEngine {
 		return open;
 	}
 
-	public abstract  void addNode(GPSNode node) throws NotApplicableException;
+	public abstract void addNode(GPSNode node) throws NotApplicableException;
 	
 	protected void addOpenNode(GPSNode node){
         if (!open.contains(node)) {
@@ -156,7 +156,7 @@ public abstract class GPSEngine {
             this.open.add(0,node);
         }
     }
-	
+
 	protected void addOpenNodeA(GPSNode node){
 		GPSProblem prob=this.problem;
 		boolean inserted=false;

@@ -13,17 +13,21 @@ public class Board {
 	private HashMap<Integer, Integer> colorsCounter;
 	private Integer chips;
 
+
 	public Board(Integer[][] matrix) {
-		modifications = new HashSet<>();
+		board = new LinkedList<List<Integer>>();
 		colorsCounter = new HashMap<>();
-		board = new LinkedList<>();
+		modifications = new HashSet<>();
 		chips = 0;
 		for (int i = 0; i < matrix.length; i++) {
 			List<Integer> interin = new LinkedList<>();
 			board.add(i, interin);
 			for (int w = 0; w < matrix[i].length; w++) {
 				interin.add(matrix[i][w]);
-				incrementChips();
+				if (matrix[i][w] > 0) { 
+					addColorToCounter(matrix[i][w]);
+					incrementChips();
+				};
 			}
 		}
 	}
@@ -31,11 +35,11 @@ public class Board {
 	private void incrementChips(){
 		chips++;
 	}
-	
+
 	private void decrementChips(){
 		chips--;
 	}
-	
+
 	private void addColorToCounter(Integer color) {
 		if (colorsCounter.containsKey(color)) {
 			colorsCounter.put(color, colorsCounter.get(color) + 1);
@@ -52,8 +56,9 @@ public class Board {
 		}
 	}
 
-	private Board(List<List<Integer>> board, HashMap<Integer, Integer> counter) {
+	private Board(List<List<Integer>> board, HashMap<Integer, Integer> counter, Integer chips) {
 		this.board = board;
+		this.chips = chips;
 		this.colorsCounter = new HashMap<>(counter);
 		modifications = new HashSet<>();
 	}
@@ -76,7 +81,7 @@ public class Board {
 			newBoard.add(i, new LinkedList<Integer>());
 			newBoard.get(i).addAll(board.get(i));
 		}
-		return new Board(newBoard, colorsCounter);
+		return new Board(newBoard, colorsCounter, chips);
 	}
 
 	@Override
@@ -134,8 +139,9 @@ public class Board {
 		if (!insideBoundaries(loc) || !insideBoundaries(dest)) {
 			throw new IllegalArgumentException();
 		}
+		int aux = this.getPoint(dest);
 		board.get(dest.getX()).set(dest.getY(), this.getPoint(loc));
-		this.removeColor(loc);
+		board.get(loc.getX()).set(loc.getY(), aux);
 		modifications.add(dest);
 	}
 
