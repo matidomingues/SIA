@@ -18,6 +18,11 @@ public class Board {
         colorsCounter = new HashMap<>();
         chips = 0;
 		this.board = board;
+        for(List<Integer> l : board) {
+            for(Integer i : l) {
+                if (i > 0) { addColorToCounter(i); }
+            }
+        }
 		modifications = new HashSet<>();
 	}
 
@@ -144,7 +149,7 @@ public class Board {
 	}
 
 	public void cleanModifications() {
-		modifications = new HashSet<>();
+		modifications.clear();
 	}
 
 	public int getRowsSize() {
