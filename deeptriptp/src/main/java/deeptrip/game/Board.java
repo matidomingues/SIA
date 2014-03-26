@@ -159,6 +159,10 @@ public class Board {
 		return this.colorsCounter.get(color);
 	}
 	
+	public HashMap<Integer, Integer> getColorMap(){
+		return this.colorsCounter;
+	}
+	
 	@Override
 	public int hashCode() {
 		return new HashCodeBuilder().append(this.board).build();
