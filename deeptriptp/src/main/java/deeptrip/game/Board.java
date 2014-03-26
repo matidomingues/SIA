@@ -52,8 +52,9 @@ public class Board {
 		}
 	}
 
-	private Board(List<List<Integer>> board) {
+	private Board(List<List<Integer>> board, HashMap<Integer, Integer> counter) {
 		this.board = board;
+		this.colorsCounter = new HashMap<>(counter);
 		modifications = new HashSet<>();
 	}
 
@@ -75,7 +76,7 @@ public class Board {
 			newBoard.add(i, new LinkedList<Integer>());
 			newBoard.get(i).addAll(board.get(i));
 		}
-		return new Board(newBoard);
+		return new Board(newBoard, colorsCounter);
 	}
 
 	@Override
