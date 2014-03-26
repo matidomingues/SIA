@@ -39,9 +39,10 @@ public class DeeptripAIEngine extends GPSEngine {
                 this.addOpenNodeA(node);
                 break;
             case Greedy:
+                this.addOpenNodeGreedy(node);
                 break;
             default:
-
+                throw new IllegalArgumentException();
             }
         }
     }

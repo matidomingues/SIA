@@ -57,12 +57,22 @@ public class Main {
                 new Main(startBoard).solveDFS();
                 break;
             case Greedy:
+                new Main(startBoard).solveGreedy();
+                break;
             case AStar:
                 new Main(startBoard).solveAStar();
+                break;
             default:
+                throw new IllegalArgumentException();
         }
 
 	}
+
+    private void solveGreedy() {
+        long timeInit=System.currentTimeMillis();
+        engine.engine(problem, SearchStrategy.Greedy);
+        System.out.println("Elapsed time: " + (System.currentTimeMillis()-timeInit) + " milliseconds");
+    }
 
     private void solveAStar() {
         long timeInit=System.currentTimeMillis();
@@ -88,6 +98,7 @@ public class Main {
             System.out.println("==== Starting Iterative Deepening DFS with a maximum depth of " + i + " ====");
             try {
                 engine.engine(problem, SearchStrategy.DFS, i);
+                break;
             } catch (SolutionNotFoundException snfe) { /* Do nothing */ }
         }
         System.out.println("Elapsed time: " + (System.currentTimeMillis() - timeInit) + " milliseconds");
