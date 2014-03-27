@@ -76,7 +76,7 @@ public class Main {
 
     private void solveAStar() {
         long timeInit=System.currentTimeMillis();
-        engine.engine(problem, SearchStrategy.DFS);
+        engine.engine(problem, SearchStrategy.AStar);
         System.out.println("Elapsed time:"+ (System.currentTimeMillis()-timeInit)+" milliseconds");
     }
 
