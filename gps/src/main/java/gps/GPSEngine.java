@@ -87,15 +87,16 @@ public abstract class GPSEngine {
 					&& !checkBranch(node, newState)
 					&& !checkOpenAndClosed(node.getCost() + rule.getCost(),
 							newState)) {
-                // TODO: Make it more efficient with Lazy Initialization. Maybe not throwing exception and using if?
-                try {
-                    GPSNode newNode = new GPSNode(newState, node.getCost()
-                            + rule.getCost());
-                    newNode.setParent(node);
-                    addNode(newNode);
-                } catch (NotApplicableException nae) {
-                    // Do nothing
-                }
+				// TODO: Make it more efficient with Lazy Initialization. Maybe
+				// not throwing exception and using if?
+				try {
+					GPSNode newNode = new GPSNode(newState, node.getCost()
+							+ rule.getCost());
+					newNode.setParent(node);
+					addNode(newNode);
+				} catch (NotApplicableException nae) {
+					// Do nothing
+				}
 			}
 		}
 		return true;
@@ -133,83 +134,76 @@ public abstract class GPSEngine {
 	}
 
 	public abstract void addNode(GPSNode node) throws NotApplicableException;
-	
-	protected void addOpenNode(GPSNode node){
-        if (!open.contains(node)) {
-		    this.open.add(node);
-        }
-	}
-	
-	protected void addOpenNodeFirst(GPSNode node){
-        if (!open.contains(node)) {
-		    this.open.add(0, node);
-        }
+
+	protected void addOpenNode(GPSNode node) {
+		if (!open.contains(node)) {
+			this.open.add(node);
+		}
 	}
 
-    protected void addOpenNodeFirstToDepth(GPSNode node, int depth) {
-        if (depth == 0) return;
+	protected void addOpenNodeFirst(GPSNode node) {
+		if (!open.contains(node)) {
+			this.open.add(0, node);
+		}
+	}
 
-        if (!open.contains(node)) {
-            this.open.add(0,node);
-        }
-    }
+	protected void addOpenNodeFirstToDepth(GPSNode node, int depth) {
+		if (depth == 0)
+			return;
 
-	protected void addOpenNodeA(GPSNode node){
-		GPSProblem prob=this.problem;
-		boolean inserted=false;
-		for(int i=0;i<open.size() && !inserted;i++){
-			GPSNode n=open.get(i);
-			int fN=prob.getHValue(n.getState())+n.getCost();
-			int fNode=prob.getHValue(node.getState())+node.getCost();
-			if(fNode<fN){
+		if (!open.contains(node)) {
+			this.open.add(0, node);
+		}
+	}
+
+	protected void addOpenNodeA(GPSNode node) {
+		GPSProblem prob = this.problem;
+		boolean inserted = false;
+		for (int i = 0; i < open.size() && !inserted; i++) {
+			GPSNode n = open.get(i);
+			int fN = prob.getHValue(n.getState()) + n.getCost();
+			int fNode = prob.getHValue(node.getState()) + node.getCost();
+			if (fNode < fN) {
 				open.add(i, node);
-				inserted=true;
-			}
-			else if(fNode==fN){
-				int nCost=n.getCost();
-				int nodeCost=node.getCost();
-				while(nCost<=nodeCost && fN==fNode){
+				inserted = true;
+			} else if (fNode == fN) {
+				int nCost = n.getCost();
+				int nodeCost = node.getCost();
+				while (nCost <= nodeCost && fN == fNode) {
 					i++;
-					n=open.get(i);
-					fN=prob.getHValue(n.getState())+n.getCost();
-					fNode=prob.getHValue(node.getState())+node.getCost();
-					nCost=n.getCost();
-					nodeCost=node.getCost();
+					n = open.get(i);
+					fN = prob.getHValue(n.getState()) + n.getCost();
+					fNode = prob.getHValue(node.getState()) + node.getCost();
+					nCost = n.getCost();
+					nodeCost = node.getCost();
 				}
 				open.add(i, node);
-				inserted=true;
+				inserted = true;
 			}
-		
+
 		}
-		
-		
-		for(GPSNode n:this.open){
-			int fN=prob.getHValue(n.getState())+n.getCost();
-			int fNode=prob.getHValue(node.getState())+node.getCost();
-			if(fNode<fN ){
-				
-			}
-			
-		}
+
 	}
 
-    protected void addOpenNodeGreedy(GPSNode node) {
-        if (open.size() == 0) {
-            open.add(node);
-        } else if (open.size() == 1) {
-            if (problem.getHValue(open.get(0).getState()) < problem.getHValue(node.getState())) {
-                open.remove(0);
-                open.add(node);
-            }
-        } else if (open.size() > 1) {
-            open.add(node);
-            Collections.sort(open, new Comparator<GPSNode>() {
-                @Override
-                public int compare(GPSNode o1, GPSNode o2) {
-                    return problem.getHValue(o2.getState()) - problem.getHValue(o1.getState());
-                }
-            });
-            open.retainAll(Collections.singletonList(node));
-        }
-    }
+	protected void addOpenNodeGreedy(GPSNode node) {
+		if (open.size() == 0) {
+			open.add(node);
+		} else if (open.size() == 1) {
+			if (problem.getHValue(open.get(0).getState()) < problem
+					.getHValue(node.getState())) {
+				open.remove(0);
+				open.add(node);
+			}
+		} else if (open.size() > 1) {
+			open.add(node);
+			Collections.sort(open, new Comparator<GPSNode>() {
+				@Override
+				public int compare(GPSNode o1, GPSNode o2) {
+					return problem.getHValue(o2.getState())
+							- problem.getHValue(o1.getState());
+				}
+			});
+			open.retainAll(Collections.singletonList(node));
+		}
+	}
 }
