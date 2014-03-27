@@ -1,6 +1,7 @@
 package deeptrip.ai.heuristics;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import deeptrip.ai.states.DeeptripAIState;
@@ -19,7 +20,7 @@ public class HeuristicOne implements Heuristic {
 			return 0;
 		}
 		DeeptripAIState state = (DeeptripAIState) stateFrom;
-		HashMap<Integer, Integer> map = state.getBoard().getColorMap();
+		Map<Integer, Integer> map = state.getBoard().getColorMap();
 		Integer sumTotalChips=0;
 		for(Entry<Integer, Integer> e:map.entrySet()){
 			Integer num=e.getValue();
