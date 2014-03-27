@@ -3,6 +3,7 @@ package deeptrip.ai.heuristics;
 import gps.api.GPSState;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import gps.api.GPSState;
 import deeptrip.ai.states.DeeptripAIState;
@@ -19,7 +20,7 @@ public class HeuristicTwo implements Heuristic {
 		Board board = state.getBoard();
 		int sumValue = 0;
 
-		HashMap<Integer, Integer> map = board.getColorMap();
+		Map<Integer, Integer> map = board.getColorMap();
 		for (Integer key : map.keySet()) {
 			if(map.get(key) < 3){
 				sumValue = Integer.MAX_VALUE;

@@ -8,21 +8,20 @@ import java.util.*;
 public class Consumption implements Strategy{
 
 	Set<Point> evaluated = new HashSet<>();
-	
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see deeptrip.stategies.Strategy#execute(deeptrip.game.Board)
 	 * Must clean modifications since it makes no sense to check them again anywhere
 	 */
 	public Board execute(Board board) {
-		HashSet<Point> modifications = board.getModifications();
-		board.cleanModifications();
-		for(Point p : modifications){
-			if(!evaluated.contains(p) && board.getPoint(p) != 0){
-				evaluatePoint(board, p);
-			}
-		}
+		Set<Point> modifications = board.getModifications();
+        board.cleanModifications();
+        for(Point p : modifications){
+            if(!evaluated.contains(p) && board.getPoint(p) != 0){
+                evaluatePoint(board, p);
+            }
+        }
 		return board;
 	}
 	
@@ -38,9 +37,7 @@ public class Consumption implements Strategy{
 			board.removeColor(p);
 		}
 	}
-	
 
-	
 	private List<Point> findColor(Board board, Point p, int color){
 		
 		if(!board.insideBoundaries(p) || board.getPoint(p) != color || evaluated.contains(p)){
@@ -54,12 +51,8 @@ public class Consumption implements Strategy{
 		points.addAll(findColor(board, new Point(p.getX()+1, p.getY()), color));
 		
 		points.add(p);
-		
-		
+
 		return points;
 	}
 		
-		
-		
-
 }

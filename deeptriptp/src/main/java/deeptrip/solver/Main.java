@@ -39,28 +39,20 @@ public class Main {
 
 	public static void main(String[] args) {
 
-		Integer[][] startBoard = { { 1, 0, 1,2 }, { 1, 0, 0,2 },
+		Integer[][] startBoard = { { 1, 1, 1, 0 }, { 2, 2, 2, 0 },
 				{ 0, 0, 0, 0 }, { 0, 0, 0, 0 } };
 
-		Integer[][] endBoard = { { 0, 0, 0, 0 }, { 0, 0, 0, 0 },
-				{ 0, 0, 0, 0 }, { 0, 0, 0, 0 } };
-        SearchStrategy searchStrategy = SearchStrategy.IDDFS;
+        SearchStrategy searchStrategy = SearchStrategy.Greedy;
 
         switch (searchStrategy) {
             case IDDFS:
                 new Main(startBoard).solveIterativeDeepening();
                 break;
             case BFS:
-                new Main(startBoard).solveBFS();
-                break;
             case DFS:
-                new Main(startBoard).solveDFS();
-                break;
             case Greedy:
-                new Main(startBoard).solveGreedy();
-                break;
             case AStar:
-                new Main(startBoard).solveAStar();
+                new Main(startBoard).solve(searchStrategy);
                 break;
             default:
                 throw new IllegalArgumentException();
@@ -68,29 +60,11 @@ public class Main {
 
 	}
 
-    private void solveGreedy() {
-        long timeInit=System.currentTimeMillis();
-        engine.engine(problem, SearchStrategy.Greedy);
+    private void solve(SearchStrategy searchStrategy) {
+        long timeInit = System.currentTimeMillis();
+        engine.engine(problem, searchStrategy);
         System.out.println("Elapsed time: " + (System.currentTimeMillis()-timeInit) + " milliseconds");
     }
-
-    private void solveAStar() {
-        long timeInit=System.currentTimeMillis();
-        engine.engine(problem, SearchStrategy.DFS);
-        System.out.println("Elapsed time:"+ (System.currentTimeMillis()-timeInit)+" milliseconds");
-    }
-
-    public void solveBFS() {
-		long timeInit=System.currentTimeMillis();
-		engine.engine(problem, SearchStrategy.BFS);
-		System.out.println("Elapsed time:" + (System.currentTimeMillis() - timeInit) + " milliseconds");
-	}
-
-	public void solveDFS() {
-		long timeInit=System.currentTimeMillis();
-		engine.engine(problem, SearchStrategy.DFS);
-		System.out.println("Elapsed time:" + (System.currentTimeMillis() - timeInit) + " milliseconds");
-	}
 
 	public void solveIterativeDeepening() {
         long timeInit = System.currentTimeMillis();
@@ -102,7 +76,6 @@ public class Main {
             } catch (SolutionNotFoundException snfe) { /* Do nothing */ }
         }
         System.out.println("Elapsed time: " + (System.currentTimeMillis() - timeInit) + " milliseconds");
-
 	}
 
 }

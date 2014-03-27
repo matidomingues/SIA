@@ -31,7 +31,7 @@ public class DeeptripAIRule implements GPSRule {
         try {
             return new DeeptripAIState(new ShiftRow(row, shift).execute(((DeeptripAIState) gpsState).getBoard()));
         } catch (IllegalArgumentException iae) {
-            throw new NotApplicableException();
+            throw new NotApplicableException(iae.getMessage(), iae);
         }
     }
 }

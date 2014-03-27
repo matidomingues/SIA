@@ -15,7 +15,7 @@ public class DeeptripAIEngine extends GPSEngine {
     private int maxDepth = INFINITE;
 
 	@Override
-	public void addNode(GPSNode node) throws NotApplicableException{
+	public void addNode(GPSNode node) throws NotApplicableException {
 
 		System.out.println(node.getState());
 		if (!set.contains(node.getState().hashCode())) {
@@ -27,7 +27,7 @@ public class DeeptripAIEngine extends GPSEngine {
             case DFS:
                 if (maxDepth != INFINITE) {
                     if (node.getDepth() >= maxDepth) {
-                        throw  new NotApplicableException();
+                        throw new NotApplicableException();
                     }
                 }
                 this.addOpenNodeFirst(node);

@@ -1,6 +1,7 @@
 package deeptrip.game;
 
-import deeptrip.stategies.Strategy;
+import deeptrip.stategies.Consumption;
+import deeptrip.stategies.DropDown;
 import deeptrip.utils.Point;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -9,28 +10,42 @@ import java.util.*;
 public class Board {
 
 	private List<List<Integer>> board;
-	private HashSet<Point> modifications;
-	private HashMap<Integer, Integer> colorsCounter;
+	private Set<Point> modifications;
+	private Map<Integer, Integer> colorsCounter;
 	private Integer chips;
 
+	private Board(List<List<Integer>> board, Map<Integer, Integer> colorsCounter, Set<Point> modifications, Integer chips) {
+		this.board = board;
+		this.chips = chips;
+		this.colorsCounter = new HashMap<>(colorsCounter);
+		this.modifications = modifications;
+	}
 
 	public Board(Integer[][] matrix) {
-		board = new LinkedList<List<Integer>>();
-		colorsCounter = new HashMap<>();
-		modifications = new HashSet<>();
-		chips = 0;
+        this(new LinkedList<List<Integer>>(), new HashMap<Integer, Integer>(), new HashSet<Point>(), 0);
+        initBoard(matrix);
+	}
+
+    private void initBoard(Integer[][] matrix) {
 		for (int i = 0; i < matrix.length; i++) {
 			List<Integer> interin = new LinkedList<>();
 			board.add(i, interin);
 			for (int w = 0; w < matrix[i].length; w++) {
 				interin.add(matrix[i][w]);
-				if (matrix[i][w] > 0) { 
+				if (matrix[i][w] > 0) {
 					addColorToCounter(matrix[i][w]);
 					incrementChips();
-				};
+				}
 			}
 		}
-	}
+        new DropDown().execute(this);
+        for (int i = 0; i < this.board.size(); i++) {
+            for (int j = 0; j < this.board.get(0).size(); j++) {
+                this.modifications.add(new Point(i, j));
+            }
+        }
+        new Consumption().execute(this);
+    }
 
 	private void incrementChips(){
 		chips++;
@@ -56,22 +71,12 @@ public class Board {
 		}
 	}
 
-	private Board(List<List<Integer>> board, HashMap<Integer, Integer> counter, Integer chips) {
-		this.board = board;
-		this.chips = chips;
-		this.colorsCounter = new HashMap<>(counter);
-		modifications = new HashSet<>();
-	}
-
-	public void applyStrategy(Strategy strategy) {
-
-	}
 
 	private void addModification(final Point point) {
 		this.modifications.add(point);
 	}
 
-	public HashSet<Point> getModifications() {
+	public Set<Point> getModifications() {
 		return this.modifications;
 	}
 
@@ -81,7 +86,7 @@ public class Board {
 			newBoard.add(i, new LinkedList<Integer>());
 			newBoard.get(i).addAll(board.get(i));
 		}
-		return new Board(newBoard, colorsCounter, chips);
+		return new Board(newBoard, colorsCounter, new HashSet<Point>(), chips);
 	}
 
 	@Override
@@ -165,7 +170,7 @@ public class Board {
 		return this.colorsCounter.get(color);
 	}
 	
-	public HashMap<Integer, Integer> getColorMap(){
+	public Map<Integer, Integer> getColorMap(){
 		return this.colorsCounter;
 	}
 	
