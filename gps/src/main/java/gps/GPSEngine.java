@@ -147,15 +147,6 @@ public abstract class GPSEngine {
 		}
 	}
 
-	protected void addOpenNodeFirstToDepth(GPSNode node, int depth) {
-		if (depth == 0)
-			return;
-
-		if (!open.contains(node)) {
-			this.open.add(0, node);
-		}
-	}
-
 	protected void addOpenNodeA(GPSNode node) {
 		GPSProblem prob = this.problem;
 		boolean inserted = false;
