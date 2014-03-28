@@ -173,6 +173,9 @@ public abstract class GPSEngine {
 			}
 
 		}
+		if(!inserted){
+			this.addOpenNode(node);
+		}
 
 	}
 
