@@ -190,7 +190,9 @@ public abstract class GPSEngine {
         Collections.sort(open, new Comparator<GPSNode>() {
             @Override
             public int compare(GPSNode o1, GPSNode o2) {
-                return problem.getHValue(o1.getState())
+                if (o1.getDepth() < o2.getDepth()) return 1;
+                else if (o1.getDepth() > o2.getDepth()) return -1;
+                else return problem.getHValue(o1.getState())
                         - problem.getHValue(o2.getState());
             }
         });
