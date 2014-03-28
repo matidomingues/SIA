@@ -186,24 +186,13 @@ public abstract class GPSEngine {
 	}
 
 	protected void addOpenNodeGreedy(GPSNode node) {
-		if (open.size() == 0) {
-			open.add(node);
-		} else if (open.size() == 1) {
-			if (problem.getHValue(open.get(0).getState()) < problem
-					.getHValue(node.getState())) {
-				open.remove(0);
-				open.add(node);
-			}
-		} else if (open.size() > 1) {
-			open.add(node);
-			Collections.sort(open, new Comparator<GPSNode>() {
-				@Override
-				public int compare(GPSNode o1, GPSNode o2) {
-					return problem.getHValue(o2.getState())
-							- problem.getHValue(o1.getState());
-				}
-			});
-			open.retainAll(Collections.singletonList(node));
-		}
+        open.add(node);
+        Collections.sort(open, new Comparator<GPSNode>() {
+            @Override
+            public int compare(GPSNode o1, GPSNode o2) {
+                return problem.getHValue(o1.getState())
+                        - problem.getHValue(o2.getState());
+            }
+        });
 	}
 }
