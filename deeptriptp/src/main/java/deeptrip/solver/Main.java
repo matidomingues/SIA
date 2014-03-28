@@ -23,7 +23,7 @@ public class Main {
 		startState = new DeeptripAIState(start);
 		endState = new DeeptripAIState(Main.getEndBoard(start));
 		problem = new DeeptripAIProblem(startState, endState,
-				new HeuristicTwo());
+				new HeuristicOne());
 		engine = new DeeptripAIEngine();
 	}
 

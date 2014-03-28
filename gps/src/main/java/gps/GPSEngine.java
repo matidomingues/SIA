@@ -148,34 +148,49 @@ public abstract class GPSEngine {
 	}
 
 	protected void addOpenNodeA(GPSNode node) {
-		GPSProblem prob = this.problem;
-		boolean inserted = false;
-		for (int i = 0; i < open.size() && !inserted; i++) {
-			GPSNode n = open.get(i);
-			int fN = prob.getHValue(n.getState()) + n.getCost();
-			int fNode = prob.getHValue(node.getState()) + node.getCost();
-			if (fNode < fN) {
-				open.add(i, node);
-				inserted = true;
-			} else if (fNode == fN) {
-				int nCost = n.getCost();
-				int nodeCost = node.getCost();
-				while (nCost <= nodeCost && fN == fNode && i<open.size()-1) {
-					i++;
-					n = open.get(i);
-					fN = prob.getHValue(n.getState()) + n.getCost();
-					fNode = prob.getHValue(node.getState()) + node.getCost();
-					nCost = n.getCost();
-					nodeCost = node.getCost();
-				}
-				open.add(i, node);
-				inserted = true;
-			}
-
-		}
-		if(!inserted){
-			this.addOpenNode(node);
-		}
+		open.add(node);
+        Collections.sort(open, new Comparator<GPSNode>() {
+            @Override
+            public int compare(GPSNode node1, GPSNode node2) {
+            	int hNode1=problem.getHValue(node1.getState());
+            	int hNode2=problem.getHValue(node2.getState());
+            	int fNode1 = hNode1 + node1.getCost();
+    			int fNode2 = hNode2 + node2.getCost();
+            	if (fNode1<fNode2) return -1;
+                else if (fNode1==fNode2) return hNode1-hNode2;
+                else return 1;
+            }
+        });
+		
+		
+//		GPSProblem prob = this.problem;
+//		boolean inserted = false;
+//		for (int i = 0; i < open.size() && !inserted; i++) {
+//			GPSNode n = open.get(i);
+//			int fN = prob.getHValue(n.getState()) + n.getCost();
+//			int fNode = prob.getHValue(node.getState()) + node.getCost();
+//			if (fNode < fN) {
+//				open.add(i, node);
+//				inserted = true;
+//			} else if (fNode == fN) {
+//				int nCost = n.getCost();
+//				int nodeCost = node.getCost();
+//				while (nCost <= nodeCost && fN == fNode && i<open.size()-1) {
+//					i++;
+//					n = open.get(i);
+//					fN = prob.getHValue(n.getState()) + n.getCost();
+//					fNode = prob.getHValue(node.getState()) + node.getCost();
+//					nCost = n.getCost();
+//					nodeCost = node.getCost();
+//				}
+//				open.add(i, node);
+//				inserted = true;
+//			}
+//
+//		}
+//		if(!inserted){
+//			this.addOpenNode(node);
+//		}
 
 	}
 
