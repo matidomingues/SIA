@@ -160,7 +160,7 @@ public abstract class GPSEngine {
 			} else if (fNode == fN) {
 				int nCost = n.getCost();
 				int nodeCost = node.getCost();
-				while (nCost <= nodeCost && fN == fNode) {
+				while (nCost <= nodeCost && fN == fNode && i<open.size()-1) {
 					i++;
 					n = open.get(i);
 					fN = prob.getHValue(n.getState()) + n.getCost();
