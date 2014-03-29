@@ -24,7 +24,7 @@ public class Main {
 		startState = new DeeptripAIState(start);
 		endState = new DeeptripAIState(Main.getEndBoard(start));
 		problem = new DeeptripAIProblem(startState, endState,
-				new HeuristicTwo());
+				new HeuristicThree());
 		engine = new DeeptripAIEngine();
 	}
 
@@ -90,7 +90,7 @@ public class Main {
 //				{ 2, 3, 1, 4 },
 //				{ 1, 1, 2, 3 } };
 
-		SearchStrategy searchStrategy = SearchStrategy.BFS;
+		SearchStrategy searchStrategy = SearchStrategy.Greedy;
 
 		switch (searchStrategy) {
 		case IDDFS:
