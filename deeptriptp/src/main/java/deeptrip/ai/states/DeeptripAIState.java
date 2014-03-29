@@ -21,6 +21,12 @@ public class DeeptripAIState implements GPSState{
     public Board getBoard() {
         return board;
     }
+    
+    @Override
+    public String toString() {
+    	
+    	return board.toString();
+    }
 
     @Override
     public String toString() {
