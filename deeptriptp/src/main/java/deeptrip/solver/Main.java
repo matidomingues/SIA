@@ -2,6 +2,7 @@ package deeptrip.solver;
 
 import deeptrip.ai.engine.DeeptripAIEngine;
 import deeptrip.ai.heuristics.HeuristicOne;
+import deeptrip.ai.heuristics.HeuristicThree;
 import deeptrip.ai.heuristics.HeuristicTwo;
 import deeptrip.ai.problem.DeeptripAIProblem;
 import deeptrip.ai.states.DeeptripAIState;
@@ -23,7 +24,7 @@ public class Main {
 		startState = new DeeptripAIState(start);
 		endState = new DeeptripAIState(Main.getEndBoard(start));
 		problem = new DeeptripAIProblem(startState, endState,
-				new HeuristicTwo());
+				new HeuristicThree());
 		engine = new DeeptripAIEngine();
 	}
 
@@ -70,13 +71,13 @@ public class Main {
 		// { 3, 6, 2, 1, 6, 2, 1, 4},
 		// };
 		// Small board;
-		 {
-		 { 1, 2, 3, 4 },
-		 { 6, 1, 6, 2 },
-		 { 1, 3, 1, 3 },
-		 { 4, 1, 6, 4 },
-		 { 1, 6, 3, 2 }
-		 };
+//		 {
+//		 { 1, 2, 3, 4 },
+//		 { 6, 1, 6, 2 },
+//		 { 1, 3, 1, 3 },
+//		 { 4, 1, 6, 4 },
+//		 { 1, 6, 3, 2 }
+//		 };
 		// smaller board
 		// {
 		// { 1, 2, 4},
@@ -84,12 +85,17 @@ public class Main {
 		// { 2, 3, 1},
 		// { 1, 2, 3}
 		// };
-//			{ { 1, 2, 3, 4 }, 
-//				{ 3, 4, 1, 2 },
-//				{ 2, 3, 1, 4 },
-//				{ 1, 1, 2, 3 } };
+			{ { 1, 2, 3, 4 }, 
+				{ 3, 4, 1, 2 },
+				{ 2, 3, 1, 4 },
+				{ 1, 1, 2, 3 } };
+		
 
-		SearchStrategy searchStrategy = SearchStrategy.BFS;
+//			{	{ 1, 2, 1 }, 
+//				{ 3,2,3 },
+//				{ 2, 1, 3},
+//				};
+		SearchStrategy searchStrategy = SearchStrategy.AStar;
 
 		switch (searchStrategy) {
 		case IDDFS:
@@ -109,7 +115,11 @@ public class Main {
 
 	private void solve(SearchStrategy searchStrategy) {
 		long timeInit = System.currentTimeMillis();
+		try{
 		engine.engine(problem, searchStrategy);
+		}catch(Exception e){
+			
+		}
 		System.out.println("Elapsed time: "
 				+ (System.currentTimeMillis() - timeInit) + " milliseconds");
 	}
