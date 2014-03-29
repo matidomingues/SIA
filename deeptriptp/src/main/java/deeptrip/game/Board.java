@@ -68,6 +68,9 @@ public class Board {
 	private void removeColorToCounter(Point point, Integer color) {
         if (colorsCounter.get(color) != null) {
             colorsCounter.get(color).remove(point);
+			if (colorsCounter.get(color).size() == 0) {
+				colorsCounter.remove(color);
+			}
         } else {
             throw new IllegalArgumentException("Incorrect color");
         }
@@ -136,9 +139,15 @@ public class Board {
 	}
 
 	public void shiftRow(int row, int shift) {
+		for (int col = 0; col < board.get(row).size(); col++) {
+			Point p = new Point(row, col);
+			removeColorToCounter(p, getPoint(p));
+		}
 		Collections.rotate(board.get(row), shift);
-		for (int i = 0; i < board.get(row).size(); i++) {
-			this.addModification(new Point(row, i));
+		for (int col = 0; col < board.get(row).size(); col++) {
+			Point p = new Point(row, col);
+			this.addModification(p);
+			addColorToCounter(p, getPoint(p));
 		}
 	}
 

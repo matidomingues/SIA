@@ -45,10 +45,10 @@ public class Consumption implements Strategy{
 		}
 		evaluated.add(p);
 		List<Point> points = new LinkedList<>();
-		points.addAll(findColor(board,new Point(p.getX(), p.getY()-1), color));
-		points.addAll(findColor(board, new Point(p.getX(), p.getY()+1), color));
-		points.addAll(findColor(board, new Point(p.getX()-1, p.getY()), color));
-		points.addAll(findColor(board, new Point(p.getX()+1, p.getY()), color));
+		points.addAll(findColor(board, new Point(p.getX(), p.getY() - 1), color));
+		points.addAll(findColor(board, new Point(p.getX(), p.getY() + 1), color));
+		points.addAll(findColor(board, new Point(p.getX() - 1, p.getY()), color));
+		points.addAll(findColor(board, new Point(p.getX() + 1, p.getY()), color));
 		
 		points.add(p);
 

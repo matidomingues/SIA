@@ -2,6 +2,7 @@ package deeptrip.solver;
 
 import deeptrip.ai.engine.DeeptripAIEngine;
 import deeptrip.ai.heuristics.HeuristicOne;
+import deeptrip.ai.heuristics.HeuristicThree;
 import deeptrip.ai.heuristics.HeuristicTwo;
 import deeptrip.ai.problem.DeeptripAIProblem;
 import deeptrip.ai.states.DeeptripAIState;
