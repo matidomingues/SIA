@@ -148,14 +148,14 @@ public class Board {
 		}
 		int locColor = this.getPoint(dest);
 		int destColor = this.getPoint(loc);
-		if(aux != 0){
-			addColorToCounter(loc, aux);
-			removeColorToCounter(dest, aux);
+		if(locColor != 0){
+			addColorToCounter(loc, locColor);
+			removeColorToCounter(dest, locColor);
 		}
-		removeColorToCounter(loc, );
-		addColorToCounter(dest, this.getPoint(loc));
-		board.get(dest.getX()).set(dest.getY(), this.getPoint(loc));
-		board.get(loc.getX()).set(loc.getY(), aux);
+		removeColorToCounter(loc, destColor);
+		addColorToCounter(dest, destColor);
+		board.get(dest.getX()).set(dest.getY(), destColor);
+		board.get(loc.getX()).set(loc.getY(), locColor);
 		modifications.add(dest);
 	}
 
