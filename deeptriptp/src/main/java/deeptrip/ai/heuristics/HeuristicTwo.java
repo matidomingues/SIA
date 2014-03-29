@@ -27,7 +27,7 @@ public class HeuristicTwo implements Heuristic {
 			if(map.get(key).size() < 3){
 				sumValue = Integer.MAX_VALUE;
 			}
-			sumValue = calculateCoinProblem(map.get(key).size());
+			sumValue += calculateCoinProblem(map.get(key).size());
 		}
 		return sumValue;
 	}
