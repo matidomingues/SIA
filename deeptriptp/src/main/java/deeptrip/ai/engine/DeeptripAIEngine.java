@@ -22,7 +22,7 @@ public class DeeptripAIEngine extends GPSEngine {
 			set.add(node.getState().hashCode());
 			SearchStrategy strategy = getStrategy();
 
-            //TODO falta ver lo de los estados repetidos
+
             switch (strategy) {
             case DFS:
                 if (maxDepth != INFINITE) {
