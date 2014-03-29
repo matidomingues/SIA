@@ -27,7 +27,7 @@ public class HeuristicThree implements Heuristic {
 			}
 			Point center = new Point(x / colors.get(color).size(), y / colors.get(color).size());
 			for (Point p : colors.get(color)) {
-				distance = Math.abs(p.getX() - center.getX()) + Math.abs(p.getY() - center.getY());
+				distance += Math.abs(p.getX() - center.getX()) + Math.abs(p.getY() - center.getY());
 			}
 			result += distance / colors.get(color).size();
 		}

@@ -17,7 +17,10 @@ public class Board {
 	private Board(List<List<Integer>> board, Map<Integer, Set<Point>> colorsCounter, Set<Point> modifications, Integer chips) {
 		this.board = board;
 		this.chips = chips;
-		this.colorsCounter = new HashMap<>(colorsCounter);
+		this.colorsCounter = new HashMap<>();
+		for(Integer color : colorsCounter.keySet()) {
+			this.colorsCounter.put(color, new HashSet<>(colorsCounter.get(color)));
+		}
 		this.modifications = modifications;
 	}
 
