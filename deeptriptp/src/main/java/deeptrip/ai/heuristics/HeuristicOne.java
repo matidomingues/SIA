@@ -3,8 +3,10 @@ package deeptrip.ai.heuristics;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import deeptrip.ai.states.DeeptripAIState;
+import deeptrip.utils.Point;
 import gps.api.GPSState;
 
 public class HeuristicOne implements Heuristic {
@@ -20,10 +22,10 @@ public class HeuristicOne implements Heuristic {
 			return 0;
 		}
 		DeeptripAIState state = (DeeptripAIState) stateFrom;
-		Map<Integer, Integer> map = state.getBoard().getColorMap();
+		Map<Integer, Set<Point>> map = state.getBoard().getColorMap();
 		Integer sumTotalChips=0;
-		for(Entry<Integer, Integer> e:map.entrySet()){
-			Integer num=e.getValue();
+		for(Entry<Integer, Set<Point>> e:map.entrySet()){
+			Integer num=e.getValue().size();
 			if(num<3){
 				return Integer.MAX_VALUE;
 			}

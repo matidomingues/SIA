@@ -22,4 +22,10 @@ public class DeeptripAIState implements GPSState{
         return board;
     }
 
+    @Override
+    public String toString() {
+        return new StringBuilder()
+                    .append(board.toString())
+                    .toString();
+    }
 }

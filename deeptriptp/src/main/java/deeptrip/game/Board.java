@@ -11,10 +11,10 @@ public class Board {
 
 	private List<List<Integer>> board;
 	private Set<Point> modifications;
-	private Map<Integer, Integer> colorsCounter;
+	private Map<Integer, Set<Point>> colorsCounter;
 	private Integer chips;
 
-	private Board(List<List<Integer>> board, Map<Integer, Integer> colorsCounter, Set<Point> modifications, Integer chips) {
+	private Board(List<List<Integer>> board, Map<Integer, Set<Point>> colorsCounter, Set<Point> modifications, Integer chips) {
 		this.board = board;
 		this.chips = chips;
 		this.colorsCounter = new HashMap<>(colorsCounter);
@@ -22,7 +22,7 @@ public class Board {
 	}
 
 	public Board(Integer[][] matrix) {
-        this(new LinkedList<List<Integer>>(), new HashMap<Integer, Integer>(), new HashSet<Point>(), 0);
+        this(new LinkedList<List<Integer>>(), new HashMap<Integer, Set<Point>>(), new HashSet<Point>(), 0);
         initBoard(matrix);
 	}
 
@@ -33,7 +33,7 @@ public class Board {
 			for (int w = 0; w < matrix[i].length; w++) {
 				interin.add(matrix[i][w]);
 				if (matrix[i][w] > 0) {
-					addColorToCounter(matrix[i][w]);
+					addColorToCounter(new Point(i, w), matrix[i][w]);
 					incrementChips();
 				}
 			}
@@ -55,20 +55,19 @@ public class Board {
 		chips--;
 	}
 
-	private void addColorToCounter(Integer color) {
-		if (colorsCounter.containsKey(color)) {
-			colorsCounter.put(color, colorsCounter.get(color) + 1);
-		} else {
-			colorsCounter.put(color, 1);
-		}
+	private void addColorToCounter(Point point, Integer color) {
+		if (this.colorsCounter.get(color) == null) {
+            this.colorsCounter.put(color, new HashSet<Point>());
+        }
+        this.colorsCounter.get(color).add(point);
 	}
 
-	private void removeColorToCounter(Integer color) {
-		if (colorsCounter.containsKey(color) && colorsCounter.get(color) > 0) {
-			colorsCounter.put(color, colorsCounter.get(color) - 1);
-		} else {
-			throw new IllegalArgumentException("Incorrect color");
-		}
+	private void removeColorToCounter(Point point, Integer color) {
+        if (colorsCounter.get(color) != null) {
+            colorsCounter.get(color).remove(point);
+        } else {
+            throw new IllegalArgumentException("Incorrect color");
+        }
 	}
 
 
@@ -127,7 +126,7 @@ public class Board {
 		if (!insideBoundaries(p)) {
 			throw new IllegalArgumentException();
 		}
-		removeColorToCounter(this.getPoint(p));
+		removeColorToCounter(p, this.getPoint(p));
 		board.get(p.getX()).set(p.getY(), 0);
 		modifications.add(p);
 		decrementChips();
@@ -167,10 +166,10 @@ public class Board {
 	}
 	
 	public int getColorAmount(Integer color){
-		return this.colorsCounter.get(color);
+		return this.colorsCounter.get(color).size();
 	}
 	
-	public Map<Integer, Integer> getColorMap(){
+	public Map<Integer, Set<Point>> getColorMap(){
 		return this.colorsCounter;
 	}
 	

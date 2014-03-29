@@ -180,15 +180,17 @@ public abstract class GPSEngine {
 	}
 
 	protected void addOpenNodeGreedy(GPSNode node) {
-        open.add(node);
-        Collections.sort(open, new Comparator<GPSNode>() {
-            @Override
-            public int compare(GPSNode o1, GPSNode o2) {
-                if (o1.getDepth() < o2.getDepth()) return 1;
-                else if (o1.getDepth() > o2.getDepth()) return -1;
-                else return problem.getHValue(o1.getState())
-                        - problem.getHValue(o2.getState());
-            }
-        });
+        if (problem.getHValue(node.getState()) < Integer.MAX_VALUE) {
+            open.add(node);
+            Collections.sort(open, new Comparator<GPSNode>() {
+                @Override
+                public int compare(GPSNode o1, GPSNode o2) {
+                    if (o1.getDepth() < o2.getDepth()) return 1;
+                    else if (o1.getDepth() > o2.getDepth()) return -1;
+                    else return problem.getHValue(o1.getState())
+                            - problem.getHValue(o2.getState());
+                }
+            });
+        }
 	}
 }

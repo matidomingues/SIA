@@ -1,9 +1,11 @@
 package deeptrip.ai.heuristics;
 
+import deeptrip.utils.Point;
 import gps.api.GPSState;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import gps.api.GPSState;
 import deeptrip.ai.states.DeeptripAIState;
@@ -20,12 +22,12 @@ public class HeuristicTwo implements Heuristic {
 		Board board = state.getBoard();
 		int sumValue = 0;
 
-		Map<Integer, Integer> map = board.getColorMap();
+		Map<Integer, Set<Point>> map = board.getColorMap();
 		for (Integer key : map.keySet()) {
-			if(map.get(key) < 3){
+			if(map.get(key).size() < 3){
 				sumValue = Integer.MAX_VALUE;
 			}
-			sumValue = calculateCoinProblem(map.get(key));
+			sumValue = calculateCoinProblem(map.get(key).size());
 		}
 		return sumValue;
 	}
