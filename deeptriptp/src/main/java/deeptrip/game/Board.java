@@ -146,7 +146,14 @@ public class Board {
 		if (!insideBoundaries(loc) || !insideBoundaries(dest)) {
 			throw new IllegalArgumentException();
 		}
-		int aux = this.getPoint(dest);
+		int locColor = this.getPoint(dest);
+		int destColor = this.getPoint(loc);
+		if(aux != 0){
+			addColorToCounter(loc, aux);
+			removeColorToCounter(dest, aux);
+		}
+		removeColorToCounter(loc, );
+		addColorToCounter(dest, this.getPoint(loc));
 		board.get(dest.getX()).set(dest.getY(), this.getPoint(loc));
 		board.get(loc.getX()).set(loc.getY(), aux);
 		modifications.add(dest);
