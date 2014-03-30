@@ -12,7 +12,7 @@ public class DropDown implements Strategy {
 		if(finalPoint != null){
 			board.swapColor(finalPoint, p);
 			if(board.getPointWithCoordinates(p.getX()+1, p.getY()) == 0){
-				lookUp(board, new Point(p.getX()+1,p.getY()));
+				lookUp(board, Point.of(p.getX()+1,p.getY()));
 			}
 		}
 	}
@@ -26,7 +26,7 @@ public class DropDown implements Strategy {
 		int y = p.getY();
 		for(; x < board.getRowsSize(); x++){
 			if(board.getPointWithCoordinates(x, y) != 0){
-				return(new Point(x,y));
+				return(Point.of(x,y));
 			}
 		}
 		return null;
@@ -37,7 +37,7 @@ public class DropDown implements Strategy {
 		if(finalPoint != null){
 			board.swapColor(p, finalPoint);
 			if(board.getPointWithCoordinates(finalPoint.getX()+1, finalPoint.getY()) == 0){
-				lookUp(board, new Point(finalPoint.getX()+1, finalPoint.getY()));
+				lookUp(board, Point.of(finalPoint.getX()+1, finalPoint.getY()));
 			}
 		}
 	}
@@ -58,7 +58,7 @@ public class DropDown implements Strategy {
 		if(answer == -1){
 			return null;
 		}
-		return new Point(answer,y);
+		return Point.of(answer,y);
 	}
 	
 	/**

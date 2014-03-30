@@ -15,7 +15,7 @@ public class HeuristicThree implements Heuristic {
 		int result = 0;
 		Board board = ((DeeptripAIState)stateFrom).getBoard();
 		Map<Integer, Set<Point>> colors = board.getColorMap();
-
+		int points = 0;
 		for (Integer color : colors.keySet()) {
 			if (colors.get(color).size() < 3) return Integer.MAX_VALUE;
 			int x = 0;
@@ -25,12 +25,13 @@ public class HeuristicThree implements Heuristic {
 				x += p.getX();
 				y += p.getY();
 			}
-			Point center = new Point(x / colors.get(color).size(), y / colors.get(color).size());
+			Point center = Point.of(x / colors.get(color).size(), y / colors.get(color).size());
 			for (Point p : colors.get(color)) {
 				distance += Math.abs(p.getX() - center.getX()) + Math.abs(p.getY() - center.getY());
+				points++;
 			}
 			result += distance / colors.get(color).size();
 		}
-        return result;  //To change body of implemented methods use File | Settings | File Templates.
+        return points/result;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

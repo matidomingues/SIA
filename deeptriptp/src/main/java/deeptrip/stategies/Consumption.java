@@ -40,15 +40,15 @@ public class Consumption implements Strategy{
 
 	private List<Point> findColor(Board board, Point p, int color){
 		
-		if(!board.insideBoundaries(p) || board.getPoint(p) != color || evaluated.contains(p)){
+		if(p == null || board == null || !board.insideBoundaries(p) || board.getPoint(p) != color || evaluated.contains(p)){
 			return Collections.EMPTY_LIST;
 		}
 		evaluated.add(p);
 		List<Point> points = new LinkedList<>();
-		points.addAll(findColor(board, new Point(p.getX(), p.getY() - 1), color));
-		points.addAll(findColor(board, new Point(p.getX(), p.getY() + 1), color));
-		points.addAll(findColor(board, new Point(p.getX() - 1, p.getY()), color));
-		points.addAll(findColor(board, new Point(p.getX() + 1, p.getY()), color));
+		points.addAll(findColor(board, Point.of(p.getX(), p.getY() - 1), color));
+		points.addAll(findColor(board, Point.of(p.getX(), p.getY() + 1), color));
+		points.addAll(findColor(board, Point.of(p.getX() - 1, p.getY()), color));
+		points.addAll(findColor(board, Point.of(p.getX() + 1, p.getY()), color));
 		
 		points.add(p);
 

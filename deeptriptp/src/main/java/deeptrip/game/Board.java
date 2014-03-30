@@ -36,7 +36,7 @@ public class Board {
 			for (int w = 0; w < matrix[i].length; w++) {
 				interin.add(matrix[i][w]);
 				if (matrix[i][w] > 0) {
-					addColorToCounter(new Point(i, w), matrix[i][w]);
+					addColorToCounter(Point.of(i, w), matrix[i][w]);
 					incrementChips();
 				}
 			}
@@ -44,7 +44,7 @@ public class Board {
         new DropDown().execute(this);
         for (int i = 0; i < this.board.size(); i++) {
             for (int j = 0; j < this.board.get(0).size(); j++) {
-                this.modifications.add(new Point(i, j));
+                this.modifications.add(Point.of(i, j));
             }
         }
         new Consumption().execute(this);
@@ -140,12 +140,12 @@ public class Board {
 
 	public void shiftRow(int row, int shift) {
 		for (int col = 0; col < board.get(row).size(); col++) {
-			Point p = new Point(row, col);
+			Point p = Point.of(row, col);
 			removeColorToCounter(p, getPoint(p));
 		}
 		Collections.rotate(board.get(row), shift);
 		for (int col = 0; col < board.get(row).size(); col++) {
-			Point p = new Point(row, col);
+			Point p = Point.of(row, col);
 			this.addModification(p);
 			addColorToCounter(p, getPoint(p));
 		}

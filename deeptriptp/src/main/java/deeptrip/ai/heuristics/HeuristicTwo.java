@@ -1,15 +1,12 @@
 package deeptrip.ai.heuristics;
 
+import deeptrip.ai.states.DeeptripAIState;
+import deeptrip.game.Board;
 import deeptrip.utils.Point;
 import gps.api.GPSState;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
-import gps.api.GPSState;
-import deeptrip.ai.states.DeeptripAIState;
-import deeptrip.game.Board;
 
 public class HeuristicTwo implements Heuristic {
 

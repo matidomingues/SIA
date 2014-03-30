@@ -1,14 +1,14 @@
 package deeptrip.ai.problem;
 
+import deeptrip.ai.heuristics.Heuristic;
 import deeptrip.ai.rules.DeeptripAIRule;
 import deeptrip.ai.states.DeeptripAIState;
-import java.util.ArrayList;
-import java.util.List;
-
-import deeptrip.ai.heuristics.Heuristic;
 import gps.api.GPSProblem;
 import gps.api.GPSRule;
 import gps.api.GPSState;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DeeptripAIProblem implements GPSProblem{
 
