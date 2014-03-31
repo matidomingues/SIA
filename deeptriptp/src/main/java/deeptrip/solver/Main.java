@@ -1,30 +1,61 @@
 package deeptrip.solver;
 
+import au.com.bytecode.opencsv.CSVReader;
 import deeptrip.ai.engine.DeeptripAIEngine;
-import deeptrip.ai.heuristics.HeuristicOne;
-import deeptrip.ai.heuristics.HeuristicThree;
-import deeptrip.ai.heuristics.HeuristicTwo;
+import deeptrip.ai.enumerators.HeuristicType;
+import deeptrip.ai.heuristics.Heuristic;
 import deeptrip.ai.problem.DeeptripAIProblem;
 import deeptrip.ai.states.DeeptripAIState;
 import deeptrip.game.Board;
 import gps.SearchStrategy;
 import gps.api.GPSProblem;
 import gps.exception.SolutionNotFoundException;
+import org.apache.commons.cli.*;
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Main {
 
+	private static final CommandLineParser lineParser = new BasicParser();
+	private static final Options options = new Options();
 	private final Board start;
 	private final DeeptripAIState startState;
 	private final DeeptripAIState endState;
 	private final GPSProblem problem;
 	private final DeeptripAIEngine engine;
 
-	public Main(Integer[][] startBoard) {
+	static {
+		options.addOption(OptionBuilder
+				.withArgName("file")
+				.withDescription("Archivo que contiene el tablero a cargar.")
+				.isRequired()
+				.hasArg()
+				.create('f'));
+		options.addOption(OptionBuilder
+				.withArgName("heuristic")
+				.withDescription("Heurística a utilizar para en los métodos informados. Requerido si se utiliza un método informado.")
+				.isRequired(false)
+				.hasArg()
+				.create('h'));
+		options.addOption(OptionBuilder
+				.withArgName("algorithm")
+				.withDescription("Algoritmo a utilizar para resolver el tablero.")
+				.isRequired(true)
+				.hasArgs()
+				.create('a'));
+
+	}
+
+	public Main(List<List<Integer>> startBoard, Heuristic heuristic) {
 		start = new Board(startBoard);
 		startState = new DeeptripAIState(start);
 		endState = new DeeptripAIState(Main.getEndBoard(start));
-		problem = new DeeptripAIProblem(startState, endState,
-				new HeuristicOne());
+		problem = new DeeptripAIProblem(startState, endState, heuristic);
 		engine = new DeeptripAIEngine();
 	}
 
@@ -32,18 +63,40 @@ public class Main {
 
 		int rows = board.getRowsSize();
 		int columns = board.getColumnsSize();
-		Integer[][] end = new Integer[rows][columns];
+		List<List<Integer>> end = new ArrayList<>(rows);
 		for (int i = 0; i < rows; i++) {
+			List<Integer> row = new ArrayList<>(columns);
 			for (int j = 0; j < columns; j++) {
-				end[i][j] = 0;
+				row.add(0);
 			}
+			end.add(row);
 		}
 		return new Board(end);
 	}
 
 	public static void main(String[] args) {
 
-		Integer[][] startBoard =
+		CommandLine line = null;
+		try {
+			line = lineParser.parse(options, args);
+		} catch (ParseException e) {
+			System.out.println("Hubo un error en la interpretación de los argumentos.");
+			return;
+		}
+
+		List<List<Integer>> startBoard = null;
+		try {
+			startBoard = parseBoard(line.getOptionValue('f'));
+		} catch (NumberFormatException nfe) {
+			System.out.println("Error de formato en el tablero.");
+			return;
+		} catch (FileNotFoundException fnfe) {
+			System.out.println("No se encontró el archivo especificado.");
+			return;
+		} catch (IOException ioe) {
+			System.out.println("Hubo un error al leer el archivo.");
+			return;
+		}
 		// { { 1, 0, 1, 1 }, { 2, 2, 0, 2 },
 		// { 0, 0, 0, 0 }, { 0, 0, 0, 0 } };
 		// Big board
@@ -98,28 +151,47 @@ public class Main {
 //		{{1,2,1},
 //			{3,2,3},
 //			{2,3,1}};
-		{ { 1, 2, 3, 4,4 }, 
-			{ 3, 4, 1, 2,6 },
-			{ 1, 6, 3, 4,1 },
-			{ 1, 2, 3, 4,6 },
-			{2,3,4,1,2} };
-		
-		SearchStrategy searchStrategy = SearchStrategy.AStar;
+//		{ { 1, 2, 3, 4,4 },
+//			{ 3, 4, 1, 2,6 },
+//			{ 1, 6, 3, 4,1 },
+//			{ 1, 2, 3, 4,6 },
+//			{2,3,4,1,2} };
+
+		SearchStrategy searchStrategy = SearchStrategy.getSearchStrategy(line.getOptionValue('a'));
+		Heuristic heuristic = line.hasOption('h') ?
+				HeuristicType.getHeuristicType(line.getOptionValue('h')).getHeuristic() : null;
 
 		switch (searchStrategy) {
 		case IDDFS:
-			new Main(startBoard).solveIterativeDeepening();
+			new Main(startBoard, heuristic).solveIterativeDeepening();
 			break;
-		case BFS:
-		case DFS:
 		case Greedy:
 		case AStar:
-			new Main(startBoard).solve(searchStrategy);
+			if (heuristic == null) {
+				throw new IllegalArgumentException("Se necesita una heurística para este algoritmo.");
+			}
+		case BFS:
+		case DFS:
+			new Main(startBoard, heuristic).solve(searchStrategy);
 			break;
 		default:
 			throw new IllegalArgumentException();
 		}
 
+	}
+
+	private static List<List<Integer>> parseBoard(String filepath) throws IOException {
+		CSVReader reader = new CSVReader(new FileReader(filepath));
+		String[] line = null;
+		List<List<Integer>> board = new LinkedList<>();
+		while ((line = reader.readNext()) != null) {
+			List<Integer> lLine = new LinkedList<>();
+			for(String s : line) {
+				lLine.add(Integer.parseInt(s));
+			}
+			board.add(lLine);
+		}
+		return board;  //To change body of created methods use File | Settings | File Templates.
 	}
 
 	private void solve(SearchStrategy searchStrategy) {

@@ -1,8 +1,11 @@
 package deeptrip.stategies;
 
 import deeptrip.game.Board;
+import org.apache.log4j.Logger;
 
 public class ShiftRow implements Strategy {
+
+	private static final Logger logger = Logger.getLogger(ShiftRow.class);
 
 	private final int x;
 	private final int shift;
@@ -20,9 +23,9 @@ public class ShiftRow implements Strategy {
 		Board newBoard = board.getClonedBoard();
 		newBoard.shiftRow(x, shift);
 		while(newBoard.getModifications().size() != 0){
-			//System.out.println(newBoard);
+			if (logger.isTraceEnabled()) logger.trace(newBoard);
 			new DropDown().execute(newBoard);
-			//System.out.println(newBoard);
+			if (logger.isTraceEnabled()) logger.trace(newBoard);
 			new Consumption().execute(newBoard);
 		}
 		return newBoard;

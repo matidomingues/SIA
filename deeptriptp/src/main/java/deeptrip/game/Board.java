@@ -24,23 +24,12 @@ public class Board {
 		this.modifications = modifications;
 	}
 
-	public Board(Integer[][] matrix) {
-        this(new LinkedList<List<Integer>>(), new HashMap<Integer, Set<Point>>(), new HashSet<Point>(), 0);
-        initBoard(matrix);
+	public Board(List<List<Integer>> board) {
+        this(board, new HashMap<Integer, Set<Point>>(), new HashSet<Point>(), 0);
+        init();
 	}
 
-    private void initBoard(Integer[][] matrix) {
-		for (int i = 0; i < matrix.length; i++) {
-			List<Integer> interin = new LinkedList<>();
-			board.add(i, interin);
-			for (int w = 0; w < matrix[i].length; w++) {
-				interin.add(matrix[i][w]);
-				if (matrix[i][w] > 0) {
-					addColorToCounter(Point.of(i, w), matrix[i][w]);
-					incrementChips();
-				}
-			}
-		}
+    private void init() {
         new DropDown().execute(this);
         for (int i = 0; i < this.board.size(); i++) {
             for (int j = 0; j < this.board.get(0).size(); j++) {
