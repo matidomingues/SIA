@@ -1,0 +1,19 @@
+Deeptrip Solver Project
+
+== Requerimientos ==
+Java 7 o superior
+Maven 3
+
+== Instalación == 
+Ejecutar el archivo bash install.sh en la carpeta raíz.
+
+== Ejecución ==
+Ejecutar el comando:
+
+	java -jar deeptriptp.jar
+
+El programa recibe los siguientes argumentos
+
+	-f --file: Con el path para el archivo CSV con el mapa. [OBLIGATORIO]
+	-a --algorithm: Con el algoritmo con el cual quiere resolverse el mapa. Las opciones pueden ser BFS DFS IDDFS ASTAR GREEDY. [OBLIGATORIO]
+	-h --heuristic: Con la heurística a utilizar. Las opciones pueden ser ONE TWO THREE. Es obligatorio si se utilizan los argumentos ASTAR o GREEDY para -a.
