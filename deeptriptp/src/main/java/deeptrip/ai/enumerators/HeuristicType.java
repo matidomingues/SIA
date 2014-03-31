@@ -1,5 +1,5 @@
 package deeptrip.ai.enumerators;
 
 public enum HeuristicType {
-	ONE, TWO;
+	ONE, TWO, THREE;
 }
