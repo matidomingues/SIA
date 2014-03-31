@@ -11,6 +11,7 @@ import gps.SearchStrategy;
 import gps.api.GPSProblem;
 import gps.exception.SolutionNotFoundException;
 import org.apache.commons.cli.*;
+import org.apache.log4j.Logger;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -21,6 +22,7 @@ import java.util.List;
 
 public class Main {
 
+	private static final Logger logger = Logger.getLogger(Main.class);
 	private static final CommandLineParser lineParser = new BasicParser();
 	private static final Options options = new Options();
 	private final Board start;
@@ -57,6 +59,7 @@ public class Main {
 		endState = new DeeptripAIState(Main.getEndBoard(start));
 		problem = new DeeptripAIProblem(startState, endState, heuristic);
 		engine = new DeeptripAIEngine();
+		logger.info("Tablero Inicial: " + start.toString());
 	}
 
 	public static Board getEndBoard(Board board) {

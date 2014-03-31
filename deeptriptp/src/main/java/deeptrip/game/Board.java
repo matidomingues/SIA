@@ -33,7 +33,12 @@ public class Board {
         new DropDown().execute(this);
         for (int i = 0; i < this.board.size(); i++) {
             for (int j = 0; j < this.board.get(0).size(); j++) {
-                this.modifications.add(Point.of(i, j));
+				Point p = Point.of(i, j);
+                this.modifications.add(p);
+				if (colorsCounter.get(this.getPoint(p)) == null) {
+					colorsCounter.put(this.getPoint(p), new HashSet<Point>());
+				}
+				colorsCounter.get(this.getPoint(p)).add(p);
             }
         }
         new Consumption().execute(this);
