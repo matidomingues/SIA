@@ -28,7 +28,7 @@ public class Main {
 	private final Board start;
 	private final DeeptripAIState startState;
 	private final DeeptripAIState endState;
-	private final GPSProblem problem;
+	private GPSProblem problem;
 	private final DeeptripAIEngine engine;
 
 	static {
@@ -100,65 +100,6 @@ public class Main {
 			System.out.println("Hubo un error al leer el archivo.");
 			return;
 		}
-		// { { 1, 0, 1, 1 }, { 2, 2, 0, 2 },
-		// { 0, 0, 0, 0 }, { 0, 0, 0, 0 } };
-		// Big board
-		// { { 1, 2, 3, 4, 2, 3, 5, 2},
-		// { 6, 1, 6, 2, 3, 1, 6, 3},
-		// { 1, 3, 1, 3, 6, 3, 4, 1},
-		// { 4, 1, 6, 4, 3, 2, 6, 3},
-		// { 1, 6, 3, 2, 4, 3, 1, 6},
-		// { 5, 1, 5, 1, 2, 1, 6, 4},
-		// { 1, 5, 3, 4, 1, 3, 2, 3},
-		// { 2, 3, 2, 6, 4, 5, 3, 1},
-		// { 4, 1, 6, 4, 1, 3, 2, 3},
-		// { 3, 6, 2, 1, 6, 2, 1, 4},
-		// };
-		// Mid board;
-		// { { 1, 2, 3, 4, 2, 3, 5, 2},
-		// { 6, 1, 6, 2, 3, 1, 6, 3},
-		// { 1, 3, 1, 3, 6, 3, 4, 1},
-		// { 4, 1, 6, 4, 3, 2, 6, 3},
-		// { 1, 6, 3, 2, 4, 3, 1, 6},
-		// { 5, 1, 5, 1, 2, 1, 6, 4},
-		// { 1, 5, 3, 4, 1, 3, 2, 3},
-		// { 2, 3, 2, 6, 4, 5, 3, 1},
-		// { 4, 1, 6, 4, 1, 3, 2, 3},
-		// { 3, 6, 2, 1, 6, 2, 1, 4},
-		// };
-		// Small board;
-//		 {
-//		 { 1, 2, 3, 4 },
-//		 { 6, 1, 6, 2 },
-//		 { 1, 3, 1, 3 },
-//		 { 4, 1, 6, 4 },
-//		 { 1, 6, 3, 2 }
-//		 };
-		// smaller board
-		// {
-		// { 1, 2, 4},
-		// { 3, 1, 2},
-		// { 2, 3, 1},
-		// { 1, 2, 3}
-		// };
-//			{ { 1, 2, 3, 4 }, 
-//				{ 3, 4, 1, 2 },
-//				{ 2, 3, 1, 4 },
-//				{ 1, 1, 2, 3 } };
-
-//			{ { 1, 2, 3, 4 }, 
-//			{ 3, 4, 1, 2 },
-//			{ 1, 6, 3, 4 },
-//			{ 1, 2, 3, 4 } };
-		
-//		{{1,2,1},
-//			{3,2,3},
-//			{2,3,1}};
-//		{ { 1, 2, 3, 4,4 },
-//			{ 3, 4, 1, 2,6 },
-//			{ 1, 6, 3, 4,1 },
-//			{ 1, 2, 3, 4,6 },
-//			{2,3,4,1,2} };
 
 		SearchStrategy searchStrategy = SearchStrategy.getSearchStrategy(line.getOptionValue('a'));
 		Heuristic heuristic = line.hasOption('h') ?
@@ -167,7 +108,6 @@ public class Main {
 		switch (searchStrategy) {
 		case IDDFS:
 			new Main(startBoard, heuristic).solveIterativeDeepening();
-			break;
 		case Greedy:
 		case AStar:
 			if (heuristic == null) {
@@ -199,10 +139,10 @@ public class Main {
 
 	private void solve(SearchStrategy searchStrategy) {
 		long timeInit = System.currentTimeMillis();
-		try{
-		engine.engine(problem, searchStrategy);
-		}catch(Exception e){
-			
+		try {
+			engine.engine(problem, searchStrategy);
+		} catch (Exception e) {
+
 		}
 		System.out.println("Elapsed time: "
 				+ (System.currentTimeMillis() - timeInit) + " milliseconds");

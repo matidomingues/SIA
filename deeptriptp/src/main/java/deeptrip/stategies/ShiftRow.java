@@ -26,6 +26,7 @@ public class ShiftRow implements Strategy {
 			if (logger.isTraceEnabled()) logger.trace(newBoard);
 			new DropDown().execute(newBoard);
 			if (logger.isTraceEnabled()) logger.trace(newBoard);
+			new DropDown().execute(newBoard);
 			new Consumption().execute(newBoard);
 		}
 		return newBoard;
