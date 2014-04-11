@@ -12,12 +12,18 @@ function tableAns= perceptronSimple(weigths,n,patterns)
   patternsQty=length(patterns); #cantidad de patrones
 	it=zeros(1,patternsQty);
   while(sum(it)/length(it)<1)  
-    i=floor(rand(1)*(inputs)+1);
-    it(i) = 1;
+  %for i=1:patternsQty
+    i=floor(rand(1)*(patternsQty)+1);
+    
 	   x=patterns(i,1:inputs)*(tableAns)';
-		if (sign(x)!=patterns(i,end))
+		if ((x>=0)!=(patterns(i,end)>=0))
 		   tableAns=correctWeights(tableAns,n,patterns(i,:));
         it=zeros(1,patternsQty);
+    else
+        it(i)=1;
     endif
-  end
+   end
+  
+     
+    sum(it)/length(it)
 endfunction
