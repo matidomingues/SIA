@@ -9,7 +9,7 @@
 function tableAns= perceptronSimple(weigths,n,patterns)
 	tableAns=weigths;
 	inputs=length(patterns(1,:))-1;  #cantidad de entradas
-  patternsQty=length(patterns); #cantidad de patrones
+  patternsQty=size(patterns)(1); #cantidad de patrones
 	it=zeros(1,patternsQty);
   while(sum(it)/length(it)<1)  
   %for i=1:patternsQty
