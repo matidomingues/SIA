@@ -1,5 +1,5 @@
 
-function z = correctWeights (weights,n,pattern)
+function z = correctWeightsStep (weights,n,sigma,pattern)
   z=ones(1,length(weights)); 
   for i=1:length(weights)
     z(i)=weights(i)+2*n*pattern(end)*pattern(i);   
