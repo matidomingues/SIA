@@ -4,7 +4,7 @@
 %n factor de aprendizaje (por ahora es fijo pero esto va a cambiar)
 %patterns matriz de p x (e+1) (donde p es la cantidad de patrones y e es la cantidad de entradas SIN contar el umbral, y en la columna e+1-esima esta la salida deseada) 
 
-function multiLayerPerceptron(weightsHiddenLayer,weightsLastLayer,n,patterns,g,correctWeights)
+function multiLayerPerceptron(weightsHiddenLayer,weightsLastLayer,n,patterns,g,derivate,correctWeights)
     
     
    for i=1:size(patterns)(1) 
@@ -15,8 +15,8 @@ function multiLayerPerceptron(weightsHiddenLayer,weightsLastLayer,n,patterns,g,c
     hM=weightsLastLayer*[-1, V1];
     sigma=arrayfun(g,hM);
     
-    deltaoutput=(gderivate(sigma))*(wishedOutput-sigma);
-    
+    deltaoutput=(arrayfun(derivate,sigma))*(wishedOutput-sigma);
+    deltaHidden=(arrayfun(derivate,V1));
 
    endfor
     
