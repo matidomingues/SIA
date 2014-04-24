@@ -5,25 +5,31 @@
 %patterns matriz de p x (e+1) (donde p es la cantidad de patrones y e es la cantidad de entradas SIN contar el umbral, y en la columna e+1-esima esta la salida deseada) 
 
 function multiLayerPerceptron(weights,n,patterns,g,derivate,epsilon,epoques)
-    E=1;
+    Em=1;
     iterations=0;
     totalLayers=size(weights)(1);
-   do
-    
-    
-    
-    
-    E=0;
-    for k=1:size(patterns)(1)
-       pattern=[-1, patterns(k,1:end-1)];
-        aux=weights{1,1}*pattern';
-        for j=1:totalLayers
-         aux=wights{j,1}*aux';
-        endfor
+    totalPatterns=size(patterns)(1);
+    lowBound=1;
+    do
+      if(lowBound==totalPatterns){
+       iterations++;
+        lowBound=1;
+      }  
+      i=floor(rand(1)*(totalPatterns-lowBound)+lowBound);
         
-        
-    endfor    
-   while(E>epsilon && iterations<=epoques )
+      
+    
+    
+    
+    Em=getCuadraticError(weights,patterns,g);
+    
+    
+    lowBounds++;
+    auxiliar=patterns(i,:);
+    patterns(i,:)=patterns(lowBounds,:);
+    patterns(lowBounds,:)=patterns(i,:);
+    
+   while(Em>epsilon && iterations<=epoques )
    
 
    for i=1:size(patterns)(1) 
