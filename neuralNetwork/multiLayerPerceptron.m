@@ -13,13 +13,14 @@ function multiLayerPerceptron(weights,n,patterns,g,derivate,epsilon,epoques)
     h=cell(totalLayers,1);
     delta=cell(totalLayers,1);
     totalPatterns=size(patterns)(1);
-    lowBound=1;
+    lowbound=1;
     do
-      if(lowBound==totalPatterns){
+      if(lowbound==totalPatterns){
        iterations++;
-        lowBound=1;
-      }  
-      i=floor(rand(1)*(totalPatterns-lowBound)+lowBound);
+       lowbound=1;
+      };
+    
+      i=floor(rand(1)*(totalPatterns-lowbound)+lowbound);
       
       pattern=[-1, patterns(i,1:end-1)];
       wishedOutput=patterns(i,end);
@@ -46,11 +47,11 @@ function multiLayerPerceptron(weights,n,patterns,g,derivate,epsilon,epoques)
       Em=getCuadraticError(weights,patterns,g);
     
     
-      lowBounds++;
+      lowbound++;
       auxiliar=patterns(i,:);
-      patterns(i,:)=patterns(lowBounds,:);
-      patterns(lowBounds,:)=patterns(i,:);
+      patterns(i,:)=patterns(lowbound,:);
+      patterns(lowbound,:)=patterns(i,:);
     
-   while(Em>epsilon && iterations<=epoques )
+   while(Em>epsilon && iterations<=epoques );
     
 endfunction
