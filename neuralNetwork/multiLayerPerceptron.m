@@ -8,6 +8,10 @@ function multiLayerPerceptron(weights,n,patterns,g,derivate,epsilon,epoques)
     Em=1;
     iterations=0;
     totalLayers=size(weights)(1);
+    hiddenLayers=totalLayers-1;
+    V=cell(totalLayers,1);
+    h=cell(totalLayers,1);
+    delta=cell(totalLayers,1);
     totalPatterns=size(patterns)(1);
     lowBound=1;
     do
@@ -16,34 +20,37 @@ function multiLayerPerceptron(weights,n,patterns,g,derivate,epsilon,epoques)
         lowBound=1;
       }  
       i=floor(rand(1)*(totalPatterns-lowBound)+lowBound);
-        
       
+      pattern=[-1, patterns(i,1:end-1)];
+      wishedOutput=patterns(i,end);
+      aux=pattern;
+      for j=1:totalLayers
+        aux=aux*(weights{j,1})';
+        h{j,1}=aux;
+        aux=arrayfun(g,aux);
+        V{j,1}=[-1 aux];
+        
+      endfor  
+  
+      output=arrayfun(g,weights{totalLayers,1}*V{totalLayers,1});  
+      delta{totalLayers,1}= (arrayfun(derivate,h{totalLayers,1}))*(wishedOutput-V{totalLayers,1}); 
+      
+      for j=1:(totalLayers-1)  
+       delta{j,1}=arrayfun(derivate,h{j,1}) * (delta{j+1,1})' * weights{j,1};     
+      endfor  
+
+      for j=1:totalLayers      
+        weights{j,1}=weights{j,1}+n*((delta{j,1})'*V{j,1});
+      endfor  
+
+      Em=getCuadraticError(weights,patterns,g);
     
     
-    
-    Em=getCuadraticError(weights,patterns,g);
-    
-    
-    lowBounds++;
-    auxiliar=patterns(i,:);
-    patterns(i,:)=patterns(lowBounds,:);
-    patterns(lowBounds,:)=patterns(i,:);
+      lowBounds++;
+      auxiliar=patterns(i,:);
+      patterns(i,:)=patterns(lowBounds,:);
+      patterns(lowBounds,:)=patterns(i,:);
     
    while(Em>epsilon && iterations<=epoques )
-   
-
-   for i=1:size(patterns)(1) 
-    pattern=[-1, patterns(i,1:end-1)];
-    wishedOutput=patterns(i,end);
-    auxi=weightsHiddenLayer*(pattern');
-    V1=arrayfun(g,auxi);
-    hM=weightsLastLayer*[-1, V1];
-    sigma=arrayfun(g,hM);
-    
-    deltaoutput=(arrayfun(derivate,sigma))*(wishedOutput-sigma);
-    deltaHidden=(arrayfun(derivate,V1))*();
-
-   endfor
-    
     
 endfunction
