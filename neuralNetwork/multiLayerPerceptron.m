@@ -24,15 +24,16 @@ function multiLayerPerceptron(weights,n,patterns,g,derivate,epsilon,epoques)
       
       pattern=[-1, patterns(i,1:end-1)];
       wishedOutput=patterns(i,end);
-      aux=arrayfun(g,pattern*weights{1,1});
+      
+      h{1,1}= pattern*weights{1,1};
+      V{1,1}=[-1 arrayfun(g,h{1,1})];
+      
       for j=2:totalLayers
-        # aux=aux*weights{j,1};
-        # h{j,1}=aux;
-        # aux=arrayfun(g,aux);
-        aux=arrayfun(g,[-1 aux]*weights{j,1});
-        V{j,1}=[-1 aux]; 
+         h{j,1}=V{j-1,1}*weights{j,1};
+         aux=arrayfun(g,h{j,1});
+         V{j,1}=[-1 aux] ;
       endfor  
-  
+        
       output=arrayfun(g,weights{totalLayers,1}*V{totalLayers,1});  
       delta{totalLayers,1}= (arrayfun(derivate,h{totalLayers,1}))*(wishedOutput-V{totalLayers,1}); 
       
