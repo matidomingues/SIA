@@ -26,16 +26,17 @@ function multiLayerPerceptron(weights,n,patterns,g,derivate,epsilon,epoques)
       wishedOutput=patterns(i,end);
       
       h{1,1}= pattern*weights{1,1};
-      V{1,1}=[-1 arrayfun(g,h{1,1})];
+      V{1,1}=[-1 arrayfun(g,h{1,1})]
       
       for j=2:totalLayers
          h{j,1}=V{j-1,1}*weights{j,1};
          aux=arrayfun(g,h{j,1});
-         V{j,1}=[-1 aux] ;
+         V{j,1}=[-1 aux] 
       endfor  
+       
+      V{totalLayers,1}=V{totalLayers,1}(1,2:end); %saco a la salida el umbral puesto de mas
         
-      output=arrayfun(g,weights{totalLayers,1}*V{totalLayers,1});  
-      delta{totalLayers,1}= (arrayfun(derivate,h{totalLayers,1}))*(wishedOutput-V{totalLayers,1}); 
+      delta{totalLayers,1}= (arrayfun(derivate,h{totalLayers,1}))*(wishedOutput-V{totalLayers,1})
       
       for j=1:(totalLayers-1)  
        delta{j,1}=arrayfun(derivate,h{j,1}) * (delta{j+1,1})' * weights{j,1};     
