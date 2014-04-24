@@ -38,11 +38,11 @@ function multiLayerPerceptron(weights,n,patterns,g,derivate,epsilon,epoques)
         
       delta{totalLayers,1}= (arrayfun(derivate,h{totalLayers,1}))*(wishedOutput-V{totalLayers,1})
       
-      for j=1:(totalLayers-1)  
-       delta{j,1}=arrayfun(derivate,h{j,1}) * (delta{j+1,1})' * weights{j,1};     
+      for j=(totalLayers-1):-1:1  
+       delta{j,1}=arrayfun(derivate,h{j,1}) * (weights{j,1}*(delta{j+1,1})')'     
       endfor  
 
-      for j=1:totalLayers      
+      for j=2:totalLayers      
         weights{j,1}=weights{j,1}+n*((delta{j,1})'*V{j,1});
       endfor  
 
