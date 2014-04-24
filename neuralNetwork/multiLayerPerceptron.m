@@ -15,22 +15,22 @@ function multiLayerPerceptron(weights,n,patterns,g,derivate,epsilon,epoques)
     totalPatterns=size(patterns)(1);
     lowbound=1;
     do
-      if(lowbound==totalPatterns){
-       iterations++;
+      if(lowbound==totalPatterns)
+       iterations=iterations+1;
        lowbound=1;
-      };
+      endif
     
       i=floor(rand(1)*(totalPatterns-lowbound)+lowbound);
       
       pattern=[-1, patterns(i,1:end-1)];
       wishedOutput=patterns(i,end);
-      aux=pattern;
-      for j=1:totalLayers
-        aux=aux*(weights{j,1})';
-        h{j,1}=aux;
-        aux=arrayfun(g,aux);
-        V{j,1}=[-1 aux];
-        
+      aux=arrayfun(g,pattern*weights{1,1});
+      for j=2:totalLayers
+        # aux=aux*weights{j,1};
+        # h{j,1}=aux;
+        # aux=arrayfun(g,aux);
+        aux=arrayfun(g,[-1 aux]*weights{j,1});
+        V{j,1}=[-1 aux]; 
       endfor  
   
       output=arrayfun(g,weights{totalLayers,1}*V{totalLayers,1});  
@@ -52,6 +52,6 @@ function multiLayerPerceptron(weights,n,patterns,g,derivate,epsilon,epoques)
       patterns(i,:)=patterns(lowbound,:);
       patterns(lowbound,:)=patterns(i,:);
     
-   while(Em>epsilon && iterations<=epoques );
+    until(Em<=epsilon || iterations>epoques );
     
 endfunction
