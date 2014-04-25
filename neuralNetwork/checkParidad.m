@@ -1,0 +1,15 @@
+
+
+function checkParidad (n,epsilon,epoques)
+    patterns=[1,1,-1;-1,1,1;1,-1,1;-1,-1,-1]
+    weights = cell(2,1);
+    weights{1,1}=[rand(1,2); rand(1,2); rand(1,2)];
+    weights{2,1}=[rand(1,3)]'
+    weights=multiLayerPerceptron(weights,n,patterns,@SigmoideaFunction,@derivateTanh,epsilon,epoques);
+    
+    
+    for i=1:size(patterns)(1)
+        answerMultiLayer(weights,patterns(i,1:end-1),@SigmoideaFunction)
+    endfor
+    patterns
+endfunction
