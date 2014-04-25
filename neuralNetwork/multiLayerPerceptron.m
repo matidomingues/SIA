@@ -39,13 +39,16 @@ function multiLayerPerceptron(weights,n,patterns,g,derivate,epsilon,epoques)
       delta{totalLayers,1}= (arrayfun(derivate,h{totalLayers,1}))*(wishedOutput-V{totalLayers,1})
       
       for j=(totalLayers-1):-1:1  
-       delta{j,1}=arrayfun(derivate,h{j,1}) * (weights{j,1}*(delta{j+1,1})')'     
+        weights{j+1,1}(2:end,:)*(delta{j+1,1})
+       delta{j,1}=arrayfun(derivate,h{j,1}) * (weights{j+1,1}(2:end,:)*(delta{j+1,1}))     
       endfor  
 
       for j=2:totalLayers      
-        weights{j,1}=weights{j,1}+n*((delta{j,1})'*V{j,1});
+        weights{j,1}=weights{j,1}+n*((delta{j,1})*V{j-1,1})';
       endfor  
-
+      weights{1,1}=weights{1,1}+n* ((delta{1,1})*pattern)'; 
+      
+    
       Em=getCuadraticError(weights,patterns,g);
     
     
@@ -55,5 +58,8 @@ function multiLayerPerceptron(weights,n,patterns,g,derivate,epsilon,epoques)
       patterns(lowbound,:)=patterns(i,:);
     
     until(Em<=epsilon || iterations>epoques );
+    
+    iterations
+    Em
     
 endfunction
