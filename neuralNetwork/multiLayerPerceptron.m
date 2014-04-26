@@ -4,14 +4,20 @@
 %n factor de aprendizaje (por ahora es fijo pero esto va a cambiar)
 %patterns matriz de p x (e+1) (donde p es la cantidad de patrones y e es la cantidad de entradas SIN contar el umbral, y en la columna e+1-esima esta la salida deseada) 
 
-function answer=multiLayerPerceptron(weights,n,patterns,g,derivate,epsilon,epoques)
+function answer=multiLayerPerceptron(weights,n,patterns,g,derivate,epsilon,epoques,minVal)
     Em=1;
     iterations=0;
+    adaptativeK=5;
+    learningN=n;
+    learningAlpha = 0.01;
+    learningBeta = 0.01;
+    adaptativeArr = zeros(adaptativeK);
     weightsSize = size(weights);
     totalLayers = weightsSize(1);
     hiddenLayers=totalLayers-1;
     V=cell(totalLayers,1);
     h=cell(totalLayers,1);
+
     delta=cell(totalLayers,1);
     patternsSize = size(patterns);
     totalPatterns = patternsSize(1);
@@ -20,16 +26,16 @@ function answer=multiLayerPerceptron(weights,n,patterns,g,derivate,epsilon,epoqu
         firstLoop = false;
         patternsOrder = randperm(totalPatterns);
         for i = 1:totalPatterns
-            pattern=[-1, patterns(patternsOrder(i),1:end-1)];
+            pattern=[minVal, patterns(patternsOrder(i),1:end-1)];
             wishedOutput=patterns(patternsOrder(i),end);
             
             h{1,1}= pattern*weights{1,1};
-            V{1,1}=[-1 arrayfun(g,h{1,1})];
+            V{1,1}=[minVal arrayfun(g,h{1,1})];
             
             for j=2:totalLayers
                 h{j,1}=V{j-1,1}*weights{j,1};
                 aux=arrayfun(g,h{j,1});
-                V{j,1}=[-1 aux] ;
+                V{j,1}=[minVal aux] ;
             end
             
             V{totalLayers,1}=V{totalLayers,1}(1,2:end); %saco a la salida el umbral puesto de mas
@@ -46,29 +52,36 @@ function answer=multiLayerPerceptron(weights,n,patterns,g,derivate,epsilon,epoqu
             end  
             
             for j=2:totalLayers      
-                weights{j,1}=weights{j,1}+n* ((V{j-1,1})'*delta{j,1});
+                weights{j,1}=weights{j,1}+learningN* ((V{j-1,1})'*delta{j,1});
             end  
-            weights{1,1}=weights{1,1}+n* (pattern'*delta{1,1}); 
+            weights{1,1}=weights{1,1}+learningN* (pattern'*delta{1,1}); 
             
             
         end
         O=[];
         for i=1:patternsSize(1)
-            auxipattern=[-1, patterns(i,1:end-1)];
+            auxipattern=[minVal, patterns(i,1:end-1)];
             h{1,1}= auxipattern*weights{1,1};
-            V{1,1}=[-1 arrayfun(g,h{1,1})];
+            V{1,1}=[minVal arrayfun(g,h{1,1})];
             
             for j=2:totalLayers
                 h{j,1}=V{j-1,1}*weights{j,1};
                 aux=arrayfun(g,h{j,1});
-                V{j,1}=[-1 aux] ;
+                V{j,1}=[minVal aux] ;
             end
            O(i)=V{totalLayers,1}(1,2); 
         end
         
         Em=getCuadraticError(patterns,O);
+        adaptativeArr(mod(iterations,adaptativeK)+1) = Em;
+        if (Em > 0)
+          learningN = n - learningBeta*n;
+        elseif (max(adaptativeArr)<0 && min(adaptativeArr) <0)
+          learningN = n + learningAlpha;
+        else
+          learningN = n;
+        endif
         iterations = iterations + 1;
-        
     end
     
     iterations
