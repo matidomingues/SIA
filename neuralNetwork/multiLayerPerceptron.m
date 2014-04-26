@@ -20,7 +20,7 @@ function answer=multiLayerPerceptron(weights,n,patterns,g,derivate,epsilon,epoqu
        lowbound=1;
       endif
     
-      i=floor(rand(1)*(totalPatterns-lowbound+1)+lowbound)
+      i=floor(rand(1)*(totalPatterns-lowbound+1)+lowbound);
       
       pattern=[-1, patterns(i,1:end-1)];
       wishedOutput=patterns(i,end);
