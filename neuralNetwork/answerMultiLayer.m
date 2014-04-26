@@ -1,4 +1,4 @@
-function z=answerMultiLayer(weights,pattern,g)
+function z=answerMultiLayer(weights,pattern,g,wishedOutput)
     weightsQty = size(weights);
     totalLayers= weightsQty(1);
     hiddenLayers=totalLayers-1;
@@ -15,7 +15,7 @@ function z=answerMultiLayer(weights,pattern,g)
          V{j,1}=[-1 aux]; 
      end
      V{totalLayers,1}=V{totalLayers,1}(1,2:end); %saco a la salida el umbral puesto de mas
-     
-    Z=V{totalLayers,1}
+     V{totalLayers,1}
+    Z=wishedOutput-V{totalLayers,1}
 
 end

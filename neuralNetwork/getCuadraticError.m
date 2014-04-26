@@ -1,17 +1,14 @@
 
-function Em = getCuadraticError (weights,patterns,g)
-    weightsQty = size(weights);
+function Em = getCuadraticError (patterns,O)
     patternsQty = size(patterns);
-    totalLayers = weightsQty(1);
+    totalLayers = size(O)(1);
     Em=0;
     for k=1:patternsQty(1)
-        pattern=[-1, patterns(k,1:end-1)];
-        wishedOutput=pattern(1,end);
-        aux=arrayfun(g,pattern*weights{1,1});
-        for j=2:totalLayers
-            aux=arrayfun(g,[-1 aux]*weights{j,1});
-        end
-        Em=Em+(wishedOutput-aux)^2;
+        wishedOutput=patterns(k,end);
+        output=O(1,k);
+            
+        Em=Em+((wishedOutput-output).^2);
     end
-    Em=Em/patternsQty(1);
+    Em=Em/2;
+    
 end
