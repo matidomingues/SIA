@@ -1,3 +1,3 @@
 function z=derivateTanh(x)
 	z=1 - tanh(x);
-endfunction
+end

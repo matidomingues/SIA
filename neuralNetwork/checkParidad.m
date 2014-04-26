@@ -8,10 +8,10 @@ function checkParidad (n,epsilon,epoques)
     weights{2,1}=[rand(1,3)]'
     weights=multiLayerPerceptron(weights,n,patterns,@SigmoideaFunction,@derivateTanh,epsilon,epoques);
     
-    
-    for i=1:size(patterns)(1)
+    patternsQty = size(patterns);
+    for i=1:patternsQty(1)
         patterns(i,1:end)
         answerMultiLayer(weights,patterns(i,1:end-1),@SigmoideaFunction)
-    endfor
+    end
     patterns
-endfunction
+end

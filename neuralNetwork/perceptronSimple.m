@@ -30,4 +30,4 @@ function tableAns= perceptronSimple(weigths,n,patterns,g,correctWeights)
           end
         end
     until (learnt)
- endfunction
+end
