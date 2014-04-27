@@ -7,15 +7,27 @@
 function answer=multiLayerPerceptron(weights,n,patterns,g,derivate,epsilon,epoques)
     Em=1;
     iterations=0;
+    adaptativeK=5;
+    learningN=n;
+    learningAlpha = 0.01;
+    learningBeta = 0.01;
+    adaptativeArr = zeros(adaptativeK);
     weightsSize = size(weights);
     totalLayers = weightsSize(1);
     hiddenLayers=totalLayers-1;
     V=cell(totalLayers,1);
     h=cell(totalLayers,1);
+    oldDWeights = cell(totalLayers, 1);
+    for i = 1:totalLayers
+        weightSize = size(weights{i,1});
+        oldDWeights{i, 1} = zeros(weightSize(1), 1);
+    end
     delta=cell(totalLayers,1);
     patternsSize = size(patterns);
     totalPatterns = patternsSize(1);
     firstLoop = true;
+    useMomentum = true;
+    alpha = .9;
     while (firstLoop || (Em >= epsilon && iterations <= epoques))
         firstLoop = false;
         patternsOrder = randperm(totalPatterns);
@@ -37,7 +49,6 @@ function answer=multiLayerPerceptron(weights,n,patterns,g,derivate,epsilon,epoqu
             delta{totalLayers,1}= (arrayfun(derivate,h{totalLayers,1}))*(wishedOutput-V{totalLayers,1});
             
             for j=(totalLayers-1):-1:1
-                
                 auxid=((delta{j+1,1})* weights{j+1,1}(2:end,:)');
                 auxig=arrayfun(derivate,h{j,1});
                 auxi=[];
@@ -46,15 +57,16 @@ function answer=multiLayerPerceptron(weights,n,patterns,g,derivate,epsilon,epoqu
                 end    
                 delta{j,1}=auxi;     
             end  
-            
-            
-            for j=2:totalLayers      
-                weights{j,1}=weights{j,1}+n* ((V{j-1,1})'*delta{j,1});
-            end  
 
-            weights{1,1}=weights{1,1}+n* (pattern'*delta{1,1}); 
-            
-            
+            for j=2:totalLayers
+                dWeight = learningN * ((V{j-1,1})' * delta{j,1});
+                weights{j,1}=weights{j,1} + dWeight + alpha .* oldDWeights{j,1};
+                if (useMomentum)
+                    oldDWeights{j,1} = dWeight;
+                end
+            end  
+            weights{1,1}=weights{1,1}+learningN* (pattern'*delta{1,1}); 
+
         end
         O=[];
         for i=1:patternsSize(1)
@@ -71,11 +83,18 @@ function answer=multiLayerPerceptron(weights,n,patterns,g,derivate,epsilon,epoqu
         end
         
         Em=getCuadraticError(patterns,O);
+        adaptativeArr(mod(iterations,adaptativeK)+1) = Em;
+        if (Em > 0)
+          learningN = n - learningBeta*n;
+        elseif (max(adaptativeArr)<0 && min(adaptativeArr) <0)
+          learningN = n + learningAlpha;
+        else
+          learningN = n;
+        endif
         iterations = iterations + 1;
-        
     end
     
     iterations
     Em
     answer=weights;
-end    
+end

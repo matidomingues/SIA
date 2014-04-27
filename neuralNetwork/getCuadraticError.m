@@ -1,7 +1,8 @@
 
 function Em = getCuadraticError (patterns,O)
     patternsQty = size(patterns);
-    totalLayers = size(O)(1);
+    Osize = size(O);
+    totalLayers = Osize(1);
     Em=0;
     for k=1:patternsQty(1)
         wishedOutput=patterns(k,end);
