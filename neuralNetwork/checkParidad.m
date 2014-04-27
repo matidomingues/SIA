@@ -1,6 +1,6 @@
 
 function checkParidad (n,epsilon,epoques)
-    auxiTime=time;
+    auxiTime=now;
     patterns=[1,1,-1;-1,1,1;1,-1,1;-1,-1,-1]
     %patterns=[1,1,1,1;1-1,-1,1;-1,-1,-1,-1]
     weights = cell(2,1);
@@ -11,8 +11,8 @@ function checkParidad (n,epsilon,epoques)
     patternsQty = size(patterns);
     for i=1:patternsQty(1)
         patterns(i,1:end)
-        answerMultiLayer(weights,patterns(i,1:end-1),@SigmoideaFunction,patterns(i,end))
+        answerMultiLayer(weights,patterns(i,1:end-1),@SigmoideaFunction,patterns(i,end));
     end
     patterns
-    timeElapsed=time-auxiTime
+    timeElapsed=now-auxiTime
 end

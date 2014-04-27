@@ -12,10 +12,17 @@ function answer=multiLayerPerceptron(weights,n,patterns,g,derivate,epsilon,epoqu
     hiddenLayers=totalLayers-1;
     V=cell(totalLayers,1);
     h=cell(totalLayers,1);
+    oldDWeights = cell(totalLayers, 1);
+    for i = 1:totalLayers
+        weightSize = size(weights{i,1});
+        oldDWeights{i, 1} = zeros(weightSize(1), 1);
+    end
     delta=cell(totalLayers,1);
     patternsSize = size(patterns);
     totalPatterns = patternsSize(1);
     firstLoop = true;
+    useMomentum = true;
+    alpha = .9;
     while (firstLoop || (Em >= epsilon && iterations <= epoques))
         firstLoop = false;
         patternsOrder = randperm(totalPatterns);
@@ -45,8 +52,12 @@ function answer=multiLayerPerceptron(weights,n,patterns,g,derivate,epsilon,epoqu
                 delta{j,1}=auxi;     
             end  
             
-            for j=2:totalLayers      
-                weights{j,1}=weights{j,1}+n* ((V{j-1,1})'*delta{j,1});
+            for j=2:totalLayers
+                dWeight = n* ((V{j-1,1})'*delta{j,1});
+                weights{j,1}=weights{j,1} + dWeight + alpha .* oldDWeights{j,1};
+                if (useMomentum)
+                    oldDWeights{j,1} = dWeight;
+                end
             end  
             weights{1,1}=weights{1,1}+n* (pattern'*delta{1,1}); 
             
@@ -74,4 +85,4 @@ function answer=multiLayerPerceptron(weights,n,patterns,g,derivate,epsilon,epoqu
     iterations
     Em
     answer=weights;
-    end    
+end
