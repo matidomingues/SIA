@@ -27,7 +27,6 @@ function answer=multiLayerPerceptron(weights,n,patterns,g,epsilon,epoques)
     totalPatterns = patternsSize(1);
     firstLoop = true;
     useMomentum = true;
-    use
     alpha = .9;
     while (firstLoop || (Em >= epsilon && iterations <= epoques))
         firstLoop = false;
