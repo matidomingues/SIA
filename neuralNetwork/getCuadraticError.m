@@ -6,9 +6,9 @@ function Em = getCuadraticError (patterns,O)
     Em=0;
     for k=1:patternsQty(1)
         wishedOutput=patterns(k,end);
-        output=O(1,k);
+        output=O{k};
             
-        Em=Em+((wishedOutput-output).^2);
+        Em= Em + ((wishedOutput-output).^2);
     end
     Em=Em/2;
     

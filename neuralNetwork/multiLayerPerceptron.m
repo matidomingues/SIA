@@ -32,19 +32,8 @@ function answer=multiLayerPerceptron(weights,n,patterns,g,derivate,epsilon,epoqu
         firstLoop = false;
         patternsOrder = randperm(totalPatterns);
         for i = 1:totalPatterns
-            pattern=[-1, patterns(patternsOrder(i),1:end-1)];
-            wishedOutput=patterns(patternsOrder(i),end);
-            
-            h{1,1}= pattern*weights{1,1};
-            V{1,1}=[-1 arrayfun(g(i),h{1,1})];
-            
-            for j=2:totalLayers
-                h{j,1}=V{j-1,1}*weights{j,1};
-                aux=arrayfun(g(i),h{j,1});
-                V{j,1}=[-1 aux] ;
-            end
-            
-            V{totalLayers,1}=V{totalLayers,1}(1,2:end); %saco a la salida el umbral puesto de mas
+
+            [h V] = computeOutput(totalLayers, patterns(i), weights, g);
             
             delta{totalLayers,1}= (arrayfun(derivate,h{totalLayers,1}))*(wishedOutput-V{totalLayers,1});
             
@@ -56,7 +45,7 @@ function answer=multiLayerPerceptron(weights,n,patterns,g,derivate,epsilon,epoqu
                     auxi(t)=auxid(t)*auxig(t);     
                 end    
                 delta{j,1}=auxi;     
-            end  
+            end
 
             for j=2:totalLayers
                 dWeight = learningN * ((V{j-1,1})' * delta{j,1});
@@ -68,18 +57,10 @@ function answer=multiLayerPerceptron(weights,n,patterns,g,derivate,epsilon,epoqu
             weights{1,1}=weights{1,1}+learningN* (pattern'*delta{1,1}); 
 
         end
-        O=[];
+        O=cell(totalLayers);
         for i=1:patternsSize(1)
-            auxipattern=[-1, patterns(i,1:end-1)];
-            h{1,1}= auxipattern*weights{1,1};
-            V{1,1}=[-1 arrayfun(g(i),h{1,1})];
-            
-            for j=2:totalLayers
-                h{j,1}=V{j-1,1}*weights{j,1};
-                aux=arrayfun(g(i),h{j,1});
-                V{j,1}=[-1 aux] ;
-            end
-            O(i)=V{totalLayers,1}(1,2); 
+            [h V] = computeOutput(totalLayers, patterns(i), weights, g);
+            O(i)=V{totalLayers,1}(1,:); 
         end
         
         Em=getCuadraticError(patterns,O);
@@ -90,7 +71,7 @@ function answer=multiLayerPerceptron(weights,n,patterns,g,derivate,epsilon,epoqu
           learningN = n + learningAlpha;
         else
           learningN = n;
-        endif
+        end
         iterations = iterations + 1;
     end
     
