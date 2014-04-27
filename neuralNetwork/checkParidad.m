@@ -3,9 +3,10 @@ function checkParidad (n,epsilon,epoques)
     auxiTime=time;
     patterns=[1,1,-1;-1,1,1;1,-1,1;-1,-1,-1]
     %patterns=[1,1,1,1;1-1,-1,1;-1,-1,-1,-1]
-    weights = cell(2,1);
-    weights{1,1}=[rand(1,2); rand(1,2); rand(1,2)];
-    weights{2,1}=[rand(1,3)]'
+    weights = cell(3,1);
+    weights{1,1}=rand(3,2);
+    weights{2,1}=rand(3,2);
+    weights{3,1}=rand(3,1);
     weights=multiLayerPerceptron(weights,n,patterns,@SigmoideaFunction,@derivateTanh,epsilon,epoques);
     
     patternsQty = size(patterns);
