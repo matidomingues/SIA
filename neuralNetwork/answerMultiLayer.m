@@ -1,4 +1,4 @@
-function z=answerMultiLayer(weights,pattern,g,wishedOutput,minVal)
+function z=answerMultiLayer(weights,pattern,g,wishedOutput)
     weightsQty = size(weights);
     totalLayers= weightsQty(1);
     hiddenLayers=totalLayers-1;

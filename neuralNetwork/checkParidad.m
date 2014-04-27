@@ -13,7 +13,7 @@ function checkParidad (n,epsilon,epoques)
     patternsQty = size(patterns);
     for i=1:patternsQty(1)
         patterns(i,1:end)
-        answerMultiLayer(weights,patterns(i,1:end-1),@SigmoideaFunctionTan,patterns(i,end),minVal)
+        answerMultiLayer(weights,patterns(i,1:end-1),@SigmoideaFunctionTan,patterns(i,end))
     end
     patterns
     timeElapsed=now-auxiTime

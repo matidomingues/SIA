@@ -36,11 +36,11 @@ function answer=multiLayerPerceptron(weights,n,patterns,g,derivate,epsilon,epoqu
             wishedOutput=patterns(patternsOrder(i),end);
             
             h{1,1}= pattern*weights{1,1};
-            V{1,1}=[-1 arrayfun(g,h{1,1})];
+            V{1,1}=[-1 arrayfun(g(i),h{1,1})];
             
             for j=2:totalLayers
                 h{j,1}=V{j-1,1}*weights{j,1};
-                aux=arrayfun(g,h{j,1});
+                aux=arrayfun(g(i),h{j,1});
                 V{j,1}=[-1 aux] ;
             end
             
@@ -72,11 +72,11 @@ function answer=multiLayerPerceptron(weights,n,patterns,g,derivate,epsilon,epoqu
         for i=1:patternsSize(1)
             auxipattern=[-1, patterns(i,1:end-1)];
             h{1,1}= auxipattern*weights{1,1};
-            V{1,1}=[-1 arrayfun(g,h{1,1})];
+            V{1,1}=[-1 arrayfun(g(i),h{1,1})];
             
             for j=2:totalLayers
                 h{j,1}=V{j-1,1}*weights{j,1};
-                aux=arrayfun(g,h{j,1});
+                aux=arrayfun(g(i),h{j,1});
                 V{j,1}=[-1 aux] ;
             end
             O(i)=V{totalLayers,1}(1,2); 

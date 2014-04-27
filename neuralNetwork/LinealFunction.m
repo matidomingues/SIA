@@ -1,5 +1,5 @@
 
 function z = LinealFunction (x)
-    z=x;
+    z=1.1 .* x;
 
 endfunction
