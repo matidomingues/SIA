@@ -1,20 +1,29 @@
 
 function checkParidad (n,epsilon,epoques)
     auxiTime=now;
+    load samples2.txt;
+    patterns = samples2;
     %patterns=[1,1,0;0,1,1;1,0,1;0,0,0]
-    patterns=[1,1,-1;-1,1,1;1,-1,1;-1,-1,-1]
+    %patterns=[1,1,-1;-1,1,1;1,-1,1;-1,-1,-1]
     %patterns=[1,1,1,1;1-1,-1,1;-1,-1,-1,-1]
     weights = cell(3,1);
     weights{1,1}=rand(3,2);
     weights{2,1}=rand(3,2);
     weights{3,1}=rand(3,1);
-    weights=multiLayerPerceptron(weights,n,patterns,@SigmoideaFunction,@derivateTanh,epsilon,epoques);
-    
+    g = cell(3,2);
+    g{1,1} = @SigmoideaFunction;
+    g{1,2} = @derivateTanh;
+    g{2,1} = @SigmoideaFunction;
+    g{2,2} = @derivateTanh;
+    g{3,1} = @LinealFunction;
+    g{3,2} = @derivateLineal;
+
+    weights=multiLayerPerceptron(weights,n,patterns,g,epsilon,epoques);
     patternsQty = size(patterns);
     for i=1:patternsQty(1)
         patterns(i,1:end)
-        answerMultiLayer(weights,patterns(i,1:end-1),@SigmoideaFunctionTan,patterns(i,end))
+        answerMultiLayer(weights,patterns(i,1:end-1),g,patterns(i,end))
     end
-    patterns
+    patterns;
     timeElapsed=now-auxiTime
 end

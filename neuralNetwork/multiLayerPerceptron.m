@@ -4,7 +4,7 @@
 %n factor de aprendizaje (por ahora es fijo pero esto va a cambiar)
 %patterns matriz de p x (e+1) (donde p es la cantidad de patrones y e es la cantidad de entradas SIN contar el umbral, y en la columna e+1-esima esta la salida deseada) 
 
-function answer=multiLayerPerceptron(weights,n,patterns,g,derivate,epsilon,epoques)
+function answer=multiLayerPerceptron(weights,n,patterns,g,epsilon,epoques)
     Em=1;
     iterations=0;
     adaptativeK=5;
@@ -32,14 +32,13 @@ function answer=multiLayerPerceptron(weights,n,patterns,g,derivate,epsilon,epoqu
         firstLoop = false;
         patternsOrder = randperm(totalPatterns);
         for i = 1:totalPatterns
-
             [h V] = computeOutput(totalLayers, patterns(i), weights, g);
             
-            delta{totalLayers,1}= (arrayfun(derivate,h{totalLayers,1}))*(wishedOutput-V{totalLayers,1});
+            delta{totalLayers,1}= (arrayfun(g{totalLayers,2},h{totalLayers,1}))*(wishedOutput-V{totalLayers,1});
             
             for j=(totalLayers-1):-1:1
                 auxid=((delta{j+1,1})* weights{j+1,1}(2:end,:)');
-                auxig=arrayfun(derivate,h{j,1});
+                auxig=arrayfun(g{j,2},h{j,1});
                 auxi=[];
                 for t=1:length(auxid)
                     auxi(t)=auxid(t)*auxig(t);     
@@ -60,7 +59,7 @@ function answer=multiLayerPerceptron(weights,n,patterns,g,derivate,epsilon,epoqu
         O=cell(totalLayers);
         for i=1:patternsSize(1)
             [h V] = computeOutput(totalLayers, patterns(i), weights, g);
-            O(i)=V{totalLayers,1}(1,:); 
+            O{i}=V{totalLayers,1}(1,:); 
         end
         
         Em=getCuadraticError(patterns,O);
