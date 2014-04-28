@@ -20,19 +20,22 @@ function answer=multiLayerPerceptron(weights,n,patterns,g,epsilon,epoques)
     oldDWeights = cell(totalLayers, 1);
     for i = 1:totalLayers
         weightSize = size(weights{i,1});
-        oldDWeights{i, 1} = zeros(weightSize(1), 1);
+        oldDWeights{i, 1} = zeros(weightSize(1), weightSize(2));
     end
     delta=cell(totalLayers,1);
     patternsSize = size(patterns);
     totalPatterns = patternsSize(1);
     firstLoop = true;
-    useMomentum = true;
+    useMomentum = false;
+    useAdaptative = false;
     alpha = .9;
     while (firstLoop || (Em >= epsilon && iterations <= epoques))
         firstLoop = false;
         patternsOrder = randperm(totalPatterns);
         for i = 1:totalPatterns
-            [h V] = computeOutput(totalLayers, patterns(i), weights, g);
+            pattern = patterns(patternsOrder(i),:);
+            wishedOutput=patterns(patternsOrder(i),end);
+            [h V] = computeOutput(totalLayers, patterns(patternsOrder(i),:), weights, g);
             
             delta{totalLayers,1}= (arrayfun(g{totalLayers,2},h{totalLayers,1}))*(wishedOutput-V{totalLayers,1});
             
@@ -52,24 +55,26 @@ function answer=multiLayerPerceptron(weights,n,patterns,g,epsilon,epoques)
                 if (useMomentum)
                     oldDWeights{j,1} = dWeight;
                 end
-            end  
-            weights{1,1}=weights{1,1}+learningN* (pattern'*delta{1,1}); 
-
+            end
+            weights{1,1}=weights{1,1}+learningN* (pattern'*delta{1,1});
         end
         O=cell(totalLayers);
         for i=1:patternsSize(1)
-            [h V] = computeOutput(totalLayers, patterns(i), weights, g);
+            [h V] = computeOutput(totalLayers, patterns(i,:), weights, g);
             O{i}=V{totalLayers,1}(1,:); 
         end
         
+
         Em=getCuadraticError(patterns,O);
-        adaptativeArr(mod(iterations,adaptativeK)+1) = Em;
-        if (Em > 0)
-          learningN = n - learningBeta*n;
-        elseif (max(adaptativeArr)<0 && min(adaptativeArr) <0)
-          learningN = n + learningAlpha;
-        else
-          learningN = n;
+        if (useAdaptative) 
+          adaptativeArr(mod(iterations,adaptativeK)+1) = Em;
+          if (Em > 0)
+            learningN = n - learningBeta*n;
+          elseif (max(adaptativeArr)<0 && min(adaptativeArr) <0)
+            learningN = n + learningAlpha;
+          else
+            learningN = n;
+          end
         end
         iterations = iterations + 1;
     end
