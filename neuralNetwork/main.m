@@ -14,7 +14,7 @@
 % The output will be of only 1 value. Learning factor will be of .2, maximum expected error will be of .001 and will
 % iterate along 5000 epochs.
 
-function main(inputFileName, trainingSetQty, arquitecture, expectedOutputs, n, epsilon, epoques)
+function main(inputFileName, trainingSetQty, arquitecture, expectedOutputs, n, epsilon, learningEpsilon, epoques)
 	patterns = load(inputFileName, '-ascii');
 	patternsQty = size(patterns);
     testPatternsQty = patternsQty(1) - trainingSetQty;
@@ -34,18 +34,38 @@ function main(inputFileName, trainingSetQty, arquitecture, expectedOutputs, n, e
     memorizationPercentage = 0;
     for i = 1:trainingSetQty
         patterns(i,1:end);
-        if (answerMultiLayer(weights, patterns(i,1:end-1), g, patterns(i,end)) <= epsilon)
+        if (answerMultiLayer(weights, patterns(i,1:end-1), g, patterns(i,end)) <= learningEpsilon)
             memorizationPercentage = memorizationPercentage + 1;
         end
     end
     learningPercentage = 0;
     for i=trainingSetQty + 1:patternsQty
         patterns(i,1:end);
-        if (answerMultiLayer(weights,patterns(i,1:end-1),g,patterns(i,end)) <= epsilon)
+        if (answerMultiLayer(weights,patterns(i,1:end-1),g,patterns(i,end)) <= learningEpsilon)
             learningPercentage = learningPercentage + 1;
         end
     end
     memorizationPercentage = memorizationPercentage / trainingSetQty
     learningPercentage = learningPercentage / testPatternsQty
     timeElapsed=now()-auxiTime
+
+    askSave = input('Desea guardar los pesos de esta matriz? [S/n]: ', 's');
+    while (askSave ~= 'S' && askSave ~= 's' && askSave ~= 'N' && askSave ~= 'n')
+    	askSave = input('Respuesta inválida. Desea guardar los pesos de esta matriz? [S/n]: ', 's');
+    end
+
+    if (askSave == 'S' || askSave == 's')
+    	saveFileName = input('Ingrese el nombre del archivo: ', 's');
+    	fileId = fopen(saveFileName, 'w');
+    	[totalLayers ncols] = size(weights);
+    	for i = 1:totalLayers
+    		[nrows nWeights] = size(weights{i,1});
+    		fstr = '';
+    		for j = 1:nWeights
+    			fstr = [fstr '%2.4f\t'];
+    		end
+    		fprintf(fileId, fstr, weights{1, 1});
+    	end
+    	fclose(fileId);
+    end
 end
