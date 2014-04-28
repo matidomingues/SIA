@@ -23,8 +23,8 @@ function [weights EmHistory] = main(inputFileName, trainingSetQty, arquitecture,
 
     hiddenLayersActivationFunction = @SigmoideaFunction;
     hiddenLayersActivationFunctionDerivate = @derivateTanh;
-    finalLayerActivationFunction = @SigmoideaFunction;
-    finalLayerActivationFunctionDerivate = @derivateTanh;
+    finalLayerActivationFunction = @LinealFunction;
+    finalLayerActivationFunctionDerivate = @derivateLineal;
     
     [weights g] = generateArquitecture(arquitecture, expectedOutputs, trainingPatterns, testPatterns, hiddenLayersActivationFunction, hiddenLayersActivationFunctionDerivate, finalLayerActivationFunction, finalLayerActivationFunctionDerivate);
 
@@ -36,7 +36,7 @@ function [weights EmHistory] = main(inputFileName, trainingSetQty, arquitecture,
     memorizationErrorAccum = 0;
     for i = 1:trainingSetQty
         patterns(i,1:end);
-        memorizationError = answerMultiLayer(weights, patterns(i,1:end-1), g, patterns(i,end));
+        memorizationError = abs(answerMultiLayer(weights, patterns(i,1:end-1), g, patterns(i,end)));
         memorizationErrorAccum = memorizationErrorAccum + memorizationError;
         if (memorizationError <= learningEpsilon)
             memorizationPercentage = memorizationPercentage + 1;
@@ -46,7 +46,7 @@ function [weights EmHistory] = main(inputFileName, trainingSetQty, arquitecture,
     learningErrorAccum = 0;
     for i=trainingSetQty + 1:patternsQty
         patterns(i,1:end);
-        learningError = answerMultiLayer(weights,patterns(i,1:end-1),g,patterns(i,end));
+        learningError = abs(answerMultiLayer(weights,patterns(i,1:end-1),g,patterns(i,end)));
         learningErrorAccum = learningErrorAccum + learningError;
         if (learningError <= learningEpsilon)
             learningPercentage = learningPercentage + 1;
@@ -73,7 +73,7 @@ function [weights EmHistory] = main(inputFileName, trainingSetQty, arquitecture,
     		for j = 1:nWeights
     			fstr = [fstr '%2.4f\t'];
     		end
-    		fprintf(fileId, fstr, weights{1, 1});
+    		fprintf(fileId, fstr, weights{i, 1});
     	end
     	fclose(fileId);
     end

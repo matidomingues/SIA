@@ -7,7 +7,7 @@
 function [answer EmHistory] =multiLayerPerceptron(weights,n,patterns,g,epsilon,epoques)
     Em=1;
     iterations=0;
-    adaptativeK=5;
+    adaptativeK=100;
     learningN=n;
     learningAlpha = 0.01;
     learningBeta = 0.01;
@@ -27,10 +27,12 @@ function [answer EmHistory] =multiLayerPerceptron(weights,n,patterns,g,epsilon,e
     totalPatterns = patternsSize(1);
     firstLoop = true;
     useMomentum = true;
-    useAdaptative = false;
-    alpha = .9;
+    useAdaptative = true;
+    alpha = .75;
     EmHistory = [];
-    while (firstLoop || (Em >= epsilon && iterations < epoques))
+    EmHistorySize = 0;
+    keepGoing = true;
+    while (keepGoing && (firstLoop || (Em >= epsilon && iterations < epoques)))
         firstLoop = false;
         patternsOrder = randperm(totalPatterns);
         for i = 1:totalPatterns
@@ -69,6 +71,21 @@ function [answer EmHistory] =multiLayerPerceptron(weights,n,patterns,g,epsilon,e
 
         Em=getCuadraticError(patterns,O);
         EmHistory = [EmHistory Em];
+        EmHistorySize = EmHistorySize + 1;
+        if (EmHistorySize > adaptativeK + 1) 
+            stagnant = true;
+            for i = EmHistorySize:-1:EmHistorySize - adaptativeK
+                if (abs(EmHistory(i) - EmHistory(i - 1)) > (epsilon / 10))
+                    stagnant = false;
+                end
+            end
+            if (stagnant) 
+                keepGoing = input('Se estancó el error... seguimos?');
+                if (keepGoing == false) 
+                    EmHistorySize = 0;
+                end
+            end
+        end
         if (useAdaptative) 
           adaptativeArr(mod(iterations,adaptativeK)+1) = Em;
           if (Em > 0)

@@ -67,7 +67,7 @@ function main2(inputFileName, trainingSetQty, arquitecture, expectedOutputs, n, 
     		for j = 1:nWeights
     			fstr = [fstr '%2.4f\t'];
     		end
-    		fprintf(fileId, fstr, weights{1, 1});
+    		fprintf(fileId, fstr, weights{i, 1});
     	end
     	fclose(fileId);
     end
