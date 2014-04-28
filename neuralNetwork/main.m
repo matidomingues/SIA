@@ -21,6 +21,7 @@ function main(inputFileName, trainingSetQty, arquitecture, expectedOutputs, n, e
     
     [weights g] = generateArquitecture(arquitecture, expectedOutputs, trainingPatterns, testPatterns, hiddenLayersActivationFunction, hiddenLayersActivationFunctionDerivate, finalLayerActivationFunction, finalLayerActivationFunctionDerivate);
 
+    auxiTime = now;
     weights=multiLayerPerceptron(weights,n,trainingPatterns,g,epsilon,epoques);
 
     memorizationPercentage = 0;
