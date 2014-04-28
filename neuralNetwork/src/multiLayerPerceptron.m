@@ -4,7 +4,7 @@
 %n factor de aprendizaje (por ahora es fijo pero esto va a cambiar)
 %patterns matriz de p x (e+1) (donde p es la cantidad de patrones y e es la cantidad de entradas SIN contar el umbral, y en la columna e+1-esima esta la salida deseada) 
 
-function answer=multiLayerPerceptron(weights,n,patterns,g,epsilon,epoques)
+function [answer EmHistory] =multiLayerPerceptron(weights,n,patterns,g,epsilon,epoques)
     Em=1;
     iterations=0;
     adaptativeK=5;
@@ -26,10 +26,11 @@ function answer=multiLayerPerceptron(weights,n,patterns,g,epsilon,epoques)
     patternsSize = size(patterns);
     totalPatterns = patternsSize(1);
     firstLoop = true;
-    useMomentum = false;
+    useMomentum = true;
     useAdaptative = false;
     alpha = .9;
-    while (firstLoop || (Em >= epsilon && iterations <= epoques))
+    EmHistory = [];
+    while (firstLoop || (Em >= epsilon && iterations < epoques))
         firstLoop = false;
         patternsOrder = randperm(totalPatterns);
         for i = 1:totalPatterns
@@ -67,6 +68,7 @@ function answer=multiLayerPerceptron(weights,n,patterns,g,epsilon,epoques)
         
 
         Em=getCuadraticError(patterns,O);
+        EmHistory = [EmHistory Em];
         if (useAdaptative) 
           adaptativeArr(mod(iterations,adaptativeK)+1) = Em;
           if (Em > 0)

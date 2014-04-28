@@ -1,8 +1,0 @@
-
-function z = StepFunction (x)
-        if(x>=0)
-            ;
-    else
-        
-
-endfunction

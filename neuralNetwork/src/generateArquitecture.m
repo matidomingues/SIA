@@ -1,4 +1,4 @@
-
+% 
 function [weights g]= generateArquitecture (arquitecture, expectedOutputs, traningSet, testSet, hiddenLayersActivationFunction, hiddenLayersActivationFunctionDerivate, finalLayerActivationFunction, finalLayerActivationFunctionDerivate)
 
 	arquitectrueSize = size(arquitecture);

@@ -14,7 +14,7 @@
 % The output will be of only 1 value. Learning factor will be of .2, maximum expected error will be of .001 and will
 % iterate along 5000 epochs.
 
-function main(inputFileName, trainingSetQty, arquitecture, expectedOutputs, n, epsilon, learningEpsilon, epoques)
+function [weights EmHistory] = main(inputFileName, trainingSetQty, arquitecture, expectedOutputs, n, epsilon, learningEpsilon, epoques)
 	patterns = load(inputFileName, '-ascii');
 	patternsQty = size(patterns);
     testPatternsQty = patternsQty(1) - trainingSetQty;
@@ -23,31 +23,40 @@ function main(inputFileName, trainingSetQty, arquitecture, expectedOutputs, n, e
 
     hiddenLayersActivationFunction = @SigmoideaFunction;
     hiddenLayersActivationFunctionDerivate = @derivateTanh;
-    finalLayerActivationFunction = @LinealFunction;
-    finalLayerActivationFunctionDerivate = @derivateLineal;
+    finalLayerActivationFunction = @SigmoideaFunction;
+    finalLayerActivationFunctionDerivate = @derivateTanh;
     
     [weights g] = generateArquitecture(arquitecture, expectedOutputs, trainingPatterns, testPatterns, hiddenLayersActivationFunction, hiddenLayersActivationFunctionDerivate, finalLayerActivationFunction, finalLayerActivationFunctionDerivate);
 
     auxiTime = now;
-    weights=multiLayerPerceptron(weights,n,trainingPatterns,g,epsilon,epoques);
+    [weights EmHistory] = multiLayerPerceptron(weights,n,trainingPatterns,g,epsilon,epoques);
+    timeElapsed=now()-auxiTime
 
     memorizationPercentage = 0;
+    memorizationErrorAccum = 0;
     for i = 1:trainingSetQty
         patterns(i,1:end);
-        if (answerMultiLayer(weights, patterns(i,1:end-1), g, patterns(i,end)) <= learningEpsilon)
+        memorizationError = answerMultiLayer(weights, patterns(i,1:end-1), g, patterns(i,end));
+        memorizationErrorAccum = memorizationErrorAccum + memorizationError;
+        if (memorizationError <= learningEpsilon)
             memorizationPercentage = memorizationPercentage + 1;
         end
     end
     learningPercentage = 0;
+    learningErrorAccum = 0;
     for i=trainingSetQty + 1:patternsQty
         patterns(i,1:end);
-        if (answerMultiLayer(weights,patterns(i,1:end-1),g,patterns(i,end)) <= learningEpsilon)
+        learningError = answerMultiLayer(weights,patterns(i,1:end-1),g,patterns(i,end));
+        learningErrorAccum = learningErrorAccum + learningError;
+        if (learningError <= learningEpsilon)
             learningPercentage = learningPercentage + 1;
         end
     end
     memorizationPercentage = memorizationPercentage / trainingSetQty
+    meanMemorization = memorizationErrorAccum / trainingSetQty
     learningPercentage = learningPercentage / testPatternsQty
-    timeElapsed=now()-auxiTime
+    meanLearning = learningErrorAccum / testPatternsQty
+    
 
     askSave = input('Desea guardar los pesos de esta matriz? [S/n]: ', 's');
     while (askSave ~= 'S' && askSave ~= 's' && askSave ~= 'N' && askSave ~= 'n')
