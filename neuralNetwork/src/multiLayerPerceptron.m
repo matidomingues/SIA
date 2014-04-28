@@ -75,7 +75,7 @@ function [answer EmHistory] =multiLayerPerceptron(weights,n,patterns,g,epsilon,e
         if (EmHistorySize > adaptativeK + 1) 
             stagnant = false;
             for i = EmHistorySize:-1:EmHistorySize - adaptativeK
-                if (abs(EmHistory(i) - EmHistory(i - 1)) > (epsilon / 10))
+                if (abs(EmHistory(i) - EmHistory(i - 1)) < (epsilon / 10))
                     stagnant = true;
                 end
             end
