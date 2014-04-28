@@ -26,8 +26,8 @@ function [answer EmHistory] =multiLayerPerceptron(weights,n,patterns,g,epsilon,e
     patternsSize = size(patterns);
     totalPatterns = patternsSize(1);
     firstLoop = true;
-    useMomentum = true;
-    useAdaptative = true;
+    useMomentum = false;
+    useAdaptative = false;
     alpha = .75;
     EmHistory = [];
     EmHistorySize = 0;
@@ -73,10 +73,10 @@ function [answer EmHistory] =multiLayerPerceptron(weights,n,patterns,g,epsilon,e
         EmHistory = [EmHistory Em];
         EmHistorySize = EmHistorySize + 1;
         if (EmHistorySize > adaptativeK + 1) 
-            stagnant = true;
+            stagnant = false;
             for i = EmHistorySize:-1:EmHistorySize - adaptativeK
                 if (abs(EmHistory(i) - EmHistory(i - 1)) > (epsilon / 10))
-                    stagnant = false;
+                    stagnant = true;
                 end
             end
             if (stagnant) 
@@ -84,6 +84,7 @@ function [answer EmHistory] =multiLayerPerceptron(weights,n,patterns,g,epsilon,e
                 if (keepGoing == false) 
                     EmHistorySize = 0;
                 end
+                break;
             end
         end
         if (useAdaptative) 
