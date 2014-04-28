@@ -58,10 +58,11 @@ function answer=multiLayerPerceptron(weights,n,patterns,g,epsilon,epoques)
             end
             weights{1,1}=weights{1,1}+learningN* (pattern'*delta{1,1});
         end
-        O=cell(totalLayers);
+        O=cell(totalLayers,1);
         for i=1:patternsSize(1)
             [h V] = computeOutput(totalLayers, patterns(i,:), weights, g);
-            O{i}=V{totalLayers,1}(1,:); 
+
+            O{i,1}=V{totalLayers,1}(1,:); 
         end
         
 
