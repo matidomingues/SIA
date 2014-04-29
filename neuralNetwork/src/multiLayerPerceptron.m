@@ -8,11 +8,13 @@ function [answer EmHistory] =multiLayerPerceptron(weights,n,patterns,g,epsilon,e
     Em=1;
     iterations=0;
     delayer = 0;
-    adaptativeK=100;
+    errorLookBack = 100;
+    adaptativeK=5;
     learningN=n;
-    learningAlpha = 0.01;
-    learningBeta = 0.01;
-    adaptativeArr = zeros(adaptativeK);
+    learningAlpha = 0.0001;
+    learningBeta = 0.2;
+    adaptativeArr = cell(adaptativeK,2);
+    adaptativeArr(:,:) = 0;
     weightsSize = size(weights);
     totalLayers = weightsSize(1);
     hiddenLayers=totalLayers-1;
@@ -27,8 +29,8 @@ function [answer EmHistory] =multiLayerPerceptron(weights,n,patterns,g,epsilon,e
     patternsSize = size(patterns);
     totalPatterns = patternsSize(1);
     firstLoop = true;
-    useMomentum = false;
-    useAdaptative = false;
+    useMomentum = true;
+    useAdaptative = true;
     alpha = .75;
     EmHistory = [];
     EmHistorySize = 0;
@@ -73,9 +75,9 @@ function [answer EmHistory] =multiLayerPerceptron(weights,n,patterns,g,epsilon,e
         Em=getCuadraticError(patterns,O);
         EmHistory = [EmHistory Em];
         EmHistorySize = EmHistorySize + 1;
-        if ((EmHistorySize - delayer) > adaptativeK + 1) 
+        if ((EmHistorySize - delayer) > errorLookBack + 1) 
             stagnant = false;
-            if (abs(EmHistory(EmHistorySize) - EmHistory(EmHistorySize - adaptativeK)) < (epsilon / 10))
+            if (abs(EmHistory(EmHistorySize) - EmHistory(EmHistorySize - errorLookBack)) < (epsilon / 10))
                 fprintf('Historical Difference : %1.5f - %1.5f = %1.5f\n Iteration : %d\n', EmHistory(EmHistorySize), EmHistory(EmHistorySize - adaptativeK), abs(EmHistory(EmHistorySize) - EmHistory(EmHistorySize - adaptativeK)), iterations);
                 stagnant = true;
             end
@@ -99,15 +101,42 @@ function [answer EmHistory] =multiLayerPerceptron(weights,n,patterns,g,epsilon,e
             end
         end
         if (useAdaptative) 
-          adaptativeArr(mod(iterations,adaptativeK)+1) = Em;
-          if (Em > 0)
-            learningN = n - learningBeta*n;
-          elseif (max(adaptativeArr)<0 && min(adaptativeArr) <0)
-            learningN = n + learningAlpha;
-          else
-            learningN = n;
+          for(j=2:adaptativeK)
+            adaptativeArr{j-1, 1} = adaptativeArr{j,1};
+            adaptativeArr{j-1, 2} = adaptativeArr{j,2};
           end
+          adaptativeArr{adaptativeK,1} = Em;
+          adaptativeArr{adaptativeK,2} = weights;
+          positive = false;
+          adaptativeArr{:,1}
+          for i=1:adaptativeK-1    
+            if (adaptativeArr{i,1} != 0 && ((adaptativeArr{i+1,1} - adaptativeArr{i,1}) > 0))
+                "positive"
+                for w=1:adaptativeK
+                    if(adaptativeArr{w,1} != 0)
+                        weights = adaptativeArr{w,2};
+                        break;
+                    end
+                end
+                adaptativeArr(:,:) = 0;
+                learningN = learningN - learningBeta*learningN;
+                positive = true;
+                break;
+            end
+          end
+          if(positive == false)
+            for i=1: adaptativeK
+                if(adaptativeArr{i,1} == 0)
+                    break;
+                end
+            end
+            if(i == adaptativeK)
+                "negative"
+                learningN = learningN+learningAlpha;
+            end  
+         end
         end
+        learningN
         iterations = iterations + 1;
     end
     
