@@ -10,8 +10,8 @@ function [answer EmHistory] =multiLayerPerceptron(weights,n,patterns,g,epsilon,e
     adaptativeK=5;
     errorLookBack = 100;
     learningN=n;
-    learningAlpha = 0.01;
-    learningBeta = 0.01;
+    learningAlpha = 0.0001;
+    learningBeta = 0.2;
     adaptativeArr = cell(adaptativeK,2);
     adaptativeArr(:,:) = 0;
     weightsSize = size(weights);
@@ -125,7 +125,7 @@ function [answer EmHistory] =multiLayerPerceptron(weights,n,patterns,g,epsilon,e
                     end
                 end
                 adaptativeArr(:,:) = 0;
-                learningN = learningN - learningBeta*n;
+                learningN = learningN - learningBeta*learningN;
                 positive = true;
                 break;
             end
