@@ -7,6 +7,7 @@
 function [answer EmHistory] =multiLayerPerceptron(weights,n,patterns,g,epsilon,epoques)
     Em=1;
     iterations=0;
+    delayer = 0;
     adaptativeK=100;
     learningN=n;
     learningAlpha = 0.01;
@@ -72,21 +73,14 @@ function [answer EmHistory] =multiLayerPerceptron(weights,n,patterns,g,epsilon,e
         Em=getCuadraticError(patterns,O);
         EmHistory = [EmHistory Em];
         EmHistorySize = EmHistorySize + 1;
-        if (EmHistorySize > adaptativeK + 1) 
+        if ((EmHistorySize - delayer) > adaptativeK + 1) 
             stagnant = false;
-            if (abs(EmHistory(EmHistorySize) - EmHistory(EmHistorySize - adaptativeK)))
+            if (abs(EmHistory(EmHistorySize) - EmHistory(EmHistorySize - adaptativeK)) < (epsilon / 10))
+                fprintf('Historical Difference : %1.5f - %1.5f = %1.5f\n Iteration : %d\n', EmHistory(EmHistorySize), EmHistory(EmHistorySize - adaptativeK), abs(EmHistory(EmHistorySize) - EmHistory(EmHistorySize - adaptativeK)), iterations);
                 stagnant = true;
             end
             if (stagnant) 
-                stagnant = false;
-                for i = EmHistorySize:-1:EmHistorySize - adaptativeK
-                    if (abs(EmHistory(i) - EmHistory(i - 1)) < (epsilon / 10))
-                        stagnant = true;
-                    end
-                end
-            end
-            if (stagnant) 
-                keepGoing = input('Se estancó el error... seguimos? [(K)eep Going, (S)top, Variate (N), Shake (I)t] ', 's');
+                keepGoing = input('Parece que estancó el error... seguimos? [(K)eep Going, (S)top, Variate (N), Shake (I)t] ', 's');
                 if (upper(keepGoing) ~= 'S') 
                     switch keepGoing
                         case 'N'
@@ -94,11 +88,11 @@ function [answer EmHistory] =multiLayerPerceptron(weights,n,patterns,g,epsilon,e
                         case 'I'
                             for i = 1 : totalLayers
                                 weightSize = size(weights{i, 1});
-                                weights{i, 1} = weights{i, 1} + (epsilon .* ones(weightSize(1), weightSize(2)) + (epsilon .* rand(weightSize(1), weightSize(2))));
+                                weights{i, 1} = weights{i, 1} + (n .* ones(weightSize(1), weightSize(2)) + (n .* rand(weightSize(1), weightSize(2))));
                             end
                     end
                     keepGoing = true;
-                    EmHistorySize = 0;
+                    delayer = EmHistorySize;
                 else
                     keepGoing = false;
                 end
