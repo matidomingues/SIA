@@ -88,11 +88,22 @@ function [answer EmHistory] =multiLayerPerceptron(weights,n,patterns,g,epsilon,e
                 end
             end
             if (stagnant) 
-                keepGoing = input('Se estancó el error... seguimos?');
-                if (keepGoing == false) 
+                keepGoing = input('Se estancó el error... seguimos? [(K)eep Going, (S)top, Variate (N), Shake (I)t] ', 's');
+                if (upper(keepGoing) ~= 'S') 
+                    switch keepGoing
+                        case 'N'
+                            n = input('Ingrese el nuevo valor de n: ');
+                        case 'I'
+                            for i = 1 : totalLayers
+                                weightSize = size(weights{i, 1});
+                                weights{i, 1} = weights{i, 1} + (epsilon .* ones(weightSize(1), weightSize(2)) + (epsilon .* rand(weightSize(1), weightSize(2))));
+                            end
+                    end
+                    keepGoing = true;
                     EmHistorySize = 0;
+                else
+                    keepGoing = false;
                 end
-                break;
             end
         end
         if (useAdaptative) 
