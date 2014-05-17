@@ -1,4 +1,4 @@
-package genetics.utils;
+package ar.edu.itba.sia.genetics.utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
