@@ -1,8 +1,8 @@
 package ar.edu.itba.sia.genetics.replacers;
 
 import ar.edu.itba.sia.genetics.fenotypes.Fenotype;
-import ar.edu.itba.sia.genetics.operators.crossers.CrossoverAlgorithm;
-import ar.edu.itba.sia.genetics.operators.mutators.MutationAlgorithm;
+import ar.edu.itba.sia.genetics.operators.crossers.Crossover;
+import ar.edu.itba.sia.genetics.operators.mutators.Mutator;
 import ar.edu.itba.sia.genetics.selectors.FenotypeSelector;
 
 import java.util.Set;
@@ -10,10 +10,10 @@ import java.util.Set;
 public abstract class ReplacementAlgorithm {
 
 	private FenotypeSelector selector;
-	private MutationAlgorithm mutator;
-	private CrossoverAlgorithm crosser;
+	private Mutator mutator;
+	private Crossover crosser;
 
-	protected ReplacementAlgorithm(FenotypeSelector selector, MutationAlgorithm mutator, CrossoverAlgorithm crosser) {
+	protected ReplacementAlgorithm(FenotypeSelector selector, Mutator mutator, Crossover crosser) {
 		this.selector = selector;
 		this.mutator = mutator;
 		this.crosser = crosser;
@@ -25,11 +25,11 @@ public abstract class ReplacementAlgorithm {
 		return this.selector;
 	}
 
-	public MutationAlgorithm getMutator() {
+	public Mutator getMutator() {
 		return this.mutator;
 	}
 
-	public CrossoverAlgorithm getCrosser() {
+	public Crossover getCrosser() {
 		return this.crosser;
 	}
 }

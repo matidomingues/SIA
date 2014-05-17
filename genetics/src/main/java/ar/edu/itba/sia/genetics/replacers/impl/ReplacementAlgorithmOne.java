@@ -1,8 +1,8 @@
 package ar.edu.itba.sia.genetics.replacers.impl;
 
 import ar.edu.itba.sia.genetics.fenotypes.Fenotype;
-import ar.edu.itba.sia.genetics.operators.crossers.CrossoverAlgorithm;
-import ar.edu.itba.sia.genetics.operators.mutators.MutationAlgorithm;
+import ar.edu.itba.sia.genetics.operators.crossers.Crossover;
+import ar.edu.itba.sia.genetics.operators.mutators.Mutator;
 import ar.edu.itba.sia.genetics.replacers.ReplacementAlgorithm;
 import ar.edu.itba.sia.genetics.selectors.FenotypeSelector;
 
@@ -12,7 +12,7 @@ import java.util.Set;
 public class ReplacementAlgorithmOne extends ReplacementAlgorithm {
 
 
-	public ReplacementAlgorithmOne(FenotypeSelector selector, MutationAlgorithm mutator, CrossoverAlgorithm crosser) {
+	public ReplacementAlgorithmOne(FenotypeSelector selector, Mutator mutator, Crossover crosser) {
 		super(selector, mutator, crosser);
 	}
 
@@ -26,9 +26,12 @@ public class ReplacementAlgorithmOne extends ReplacementAlgorithm {
 				throw new IllegalStateException("Incompatible amount of parents during selection");
 			}
 			Fenotype[] parents = (Fenotype[])selection.toArray();
-			Fenotype child = this.getCrosser().crossover(parents[0], parents[1]);
-			child = this.getMutator().mutate(child);
-			newGeneration.add(child);
+			Set<Fenotype> childs = this.getCrosser().crossover(parents[0], parents[1]);
+			for(Fenotype child:childs){
+				child = this.getMutator().mutate(child);
+				newGeneration.add(child);
+				
+			}
 		}
 
 		oldGeneration.clear();
