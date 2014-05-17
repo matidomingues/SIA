@@ -2,7 +2,7 @@ package ar.edu.itba.sia.genetics.operators.mutators;
 
 import ar.edu.itba.sia.genetics.fenotypes.Fenotype;
 
-public interface Mutator {
+public abstract class Mutator {
 
-	public Fenotype mutate(Fenotype fenotype);
+	public abstract Fenotype mutate(Fenotype fenotype);
 }
