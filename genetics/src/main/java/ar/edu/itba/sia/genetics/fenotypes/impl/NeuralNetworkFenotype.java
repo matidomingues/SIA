@@ -1,6 +1,7 @@
 package ar.edu.itba.sia.genetics.fenotypes.impl;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.jblas.DoubleMatrix;
@@ -93,4 +94,17 @@ public class NeuralNetworkFenotype implements Fenotype {
 
 	}
 
+	public List<Allele> getAlleleList(){
+		List<Allele> alleles= new ArrayList<Allele>();
+		
+		for(DoubleMatrix dm: layers){
+			double[] array=dm.toArray();
+			for(int i=0;i<array.length;i++){
+				alleles.add(new NeuralNetworkAllele(array[i]));
+			}
+		}
+		
+		return alleles;
+	}
+	
 }
