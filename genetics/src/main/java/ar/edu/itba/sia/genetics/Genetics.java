@@ -13,7 +13,8 @@ public class Genetics {
 	private FenotypeSelector selector;
 	private GeneticOperator operator;
 	private GeneticReplacer replacer;
-
+	private ReplacementAlgorithm replacementAlgorithm;
+	
 	public static void main(String[] args) {
 
 		Set<Fenotype> fenotypes = initPopluation();
@@ -49,5 +50,9 @@ public class Genetics {
 
 	public GeneticReplacer getReplacer() {
 		return replacer;
+	}
+	
+	public ReplacementAlgorithm getReplacementAlgorithm(){
+		return replacementAlgorithm;
 	}
 }
