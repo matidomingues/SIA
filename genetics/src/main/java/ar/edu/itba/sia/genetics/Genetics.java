@@ -17,10 +17,11 @@ public class Genetics {
 	public static void main(String[] args) {
 
 		Set<Fenotype> fenotypes = initPopluation();
-		FenotypeSelector selector = getSelector();
-		GeneticOperator geneticOperator = getOperator();
-		GeneticReplacer geneticReplacer = getReplacer();
-		ReplacementAlgorithm loop = getReplacementAlgorithm();
+		Genetics genetics= new Genetics();
+		FenotypeSelector selector = genetics.getSelector();
+		GeneticOperator geneticOperator = genetics.getOperator();
+		GeneticReplacer geneticReplacer = genetics.getReplacer();
+		ReplacementAlgorithm loop = genetics.getReplacementAlgorithm();
 
 		while (cutConditionMet()) {
 			loop.evolve(fenotypes);
