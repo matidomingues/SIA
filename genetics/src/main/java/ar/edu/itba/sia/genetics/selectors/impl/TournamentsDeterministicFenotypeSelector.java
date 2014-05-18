@@ -25,7 +25,6 @@ public class TournamentsDeterministicFenotypeSelector implements
 	public Set<Fenotype> select(Set<Fenotype> fenotypes) {
 		
 		List<Fenotype> array=new ArrayList<Fenotype>(fenotypes);
-		Collections.sort(array, new FenotypeComparator());
 		Set<Fenotype> selectedSet=new HashSet<Fenotype>();
 		
 		int size=array.size();
@@ -33,13 +32,15 @@ public class TournamentsDeterministicFenotypeSelector implements
 		for(int i=0;i<k;i++){
 			
 			Random random = new Random(System.nanoTime());
-			int elite=0;
 			int[] individuals= new int[m];
-			for(int j=0;j<m;j++){
+			individuals[0]=random.nextInt(size);
+			Fenotype elite=array.get(individuals[0]);
+			for(int j=1;j<m;j++){
 				individuals[j]=random.nextInt(size);
-				elite=(elite>individuals[j])?individuals[j]:elite;
+				Fenotype fen=array.get(individuals[j]);
+				elite=(elite.fitnessFunction()<fen.fitnessFunction())?fen:elite;
 			}
-			selectedSet.add(array.get(elite));
+			selectedSet.add(elite);
 		}
 		
 		return selectedSet;

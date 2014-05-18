@@ -30,19 +30,22 @@ public class TournamentsProbabilisticsFenotypeSelector implements FenotypeSelect
 		for(int i=0;i<k;i++){
 			
 			Random random = new Random(System.nanoTime());
-			int elite=0;
+			Fenotype elite;
 			int[] individuals= new int[2];
 			individuals[0]=random.nextInt(size);
 			individuals[1]=random.nextInt(size);
+			Fenotype f1,f2;
+			f1=array.get(individuals[0]);
+			f2=array.get(individuals[1]);
 			double probability= random.nextDouble();
 			if(probability<0.75){
-				elite=Math.max(individuals[0], individuals[1]);				
+				elite=(f1.fitnessFunction()>f2.fitnessFunction())?f1:f2;				
 			}
 			else{
-				elite=Math.min(individuals[0], individuals[1]);
+				elite=(f1.fitnessFunction()<f2.fitnessFunction())?f1:f2;
 			}
 			
-			selectedSet.add(array.get(elite));
+			selectedSet.add(elite);
 		}
 		
 		return selectedSet;
