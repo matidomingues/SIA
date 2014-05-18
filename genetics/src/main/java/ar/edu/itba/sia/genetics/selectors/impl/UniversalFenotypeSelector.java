@@ -9,11 +9,11 @@ import java.util.Set;
 import ar.edu.itba.sia.genetics.fenotypes.Fenotype;
 import ar.edu.itba.sia.genetics.selectors.FenotypeSelector;
 
-public class RouletteFenotypeSelector implements FenotypeSelector{
+public class UniversalFenotypeSelector implements FenotypeSelector {
 
-	private int k;
+private int k;
 	
-	public RouletteFenotypeSelector(int k){
+	public UniversalFenotypeSelector(int k){
 		this.k=k;
 	}
 	
@@ -39,9 +39,10 @@ public class RouletteFenotypeSelector implements FenotypeSelector{
 				
 		
 		Random random = new Random(System.nanoTime());
+		double rmain=random.nextDouble();
 		double[] r= new double[k];
 		for(int j=0;j<k;j++){
-			r[j]=random.nextDouble();
+			r[j]=(rmain+(j+1)-1)/k;
 		}
 		
 		for(int j=0;j<k;j++){
