@@ -8,7 +8,6 @@ import ar.edu.itba.sia.genetics.selectors.FenotypeSelector;
 public class RouletteFenotypeSelector implements FenotypeSelector{
 
 	public Set<Fenotype> select(Set<Fenotype> fenotypes) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

@@ -11,6 +11,7 @@ import java.util.TreeSet;
 import ar.edu.itba.sia.genetics.fenotypes.Fenotype;
 import ar.edu.itba.sia.genetics.replacers.GeneticReplacer;
 import ar.edu.itba.sia.genetics.selectors.FenotypeSelector;
+import ar.edu.itba.sia.genetics.utils.FenotypeComparator;
 
 public class EliteFenotypeSelector implements FenotypeSelector{
 
@@ -26,14 +27,7 @@ public class EliteFenotypeSelector implements FenotypeSelector{
 
 
 	public Set<Fenotype> select(Set<Fenotype> fenotypes) {
-		TreeSet<Fenotype> set=new TreeSet<Fenotype>(new Comparator<Fenotype>() {
-			
-			public int compare(Fenotype o1, Fenotype o2) {
-				return (int)(o1.fitnessFunction()-o2.fitnessFunction());
-			}
-		}) ;
-		
-		
+		TreeSet<Fenotype> set=new TreeSet<Fenotype>(new FenotypeComparator());
 		HashSet<Fenotype> answerSet=new HashSet<Fenotype>();
 		Iterator<Fenotype> it = set.iterator();
 		
