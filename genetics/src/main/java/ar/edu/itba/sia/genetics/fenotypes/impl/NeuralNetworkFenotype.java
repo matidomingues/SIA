@@ -15,6 +15,7 @@ public class NeuralNetworkFenotype implements Fenotype {
 	private static final double MIN_RANGE = -30.5;
 
 	private int size = 0;
+	private double fitness=0;
 	private List<DoubleMatrix> layers = new ArrayList<DoubleMatrix>();
 	
 	/**
@@ -107,4 +108,9 @@ public class NeuralNetworkFenotype implements Fenotype {
 		return alleles;
 	}
 	
+	
+	public double fitnessFunction() {
+		//TODO: falta invocar al backpropagation (o lo que sea)
+		return fitness;
+	}
 }
