@@ -2,6 +2,7 @@ package ar.edu.itba.sia.genetics.fenotypes.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.jblas.DoubleMatrix;
 
@@ -16,6 +17,7 @@ public class NeuralNetworkFenotype implements Fenotype {
 	private int size = 0;
 	private double fitness=0;
 	private List<DoubleMatrix> layers = new ArrayList<DoubleMatrix>();
+	private int[] sizeMatrix;
 	
 	/**
 	 * arquitecture indica la cantidad de neuronas en cada capa (el primer elemento es la cantidad de entradas
@@ -25,12 +27,13 @@ public class NeuralNetworkFenotype implements Fenotype {
 	public NeuralNetworkFenotype(int[] arquitecture) {
 
 		int layersQty = arquitecture.length - 1;
-
+		this.sizeMatrix=new int[layersQty];
 		for (int i = 0; i < layersQty - 1; i++) {
 			DoubleMatrix matrix = DoubleMatrix.rand(arquitecture[i] + 1,
 					arquitecture[i + 1]);
 			matrix.mul((MAX_RANGE-MIN_RANGE)).add(MIN_RANGE);
-			size+=(matrix.rows*matrix.columns);
+			size += (matrix.rows*matrix.columns);
+			sizeMatrix[i] = matrix.rows*matrix.columns;
 			this.layers.add(matrix);
 		}
 
@@ -40,6 +43,7 @@ public class NeuralNetworkFenotype implements Fenotype {
 		
 		int layersQty = arquitecture.length - 1;
 
+		
 		for (int i = 0; i < layersQty - 1; i++) {
 			DoubleMatrix matrix = DoubleMatrix.zeros(arquitecture[i] + 1,
 					arquitecture[i + 1]);
@@ -73,10 +77,12 @@ public class NeuralNetworkFenotype implements Fenotype {
 		return MIN_RANGE;
 	}
 
-	public void alter(int locus, double value) {
+	public void alter(int locus) {
 		if(locus<0||locus>=size){
 			return;
 		}
+		
+		
 		
 		for(DoubleMatrix dm:layers){
 			int lengthAleles=dm.rows*dm.columns;
@@ -84,9 +90,11 @@ public class NeuralNetworkFenotype implements Fenotype {
 				locus-=lengthAleles;
 			}
 			else if(locus>=0){
+				Random random = new Random(System.nanoTime());
 				int locusRow=locus/dm.columns;
 				int locusColumn=locus-locusRow*dm.columns;
-				dm.put(locusRow,locusColumn,value);
+				double weight=random.nextDouble()*(MAX_RANGE-MIN_RANGE)+MIN_RANGE;
+				dm.put(locusRow,locusColumn,weight);
 				return;
 			}
 			

@@ -5,6 +5,6 @@ public interface Fenotype {
 	int size();
 	double maxRange();
 	double minRange();
-	void alter(int locus, double value);
+	void alter(int locus);
 	double fitnessFunction();
 }

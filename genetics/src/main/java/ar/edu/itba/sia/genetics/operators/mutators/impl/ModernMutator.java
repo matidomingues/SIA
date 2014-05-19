@@ -23,8 +23,8 @@ public class ModernMutator extends Mutator {
 			maxLocus=Math.max(locus1, locus2);
 			
 			for(int i=minLocus;i<=maxLocus;i++){    //PREGUNTAR: verificar si esta bien la mutacion
-				double weight = random.nextDouble() * (max - min) + min; // PREGUNTAR: la probabilidad es uniforme o puede ser gaussiana?
-				fenotype.alter(i, weight);	
+				//double weight = random.nextDouble() * (max - min) + min; // PREGUNTAR: la probabilidad es uniforme o puede ser gaussiana?
+				fenotype.alter(i);	
 			}
 		}
 		return fenotype;
