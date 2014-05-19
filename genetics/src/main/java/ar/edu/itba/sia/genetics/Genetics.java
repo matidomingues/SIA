@@ -1,11 +1,14 @@
 package ar.edu.itba.sia.genetics;
 
+import ar.edu.itba.sia.genetics.cutcondition.CutCondition;
 import ar.edu.itba.sia.genetics.fenotypes.Fenotype;
+import ar.edu.itba.sia.genetics.fenotypes.impl.NeuralNetworkFenotype;
 import ar.edu.itba.sia.genetics.operators.GeneticOperator;
 import ar.edu.itba.sia.genetics.replacers.GeneticReplacer;
 import ar.edu.itba.sia.genetics.replacers.ReplacementAlgorithm;
 import ar.edu.itba.sia.genetics.selectors.FenotypeSelector;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Genetics {
@@ -14,29 +17,38 @@ public class Genetics {
 	private GeneticOperator operator;
 	private GeneticReplacer replacer;
 	private ReplacementAlgorithm replacementAlgorithm;
+	private CutCondition cutCondition;
+	private int[] arquitecture= {2,10,1}; 
 	
 	public static void main(String[] args) {
 
-		List<Fenotype> fenotypes = initPopluation();
 		Genetics genetics= new Genetics();
-		FenotypeSelector selector = genetics.getSelector();
-		GeneticOperator geneticOperator = genetics.getOperator();
-		GeneticReplacer geneticReplacer = genetics.getReplacer();
+		List<Fenotype> fenotypes = genetics.initPopulation(100);
 		ReplacementAlgorithm loop = genetics.getReplacementAlgorithm();
 
-		while (cutConditionMet()) {
+		while (genetics.cutConditionMet()) {
 			loop.evolve(fenotypes);
 		}
 	}
-
-	private static List<Fenotype> initPopluation() {
-		// TODO: take from a file
-		return null;  //To change body of created methods use File | Settings | File Templates.
+	
+	public Genetics(){
+		
+	}
+	
+	public Genetics(FenotypeSelector selector, GeneticOperator operator, ReplacementAlgorithm replacementAlgorithm,CutCondition cutCondition,int N){
+		this.cutCondition=cutCondition;
 	}
 
-	private static boolean cutConditionMet() {
-		// TODO: implemented depending on the condition;
-		return false;  //To change body of created methods use File | Settings | File Templates.
+	private List<Fenotype> initPopulation(int N) {
+		List<Fenotype> population= new ArrayList<Fenotype>(N);
+		for(int i=0;i<N;i++){
+			population.add(new NeuralNetworkFenotype(arquitecture));
+		}
+		return population; 
+	}
+
+	private boolean cutConditionMet() {
+		return cutCondition.condition(null);
 	}
 
 
