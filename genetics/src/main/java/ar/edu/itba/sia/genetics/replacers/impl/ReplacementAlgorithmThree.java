@@ -6,7 +6,9 @@ import ar.edu.itba.sia.genetics.operators.mutators.Mutator;
 import ar.edu.itba.sia.genetics.replacers.ReplacementAlgorithm;
 import ar.edu.itba.sia.genetics.selectors.FenotypeSelector;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
@@ -18,8 +20,8 @@ public class ReplacementAlgorithmThree extends ReplacementAlgorithm {
 	}
 
 	@Override
-	public void evolve(Set<Fenotype> fenotypes) {
-		Set<Fenotype> children =new HashSet<Fenotype>();
+	public void evolve(List<Fenotype> fenotypes) {
+		List<Fenotype> children =new ArrayList<Fenotype>();
 		Fenotype[] parents = (Fenotype[])this.getSelector().select(fenotypes).toArray();
 		while(children.size() < parents.length) {
 			this.shuffle(parents);

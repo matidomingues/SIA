@@ -1,6 +1,6 @@
 package ar.edu.itba.sia.genetics.selectors.impl;
 
-import java.util.Set;
+import java.util.List;
 
 import ar.edu.itba.sia.genetics.fenotypes.Fenotype;
 import ar.edu.itba.sia.genetics.selectors.FenotypeSelector;
@@ -15,9 +15,9 @@ public class EliteRouletteFenotypeSelector implements FenotypeSelector{
 		this.rouletteSelector=new RouletteFenotypeSelector((G*(a-1))/a);
 	}
 	
-	public Set<Fenotype> select(Set<Fenotype> fenotypes) {
-		Set<Fenotype> set= eliteSelector.select(fenotypes);
-		set.addAll(rouletteSelector.select(fenotypes));
-		return set;
+	public List<Fenotype> select(List<Fenotype> fenotypes) {
+		List<Fenotype> list= eliteSelector.select(fenotypes);
+		list.addAll(rouletteSelector.select(fenotypes));
+		return list;
 	}
 }

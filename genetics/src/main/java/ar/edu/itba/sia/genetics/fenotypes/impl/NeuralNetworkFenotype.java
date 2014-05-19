@@ -1,7 +1,6 @@
 package ar.edu.itba.sia.genetics.fenotypes.impl;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.jblas.DoubleMatrix;

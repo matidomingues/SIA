@@ -4,6 +4,7 @@ import ar.edu.itba.sia.genetics.fenotypes.Allele;
 import ar.edu.itba.sia.genetics.fenotypes.Fenotype;
 import ar.edu.itba.sia.genetics.fenotypes.FenotypeBuilder;
 import ar.edu.itba.sia.genetics.fenotypes.FenotypeSplitter;
+
 import org.jblas.ranges.IntervalRange;
 import org.jblas.ranges.Range;
 
@@ -19,8 +20,8 @@ public abstract class Crossover {
 		this.splitter = splitter;
 	}
 
-	public Set<Fenotype> crossover(Fenotype parent1, Fenotype parent2) {
-		Set<Fenotype> children = new HashSet<Fenotype>();
+	public List<Fenotype> crossover(Fenotype parent1, Fenotype parent2) {
+		List<Fenotype> children = new ArrayList<Fenotype>();
 
 		if (parent1.size() != parent2.size()) {
 			throw new IllegalArgumentException("Locus count mismatch.");

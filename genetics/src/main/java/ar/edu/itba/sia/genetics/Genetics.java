@@ -6,7 +6,7 @@ import ar.edu.itba.sia.genetics.replacers.GeneticReplacer;
 import ar.edu.itba.sia.genetics.replacers.ReplacementAlgorithm;
 import ar.edu.itba.sia.genetics.selectors.FenotypeSelector;
 
-import java.util.Set;
+import java.util.List;
 
 public class Genetics {
 
@@ -17,7 +17,7 @@ public class Genetics {
 	
 	public static void main(String[] args) {
 
-		Set<Fenotype> fenotypes = initPopluation();
+		List<Fenotype> fenotypes = initPopluation();
 		Genetics genetics= new Genetics();
 		FenotypeSelector selector = genetics.getSelector();
 		GeneticOperator geneticOperator = genetics.getOperator();
@@ -29,7 +29,7 @@ public class Genetics {
 		}
 	}
 
-	private static Set<Fenotype> initPopluation() {
+	private static List<Fenotype> initPopluation() {
 		// TODO: take from a file
 		return null;  //To change body of created methods use File | Settings | File Templates.
 	}

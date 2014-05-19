@@ -1,15 +1,11 @@
 package ar.edu.itba.sia.genetics.selectors.impl;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 import ar.edu.itba.sia.genetics.fenotypes.Fenotype;
 import ar.edu.itba.sia.genetics.selectors.FenotypeSelector;
-import ar.edu.itba.sia.genetics.utils.FenotypeComparator;
 
 public class TournamentsDeterministicFenotypeSelector implements
 		FenotypeSelector {
@@ -22,28 +18,27 @@ public class TournamentsDeterministicFenotypeSelector implements
 		this.m = m;
 	}
 
-	public Set<Fenotype> select(Set<Fenotype> fenotypes) {
+	
+	public List<Fenotype> select(List<Fenotype> fenotypes) {
 		
-		List<Fenotype> array=new ArrayList<Fenotype>(fenotypes);
-		Set<Fenotype> selectedSet=new HashSet<Fenotype>();
-		
-		int size=array.size();
+		List<Fenotype> selectedList=new ArrayList<Fenotype>(k);
+		int size=fenotypes.size();
 		
 		for(int i=0;i<k;i++){
 			
 			Random random = new Random(System.nanoTime());
 			int[] individuals= new int[m];
 			individuals[0]=random.nextInt(size);
-			Fenotype elite=array.get(individuals[0]);
+			Fenotype elite=fenotypes.get(individuals[0]);
 			for(int j=1;j<m;j++){
 				individuals[j]=random.nextInt(size);
-				Fenotype fen=array.get(individuals[j]);
+				Fenotype fen=fenotypes.get(individuals[j]);
 				elite=(elite.fitnessFunction()<fen.fitnessFunction())?fen:elite;
 			}
-			selectedSet.add(elite);
+			selectedList.add(elite);
 		}
 		
-		return selectedSet;
+		return selectedList;
 	}
 
 }

@@ -5,7 +5,7 @@ import ar.edu.itba.sia.genetics.operators.crossers.Crossover;
 import ar.edu.itba.sia.genetics.operators.mutators.Mutator;
 import ar.edu.itba.sia.genetics.selectors.FenotypeSelector;
 
-import java.util.Set;
+import java.util.List;
 
 public abstract class ReplacementAlgorithm {
 
@@ -19,7 +19,7 @@ public abstract class ReplacementAlgorithm {
 		this.crosser = crosser;
 	}
 
-	public abstract void evolve(Set<Fenotype> fenotypes);
+	public abstract void evolve(List<Fenotype> fenotypes);
 
 	public FenotypeSelector getSelector() {
 		return this.selector;

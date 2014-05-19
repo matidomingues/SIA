@@ -6,8 +6,8 @@ import ar.edu.itba.sia.genetics.operators.mutators.Mutator;
 import ar.edu.itba.sia.genetics.replacers.ReplacementAlgorithm;
 import ar.edu.itba.sia.genetics.selectors.FenotypeSelector;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ReplacementAlgorithmOne extends ReplacementAlgorithm {
 
@@ -17,16 +17,16 @@ public class ReplacementAlgorithmOne extends ReplacementAlgorithm {
 	}
 
 	@Override
-	public void evolve(Set<Fenotype> oldGeneration) {
-		Set<Fenotype> newGeneration = new HashSet<Fenotype>();
+	public void evolve(List<Fenotype> oldGeneration) {
+		List<Fenotype> newGeneration = new ArrayList<Fenotype>();
 
 		while (newGeneration.size() < oldGeneration.size()) {
-			Set<Fenotype> selection = this.getSelector().select(oldGeneration);
+			List<Fenotype> selection = this.getSelector().select(oldGeneration);
 			if (selection.size() != 2) {
 				throw new IllegalStateException("Incompatible amount of parents during selection");
 			}
 			Fenotype[] parents = (Fenotype[])selection.toArray();
-			Set<Fenotype> childs = this.getCrosser().crossover(parents[0], parents[1]);
+			List<Fenotype> childs = this.getCrosser().crossover(parents[0], parents[1]);
 			for(Fenotype child:childs){
 				child = this.getMutator().mutate(child);
 				newGeneration.add(child);

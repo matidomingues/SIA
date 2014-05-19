@@ -3,7 +3,6 @@ package ar.edu.itba.sia.genetics.fenotypes.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jblas.ranges.IntervalRange;
 import org.jblas.ranges.Range;
 
 import ar.edu.itba.sia.genetics.fenotypes.Allele;
