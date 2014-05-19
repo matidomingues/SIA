@@ -11,7 +11,7 @@ import org.jblas.ranges.Range;
 import java.util.*;
 
 public abstract class Crossover {
-
+	private static final double CROSSOVER_PROBABILITY=0.5;
 	private final FenotypeBuilder fenotypeBuilder;
 	private final FenotypeSplitter splitter;
 
@@ -29,7 +29,7 @@ public abstract class Crossover {
 		if (parent1.size() < 1) {
 			throw new IllegalArgumentException("Small fenotype.");
 		}
-
+		if(doCrossover()){
 		List<Range> ranges = getRanges(parent1, parent2);
 
 		List<List<Allele>> parent1Alleles = splitter.split(parent1, ranges);
@@ -37,7 +37,11 @@ public abstract class Crossover {
 
 		children.add(mixParents(parent1Alleles, parent2Alleles));
 		children.add(mixParents(parent2Alleles, parent1Alleles));
-
+		}
+		else{
+		 children.add(parent1);
+		 children.add(parent2);
+		}
 		return children;
 	}
 
@@ -71,6 +75,12 @@ public abstract class Crossover {
 
 	public FenotypeBuilder getFenotypeBuilder() {
 		return this.fenotypeBuilder;
+	}
+	
+	public boolean doCrossover(){
+		Random random = new Random(System.nanoTime());
+		double crossoverProb=random.nextDouble(); 
+		return crossoverProb>CROSSOVER_PROBABILITY;
 	}
 
 }

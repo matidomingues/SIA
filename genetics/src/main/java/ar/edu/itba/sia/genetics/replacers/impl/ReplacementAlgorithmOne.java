@@ -19,14 +19,13 @@ public class ReplacementAlgorithmOne extends ReplacementAlgorithm {
 	@Override
 	public void evolve(List<Fenotype> oldGeneration) {
 		List<Fenotype> newGeneration = new ArrayList<Fenotype>();
-
+		
 		while (newGeneration.size() < oldGeneration.size()) {
 			List<Fenotype> selection = this.getSelector().select(oldGeneration);
 			if (selection.size() != 2) {
 				throw new IllegalStateException("Incompatible amount of parents during selection");
 			}
-			Fenotype[] parents = (Fenotype[])selection.toArray();
-			List<Fenotype> childs = this.getCrosser().crossover(parents[0], parents[1]);
+			List<Fenotype> childs = this.getCrosser().crossover(selection.get(0), selection.get(1));
 			for(Fenotype child:childs){
 				child = this.getMutator().mutate(child);
 				newGeneration.add(child);
