@@ -83,7 +83,6 @@ public class NeuralNetworkFenotype implements Fenotype {
 		}
 		
 		
-		
 		for(DoubleMatrix dm:layers){
 			int lengthAleles=dm.rows*dm.columns;
 			if(locus>lengthAleles){
@@ -93,8 +92,9 @@ public class NeuralNetworkFenotype implements Fenotype {
 				Random random = new Random(System.nanoTime());
 				int locusRow=locus/dm.columns;
 				int locusColumn=locus-locusRow*dm.columns;
-				double weight=random.nextDouble()*(MAX_RANGE-MIN_RANGE)+MIN_RANGE;
-				dm.put(locusRow,locusColumn,weight);
+				double originalweight=dm.get(locusRow, locusColumn);
+				double auxiweight=random.nextDouble()-0.5;
+				dm.put(locusRow,locusColumn,originalweight+auxiweight);
 				return;
 			}
 			
