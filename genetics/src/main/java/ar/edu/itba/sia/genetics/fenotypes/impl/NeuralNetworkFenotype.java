@@ -120,4 +120,15 @@ public class NeuralNetworkFenotype implements Fenotype {
 		//TODO: falta invocar al backpropagation (o lo que sea)
 		return fitness;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof NeuralNetworkFenotype){
+			NeuralNetworkFenotype n=(NeuralNetworkFenotype) obj;
+			if(n.layers.equals(this.layers)){
+				return true;
+			}			
+		}
+		return false;
+	}
 }
