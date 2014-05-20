@@ -10,12 +10,11 @@ import ar.edu.itba.sia.genetics.utils.FenotypeComparator;
 
 public class StructureCutCondition implements CutCondition{
 
-	private double populationPercentage;
-	private int consecutiveTimes;
+	private static final double POPULATIONPERCENTAGE =0.9;
+	private static final int MAXCONSECUTIVETIMES=10;
 	private List<Fenotype> lastGeneration;
-	public StructureCutCondition(int populationPercentage, int consecutiveTimes){
-		this.populationPercentage=populationPercentage;
-		this.consecutiveTimes=consecutiveTimes;
+	private int repeatedTimes=0;
+	public StructureCutCondition(){
 		this.lastGeneration=new ArrayList<Fenotype>();
 	}
 	
@@ -26,12 +25,25 @@ public class StructureCutCondition implements CutCondition{
 		}
 		
 		List<Fenotype> fenotypes=(List<Fenotype>)o;
+		if(lastGeneration.isEmpty()){
+			return true;
+		}
+		int repeated=0;
+		for(Fenotype f: fenotypes){
+			if(lastGeneration.contains(f)){
+				repeated++;
+			}
+		}
 		
-		
-		double actualfitness=fenotypes.get(0).fitnessFunction();
-		if(actualfitness>maxScope){
-			return false;
-		}		
+		if((repeated/lastGeneration.size())>POPULATIONPERCENTAGE){
+			if(repeatedTimes>=MAXCONSECUTIVETIMES){
+				return false;
+			}
+			else{
+				repeatedTimes++;
+			}
+		}
+				
 		return true;
 
 	}
