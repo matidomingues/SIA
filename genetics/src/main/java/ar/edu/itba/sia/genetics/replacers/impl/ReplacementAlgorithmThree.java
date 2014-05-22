@@ -35,8 +35,14 @@ private FenotypeSelector selectorReplace2;
 			f=this.getMutator().mutate(f);
 			mutations.add(this.getBackpropagator().backpropagate(f));
 		}
-		fenotypes.addAll(mutations);
-		fenotypes.removeAll(this.getSelectorSelect().select(fenotypes));
+		List<Fenotype> oldGeneration=this.getSelectorReplace().select(fenotypes);
+		List<Fenotype> mix=new ArrayList<Fenotype>();
+		mix.addAll(fenotypes);
+		mix.addAll(mutations);
+		List<Fenotype> newGeneration=this.getSelectorReplace2().select(mix);
+		fenotypes.retainAll(oldGeneration);
+		fenotypes.addAll(newGeneration);
+
 	}
 
 	private void shuffle(Fenotype[] ar)
@@ -50,5 +56,8 @@ private FenotypeSelector selectorReplace2;
 			ar[index] = ar[i];
 			ar[i] = a;
 		}
+	}
+	public FenotypeSelector getSelectorReplace2() {
+		return this.selectorReplace2;
 	}
 }
