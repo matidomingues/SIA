@@ -13,6 +13,7 @@ public class NeuralNetworkFenotype implements Fenotype {
 
 	private static final double MAX_RANGE = 30.5;
 	private static final double MIN_RANGE = -30.5;
+	private static final double CALCULATE_FITNESS=-1;
 
 	private int size = 0;
 	private double fitness=0;
@@ -82,8 +83,6 @@ public class NeuralNetworkFenotype implements Fenotype {
 			return;
 		}
 		
-		
-		
 		for(DoubleMatrix dm:layers){
 			int lengthAleles=dm.rows*dm.columns;
 			if(locus>lengthAleles){
@@ -93,8 +92,10 @@ public class NeuralNetworkFenotype implements Fenotype {
 				Random random = new Random(System.nanoTime());
 				int locusRow=locus/dm.columns;
 				int locusColumn=locus-locusRow*dm.columns;
-				double weight=random.nextDouble()*(MAX_RANGE-MIN_RANGE)+MIN_RANGE;
-				dm.put(locusRow,locusColumn,weight);
+				double originalweight=dm.get(locusRow, locusColumn);
+				double auxiweight=random.nextDouble()-0.5;
+				dm.put(locusRow,locusColumn,originalweight+auxiweight);
+				fitness=CALCULATE_FITNESS;
 				return;
 			}
 			
@@ -117,7 +118,20 @@ public class NeuralNetworkFenotype implements Fenotype {
 	
 	
 	public double fitnessFunction() {
-		//TODO: falta invocar al backpropagation (o lo que sea)
+		if(fitness==CALCULATE_FITNESS){
+			//TODO: falta invocar al backpropagation (o lo que sea)			
+		}
 		return fitness;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof NeuralNetworkFenotype){
+			NeuralNetworkFenotype n=(NeuralNetworkFenotype) obj;
+			if(n.layers.equals(this.layers)){
+				return true;
+			}			
+		}
+		return false;
 	}
 }
