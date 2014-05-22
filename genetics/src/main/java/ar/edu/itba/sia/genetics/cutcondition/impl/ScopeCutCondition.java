@@ -14,7 +14,7 @@ public class ScopeCutCondition implements CutCondition{
 		this.maxScope=maxScope;
 	}
 	
-	public boolean condition(Object o) {
+	public boolean conditionMet(Object o) {
 		if(!(o instanceof List<?>)){
 			throw new IllegalArgumentException();
 		}

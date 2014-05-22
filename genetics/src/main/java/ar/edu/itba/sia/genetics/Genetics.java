@@ -48,7 +48,7 @@ public class Genetics {
 	}
 
 	private boolean cutConditionMet() {
-		return cutCondition.condition(null);
+		return cutCondition.conditionMet(null);
 	}
 
 

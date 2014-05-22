@@ -16,7 +16,7 @@ public class GenerationsCutCondition implements CutCondition{
 		this.cantGenerations++;
 	}
 	
-	public boolean condition(Object o) {
+	public boolean conditionMet(Object o) {
 		incGeneration();		
 		return cantGenerations<=maxGenerations;
 	}

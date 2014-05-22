@@ -12,7 +12,7 @@ public class StructureCutCondition implements CutCondition{
 	}
 	
 	
-	public boolean condition(Object o) {
+	public boolean conditionMet(Object o) {
 		// TODO Auto-generated method stub
 		return false;
 	}
