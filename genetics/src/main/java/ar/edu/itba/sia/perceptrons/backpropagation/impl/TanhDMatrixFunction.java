@@ -15,7 +15,8 @@ public class TanhDMatrixFunction implements MatrixFunction {
 	public TanhDMatrixFunction(double beta) {
 		this.beta = beta;
 	}
-	@Override
+	
+	
 	public DoubleMatrix apply(DoubleMatrix matrix) {
 		return MatrixFunctions.pow(MatrixFunctions.tanh(matrix.mul(beta)), 2).rsub(1.0).mul(beta); // beta * (1 - tanh^2(beta * matrix))
 	}

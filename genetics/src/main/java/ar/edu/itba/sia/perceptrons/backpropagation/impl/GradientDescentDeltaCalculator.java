@@ -19,7 +19,7 @@ public class GradientDescentDeltaCalculator implements DeltaCalculator {
 		this.function = function;
 	}
 
-	@Override
+	
 	public void calculate(PerceptronNetwork network, Pattern pattern,
 						  List<DoubleMatrix> hs, List<DoubleMatrix> vs, List<DoubleMatrix> deltas) {
 		for (int i = 0; i < network.getLayers().size(); i++) { deltas.add(null); }

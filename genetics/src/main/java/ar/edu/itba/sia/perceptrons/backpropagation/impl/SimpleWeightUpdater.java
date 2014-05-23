@@ -13,7 +13,7 @@ public class SimpleWeightUpdater implements WeightUpdater {
 		this.etha = etha;
 	}
 
-	@Override
+	
 	public void update(List<DoubleMatrix> weights, List<DoubleMatrix> vs, List<DoubleMatrix> deltas) {
 		for (int i = 0; i < weights.size(); i ++) {
 			weights.get(i).addi(deltas.get(i).mmul(vs.get(i)).mul(etha));
