@@ -1,5 +1,6 @@
 package ar.edu.itba.sia.perceptrons;
 
+import ar.edu.itba.sia.genetics.fenotypes.Allele;
 import ar.edu.itba.sia.utils.MatrixFunction;
 import org.jblas.DoubleMatrix;
 

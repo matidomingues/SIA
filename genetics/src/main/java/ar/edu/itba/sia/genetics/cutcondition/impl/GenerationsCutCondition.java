@@ -1,6 +1,9 @@
 package ar.edu.itba.sia.genetics.cutcondition.impl;
 
 import ar.edu.itba.sia.genetics.cutcondition.CutCondition;
+import ar.edu.itba.sia.genetics.fenotypes.Fenotype;
+
+import java.util.List;
 
 public class GenerationsCutCondition implements CutCondition{
 
@@ -16,7 +19,7 @@ public class GenerationsCutCondition implements CutCondition{
 		this.cantGenerations++;
 	}
 	
-	public boolean conditionMet(Object o) {
+	public boolean conditionMet(List<Fenotype> fenotypes) {
 		incGeneration();		
 		return cantGenerations<=maxGenerations;
 	}

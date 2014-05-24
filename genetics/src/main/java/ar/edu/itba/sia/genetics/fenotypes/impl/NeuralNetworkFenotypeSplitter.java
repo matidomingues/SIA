@@ -12,15 +12,13 @@ import ar.edu.itba.sia.genetics.fenotypes.FenotypeSplitter;
 public class NeuralNetworkFenotypeSplitter implements FenotypeSplitter {
 
 	public List<List<Allele>> split(Fenotype parent1, List<Range> splitPoints) {
-		if (!(parent1 instanceof NeuralNetworkFenotype)) {
+		if (!(parent1 instanceof PerceptronNetworkFitnessFunction)) {
 			throw new IllegalArgumentException();
 		}
 
-		NeuralNetworkFenotype fenotype = (NeuralNetworkFenotype) parent1;
-
 		List<List<Allele>> splittedList = new ArrayList<List<Allele>>(
 				splitPoints.size());
-		List<Allele> originalAlleles = fenotype.getAlleleList();
+		List<Allele> originalAlleles = parent1.getAlleles();
 
 		for (Range range : splitPoints) {
 			int from = range.value();

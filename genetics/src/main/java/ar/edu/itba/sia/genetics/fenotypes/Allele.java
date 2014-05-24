@@ -2,5 +2,5 @@ package ar.edu.itba.sia.genetics.fenotypes;
 
 public interface Allele {
 	
-	double getAlleleValue();
+	double getValue();
 }

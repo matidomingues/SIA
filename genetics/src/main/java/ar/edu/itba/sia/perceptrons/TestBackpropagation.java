@@ -1,12 +1,17 @@
 package ar.edu.itba.sia.perceptrons;
 
 import ar.edu.itba.sia.perceptrons.backpropagation.BackpropagationAlgorithm;
+import ar.edu.itba.sia.perceptrons.backpropagation.CutCondition;
 import ar.edu.itba.sia.perceptrons.backpropagation.impl.GradientDescentDeltaCalculator;
 import ar.edu.itba.sia.perceptrons.backpropagation.impl.TanhDMatrixFunction;
 import ar.edu.itba.sia.perceptrons.backpropagation.impl.TanhMatrixFunction;
+import ar.edu.itba.sia.perceptrons.utils.ChainedCutCondition;
+import ar.edu.itba.sia.perceptrons.utils.EpochsCutCondition;
+import ar.edu.itba.sia.perceptrons.utils.ErrorCutCondition;
 import org.jblas.DoubleMatrix;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class TestBackpropagation {
@@ -477,7 +482,12 @@ public class TestBackpropagation {
 
 		PerceptronNetwork network = new PerceptronNetwork(layers);
 
-		BackpropagationAlgorithm backpropagation = new BackpropagationAlgorithm(new GradientDescentDeltaCalculator(0.1, new TanhDMatrixFunction()));
+		List<CutCondition> cutConditions = new LinkedList<CutCondition>();
+		cutConditions.add(new EpochsCutCondition(5000));
+		cutConditions.add(new ErrorCutCondition(testPatterns, 0.0001));
+		ChainedCutCondition cutCondition = new ChainedCutCondition(cutConditions);
+
+		BackpropagationAlgorithm backpropagation = new BackpropagationAlgorithm(new GradientDescentDeltaCalculator(0.1, new TanhDMatrixFunction()), cutCondition);
 
 		backpropagation.execute(network, learningPatterns);
 

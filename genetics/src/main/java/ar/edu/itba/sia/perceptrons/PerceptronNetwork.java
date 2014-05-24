@@ -1,16 +1,30 @@
 package ar.edu.itba.sia.perceptrons;
 
+import ar.edu.itba.sia.genetics.fenotypes.Allele;
+import ar.edu.itba.sia.genetics.fenotypes.Fenotype;
+import ar.edu.itba.sia.genetics.fenotypes.impl.NeuralNetworkAllele;
 import org.jblas.DoubleMatrix;
 import org.jblas.ranges.IntervalRange;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
-public class PerceptronNetwork {
+public class PerceptronNetwork implements Fenotype {
+
+	private static final double MAX_RANGE = 30.5;
+	private static final double MIN_RANGE = -30.5;
 
 	private final List<Layer> layers;
+	private final int locusCount;
 
 	public PerceptronNetwork(List<Layer> layers) {
 		this.layers = layers;
+		int locusCount = 0;
+		for (Layer l : layers) {
+			locusCount += l.getWeights().getLength();
+		}
+		this.locusCount = locusCount;
 	}
 
 	public List<Layer> getLayers() {
@@ -40,4 +54,56 @@ public class PerceptronNetwork {
 		}
 		return sb.toString();
 	}
+
+	@Override
+	public int size() {
+		return locusCount;  //To change body of implemented methods use File | Settings | File Templates.
+	}
+
+	@Override
+	public double maxRange() {
+		return MAX_RANGE;  //To change body of implemented methods use File | Settings | File Templates.
+	}
+
+	@Override
+	public double minRange() {
+		return MIN_RANGE;  //To change body of implemented methods use File | Settings | File Templates.
+	}
+
+	@Override
+	public void alter(int locus) {
+		if (locus < 0 || locus > locusCount ) throw new IndexOutOfBoundsException("No such locus");
+
+		for(Layer l : layers) {
+			int allelesLength= l.getWeights().getLength();
+			if (locus > allelesLength) {
+				locus -= allelesLength;
+			} else if(locus >= 0) {
+				DoubleMatrix dm = l.getWeights();
+				Random random = new Random(System.nanoTime());
+				int locusRow=locus/dm.columns;
+				int locusColumn=locus-locusRow*dm.columns;
+				double originalweight=dm.get(locusRow, locusColumn);
+				double auxiweight=random.nextDouble()-0.5;
+				dm.put(locusRow,locusColumn,originalweight+auxiweight);
+				break;
+			}
+		}
+	}
+
+	@Override
+	public List<Allele> getAlleles() {
+		List<Allele> alleles = new ArrayList<Allele>(locusCount);
+		for (Layer l : layers) {
+			DoubleMatrix weights = l.getWeights();
+			for (int i = 0; i < weights.rows; i++) {
+				for (int j = 0; j < weights.columns; j++) {
+					alleles.add(new NeuralNetworkAllele(weights.get(i, j)));
+				}
+			}
+		}
+		return alleles;  //To change body of implemented methods use File | Settings | File Templates.
+ 	}
+
+
 }

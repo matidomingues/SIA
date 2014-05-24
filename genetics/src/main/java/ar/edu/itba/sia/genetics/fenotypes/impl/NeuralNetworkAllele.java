@@ -10,7 +10,7 @@ public class NeuralNetworkAllele implements Allele{
 		this.value=value;
 	}
 	
-	public double getAlleleValue(){
+	public double getValue(){
 		return value;
 	}
 }

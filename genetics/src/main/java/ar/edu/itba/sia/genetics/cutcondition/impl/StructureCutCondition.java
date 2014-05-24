@@ -19,12 +19,7 @@ public class StructureCutCondition implements CutCondition{
 	}
 	
 	
-	public boolean conditionMet(Object o) {
-		if(!(o instanceof List<?>)){
-			throw new IllegalArgumentException();
-		}
-		
-		List<Fenotype> fenotypes=(List<Fenotype>)o;
+	public boolean conditionMet(List<Fenotype> fenotypes) {
 		if(lastGeneration.isEmpty()){
 			return true;
 		}
