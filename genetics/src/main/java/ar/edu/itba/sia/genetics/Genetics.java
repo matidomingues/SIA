@@ -14,9 +14,12 @@ import ar.edu.itba.sia.genetics.operators.mutators.impl.ClassicMutator;
 import ar.edu.itba.sia.genetics.replacers.GeneticReplacer;
 import ar.edu.itba.sia.genetics.replacers.ReplacementAlgorithm;
 import ar.edu.itba.sia.genetics.replacers.impl.ReplacementAlgorithmOne;
+import ar.edu.itba.sia.genetics.replacers.impl.ReplacementAlgorithmTwo;
 import ar.edu.itba.sia.genetics.selectors.FenotypeSelector;
 import ar.edu.itba.sia.genetics.selectors.impl.EliteFenotypeSelector;
+import ar.edu.itba.sia.genetics.selectors.impl.RouletteFenotypeSelector;
 import ar.edu.itba.sia.genetics.utils.CachingFenotypeComparator;
+import ar.edu.itba.sia.genetics.utils.FenotypeComparator;
 import ar.edu.itba.sia.perceptrons.Layer;
 import ar.edu.itba.sia.perceptrons.Pattern;
 import ar.edu.itba.sia.perceptrons.backpropagation.BackpropagationAlgorithm;
@@ -29,6 +32,7 @@ import ar.edu.itba.sia.perceptrons.utils.ErrorCutCondition;
 import ar.edu.itba.sia.utils.MatrixFunction;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,7 +46,7 @@ public class Genetics {
 	private GeneticReplacer replacer;
 	private ReplacementAlgorithm replacementAlgorithm;
 	private CutCondition cutCondition;
-	private int[] arquitecture= {2,4,3,3,1};
+	private int[] arquitecture= {2,75,1};
 	private final double[][] learningPatternsArr = {
 			{-0.9285,   0.3058,   0.1639},
 			{ 0.5755,   1.6415,   0.8146},
@@ -492,13 +496,18 @@ public class Genetics {
 	
 	public static void main(String[] args) {
 
-		Genetics genetics= new Genetics(null,null,null, new GenerationsCutCondition(100),100);
-		List<Fenotype> fenotypes = genetics.initPopulation(100);
+		Genetics genetics= new Genetics(null,null,null, new GenerationsCutCondition(1000),150);
+		List<Fenotype> fenotypes = genetics.initPopulation(150);
 		ReplacementAlgorithm loop = genetics.getReplacementAlgorithm();
 
 		while (genetics.cutConditionMet()) {
 			loop.evolve(fenotypes);
+			System.out.println(fenotypes.size());
 		}
+		FitnessFunction fitnessFunction=genetics.load();
+		Collections.sort(fenotypes, new FenotypeComparator(fitnessFunction));
+		double value=fitnessFunction.evaluate(fenotypes.get(0));
+		System.out.println("best fitness -->"+value);
 	}
 	
 	public Genetics(){
@@ -516,19 +525,20 @@ public class Genetics {
 		FitnessFunction fitnessFunction= load();
 		Comparator<Fenotype> fenotypeComparator = new CachingFenotypeComparator(fitnessFunction);
 		this.replacementAlgorithm =
-				new ReplacementAlgorithmOne(
-						new EliteFenotypeSelector(2, fitnessFunction, fenotypeComparator),
-						new EliteFenotypeSelector(2, fitnessFunction, fenotypeComparator),
+				new ReplacementAlgorithmTwo(
+						new RouletteFenotypeSelector(90, fitnessFunction),
+						new RouletteFenotypeSelector(90, fitnessFunction),
 						new ClassicMutator(),
 						new AnularCrossover(fenotypeBuilder,
-								new NeuralNetworkFenotypeSplitter(), 0.9),
+								new NeuralNetworkFenotypeSplitter(), 0.6),
 						new Backpropagator(loadBackpropagationAlgoritm(), learningPatterns()));
 	}
 
 	private List<Fenotype> initPopulation(int N) {
 		List<Fenotype> population= new ArrayList<Fenotype>(N);
+		Backpropagator bp=new Backpropagator(loadBackpropagationAlgoritm(), learningPatterns());
 		for(int i=0;i<N;i++){
-			population.add(fenotypeBuilder.build());
+			population.add(bp.backpropagate(fenotypeBuilder.build()));
 		}
 		return population; 
 	}

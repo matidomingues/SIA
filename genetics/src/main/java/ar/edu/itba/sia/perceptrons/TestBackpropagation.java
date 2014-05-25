@@ -483,22 +483,22 @@ public class TestBackpropagation {
 		PerceptronNetwork network = new PerceptronNetwork(layers);
 
 		List<CutCondition> cutConditions = new LinkedList<CutCondition>();
-		cutConditions.add(new EpochsCutCondition(3000));
+		cutConditions.add(new EpochsCutCondition(7000));
 		cutConditions.add(new ErrorCutCondition(testPatterns, 0.001));
 		ChainedCutCondition cutCondition = new ChainedCutCondition(cutConditions);
 
 		BackpropagationAlgorithm backpropagation = new BackpropagationAlgorithm(new GradientDescentDeltaCalculator(0.01, new TanhDMatrixFunction()), cutCondition);
 
 		backpropagation.execute(network, learningPatterns);
-
-		System.out.println(String.format("Finished! Epochs left: %d Final Error = %g", backpropagation.getEpochs(), backpropagation.getLastError()));
+		List<Double> errorH=((ErrorCutCondition)cutConditions.get(1)).getErrorHistory();
+		System.out.println(String.format("Finished! Epochs left: %d Final Error = %g", backpropagation.getEpochs(), errorH.get(errorH.size()-1)));
 		System.out.println(network);
 
-//		for (int i = 0; i < testPatterns.size(); i++) {
-//			DoubleMatrix result = network.compute(testPatterns.get(i));
-//			System.out.println(result);
-//			System.out.println(testPatterns.get(i).getExpectedOutputs());
-//		}
+		for (int i = 0; i < testPatterns.size(); i++) {
+			DoubleMatrix result = network.compute(testPatterns.get(i));
+			System.out.println(result);
+			System.out.println(testPatterns.get(i).getExpectedOutputs());
+		}
 	}
 
 }

@@ -15,10 +15,10 @@ public class ChainedCutCondition implements CutCondition {
 
 	@Override
 	public boolean conditionMet(List<Fenotype> fenotypes) {
-		boolean conditionMet = false;
+		boolean conditionMet = true;
 		for(CutCondition cc : conditionList) {
 			conditionMet &= cc.conditionMet(fenotypes);
-			if (conditionMet) break;
+			//if (conditionMet) break;
 		}
 		return conditionMet;
 	}

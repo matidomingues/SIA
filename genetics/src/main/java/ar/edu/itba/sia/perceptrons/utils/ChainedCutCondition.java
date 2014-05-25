@@ -23,4 +23,5 @@ public class ChainedCutCondition implements CutCondition {
 		}
 		return conditionMet;  //To change body of implemented methods use File | Settings | File Templates.
 	}
+	
 }
