@@ -501,8 +501,8 @@ public class Genetics {
 		ReplacementAlgorithm loop = genetics.getReplacementAlgorithm();
 
 		while (genetics.cutConditionMet()) {
+			System.out.println("size fenotypes "+fenotypes.size());
 			loop.evolve(fenotypes);
-			System.out.println(fenotypes.size());
 		}
 		FitnessFunction fitnessFunction=genetics.load();
 		Collections.sort(fenotypes, new FenotypeComparator(fitnessFunction));

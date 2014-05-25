@@ -45,9 +45,14 @@ public class RouletteFenotypeSelector implements FenotypeSelector{
 		}
 		
 		for(int j=0;j<k;j++){
+			//System.out.println("j --"+j);
+			
 			boolean found=false;
 			for(int l=1;l<(k+1) && !found;l++){
-				if(averageFitnessAcumulated[i-1]<=r[j] && r[j]<=averageFitnessAcumulated[i]){
+				double previous=averageFitnessAcumulated[l-1];
+				double next=averageFitnessAcumulated[l];
+				if(previous<=r[j] && r[j]<=next){
+					//System.out.println("l --"+l);
 					selectedList.add(fenotypes.get(l-1));
 					found=true;
 				}
