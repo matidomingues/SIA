@@ -12,7 +12,7 @@ public class BackpropagationAlgorithm {
 	private final DeltaCalculator deltaCalculator;
 	private List<Pattern> patterns;
 	private PerceptronNetwork network;
-	private int epochs = 5000;
+	private int epochs = 0;
 	private final List<Double> errorHistory;
 	private double epsilon = 0.0001;
 	private final CutCondition cutCondition;
@@ -37,7 +37,8 @@ public class BackpropagationAlgorithm {
 				network.updateLayers(deltas);
 				vs.clear(); hs.clear(); deltas.clear();
 			}
-		} while (!cutCondition.conditionMet(this));
+			epochs++;
+		} while (cutCondition.conditionMet(this));
 	}
 
 	private void computeOutputs(List<Layer> layers, Pattern pattern, List<DoubleMatrix> vs, List<DoubleMatrix> hs) {

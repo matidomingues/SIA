@@ -17,7 +17,7 @@ import java.util.List;
 public class TestBackpropagation {
 
 	public static void main(String[] args) {
-		int[] architecure = {2, 4, 3, 3, 1};
+		int[] architecure = {2, 75, 1};
 
 		double[][] learningPatternsArr = {
 				{-0.9285,   0.3058,   0.1639},
@@ -483,11 +483,11 @@ public class TestBackpropagation {
 		PerceptronNetwork network = new PerceptronNetwork(layers);
 
 		List<CutCondition> cutConditions = new LinkedList<CutCondition>();
-		cutConditions.add(new EpochsCutCondition(5000));
-		cutConditions.add(new ErrorCutCondition(testPatterns, 0.0001));
+		cutConditions.add(new EpochsCutCondition(3000));
+		cutConditions.add(new ErrorCutCondition(testPatterns, 0.001));
 		ChainedCutCondition cutCondition = new ChainedCutCondition(cutConditions);
 
-		BackpropagationAlgorithm backpropagation = new BackpropagationAlgorithm(new GradientDescentDeltaCalculator(0.1, new TanhDMatrixFunction()), cutCondition);
+		BackpropagationAlgorithm backpropagation = new BackpropagationAlgorithm(new GradientDescentDeltaCalculator(0.01, new TanhDMatrixFunction()), cutCondition);
 
 		backpropagation.execute(network, learningPatterns);
 

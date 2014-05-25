@@ -29,7 +29,7 @@ public class ErrorCutCondition implements CutCondition {
 			error += MatrixFunctions.pow(p.getExpectedOutputs().sub(result), 2).scalar();
 		}
 		errorHistory.add(error/2.0);
-		return errorHistory.get(errorHistory.size() -1) < epsilon;
+		return errorHistory.get(errorHistory.size() -1) > epsilon;
 	}
 
 	public List<Double> getErrorHistory() {

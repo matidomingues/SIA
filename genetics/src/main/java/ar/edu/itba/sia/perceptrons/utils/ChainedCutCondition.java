@@ -15,11 +15,11 @@ public class ChainedCutCondition implements CutCondition {
 
 	@Override
 	public boolean conditionMet(BackpropagationAlgorithm backpropagationAlgorithm) {
-		boolean conditionMet = false;
+		boolean conditionMet = true;
 
 		for (CutCondition cc: cutConditions) {
-			conditionMet &= cc.conditionMet(backpropagationAlgorithm);
-			if (conditionMet) break;
+			conditionMet = conditionMet&& cc.conditionMet(backpropagationAlgorithm);
+			//if (conditionMet) break;
 		}
 		return conditionMet;  //To change body of implemented methods use File | Settings | File Templates.
 	}
