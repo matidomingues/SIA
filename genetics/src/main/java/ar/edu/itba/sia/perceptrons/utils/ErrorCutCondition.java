@@ -25,6 +25,6 @@ public class ErrorCutCondition implements CutCondition {
 			DoubleMatrix result = backpropagationAlgorithm.getNetwork().compute(p);
 			error += MatrixFunctions.pow(p.getExpectedOutputs().sub(result), 2).scalar();
 		}
-		return error/2.0 < epsilon;
+		return error/2.0 > epsilon;
 	}
 }
