@@ -1,19 +1,40 @@
 package ar.edu.itba.sia.genetics;
 
 import ar.edu.itba.sia.genetics.cutcondition.CutCondition;
+import ar.edu.itba.sia.genetics.cutcondition.impl.GenerationsCutCondition;
 import ar.edu.itba.sia.genetics.fenotypes.Fenotype;
+import ar.edu.itba.sia.genetics.fenotypes.FitnessFunction;
 import ar.edu.itba.sia.genetics.fenotypes.impl.NeuralNetworkFenotypeBuilder;
+import ar.edu.itba.sia.genetics.fenotypes.impl.NeuralNetworkFenotypeSplitter;
+import ar.edu.itba.sia.genetics.fenotypes.impl.PerceptronNetworkFitnessFunction;
 import ar.edu.itba.sia.genetics.operators.GeneticOperator;
+import ar.edu.itba.sia.genetics.operators.backpropagation.Backpropagator;
+import ar.edu.itba.sia.genetics.operators.crossers.impl.AnularCrossover;
+import ar.edu.itba.sia.genetics.operators.mutators.impl.ClassicMutator;
 import ar.edu.itba.sia.genetics.replacers.GeneticReplacer;
 import ar.edu.itba.sia.genetics.replacers.ReplacementAlgorithm;
+import ar.edu.itba.sia.genetics.replacers.impl.ReplacementAlgorithmOne;
+import ar.edu.itba.sia.genetics.replacers.impl.ReplacementAlgorithmTwo;
 import ar.edu.itba.sia.genetics.selectors.FenotypeSelector;
+import ar.edu.itba.sia.genetics.selectors.impl.EliteFenotypeSelector;
+import ar.edu.itba.sia.genetics.selectors.impl.UniversalFenotypeSelector;
+import ar.edu.itba.sia.perceptrons.Layer;
+import ar.edu.itba.sia.perceptrons.Pattern;
 import ar.edu.itba.sia.perceptrons.PerceptronNetwork;
+import ar.edu.itba.sia.perceptrons.backpropagation.BackpropagationAlgorithm;
+import ar.edu.itba.sia.perceptrons.backpropagation.impl.GradientDescentDeltaCalculator;
+import ar.edu.itba.sia.perceptrons.backpropagation.impl.TanhDMatrixFunction;
 import ar.edu.itba.sia.perceptrons.backpropagation.impl.TanhMatrixFunction;
+import ar.edu.itba.sia.perceptrons.utils.ChainedCutCondition;
+import ar.edu.itba.sia.perceptrons.utils.EpochsCutCondition;
+import ar.edu.itba.sia.perceptrons.utils.ErrorCutCondition;
 import ar.edu.itba.sia.utils.MatrixFunction;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.jblas.DoubleMatrix;
 
 public class Genetics {
 
@@ -472,7 +493,7 @@ public class Genetics {
 	
 	public static void main(String[] args) {
 
-		Genetics genetics= new Genetics();
+		Genetics genetics= new Genetics(null,null,null, new GenerationsCutCondition(100),100);
 		List<Fenotype> fenotypes = genetics.initPopulation(100);
 		ReplacementAlgorithm loop = genetics.getReplacementAlgorithm();
 
@@ -492,6 +513,8 @@ public class Genetics {
 		transferenceFunctions.add(new TanhMatrixFunction());
 		transferenceFunctions.add(new TanhMatrixFunction());
 		this.fenotypeBuilder = new NeuralNetworkFenotypeBuilder(arquitecture, transferenceFunctions);
+		FitnessFunction fitnessFunction= load();		
+		this.replacementAlgorithm=new ReplacementAlgorithmOne(new EliteFenotypeSelector(fitnessFunction, 2), new EliteFenotypeSelector(fitnessFunction, 2), new ClassicMutator(), new AnularCrossover(fenotypeBuilder, new NeuralNetworkFenotypeSplitter()), new Backpropagator(loadBackpropagationAlgoritm(), learningPatterns()));
 	}
 
 	private List<Fenotype> initPopulation(int N) {
@@ -502,6 +525,56 @@ public class Genetics {
 		return population; 
 	}
 
+	private FitnessFunction load(){
+		List<Pattern> patterns= new ArrayList<Pattern>(); 
+		for (int i = 0; i < learningPatternsArr.length; i++) {
+			patterns.add(new Pattern(new DoubleMatrix(learningPatternsArr[i]).transpose()));
+		}
+
+		for (int i = 0; i < testPatternsArr.length; i++) {
+			patterns.add(new Pattern(new DoubleMatrix(testPatternsArr[i]).transpose()));
+		}
+
+		
+		FitnessFunction fitnessFunction=new PerceptronNetworkFitnessFunction(patterns);
+		return fitnessFunction;
+	}
+	
+	private List<Pattern> learningPatterns(){
+		List<Pattern> patterns= new ArrayList<Pattern>(); 
+		for (int i = 0; i < learningPatternsArr.length; i++) {
+			patterns.add(new Pattern(new DoubleMatrix(learningPatternsArr[i]).transpose()));
+		}
+		return patterns;
+	}
+	
+	private BackpropagationAlgorithm loadBackpropagationAlgoritm(){
+		List<Layer> layers = new ArrayList<Layer>(arquitecture.length - 2);
+		List<Pattern> learningPatterns = new ArrayList<Pattern>(learningPatternsArr.length);
+		List<Pattern> testPatterns = new ArrayList<Pattern>(testPatternsArr.length);
+
+		for (int i = 1; i < arquitecture.length; i++) {
+			layers.add(new Layer(DoubleMatrix.rand(arquitecture[i],arquitecture[i-1] + 1), new TanhMatrixFunction()));
+		}
+
+		for (int i = 0; i < learningPatternsArr.length; i++) {
+			learningPatterns.add(new Pattern(new DoubleMatrix(learningPatternsArr[i]).transpose()));
+		}
+
+		for (int i = 0; i < testPatternsArr.length; i++) {
+			testPatterns.add(new Pattern(new DoubleMatrix(testPatternsArr[i]).transpose()));
+		}
+
+
+		List<ar.edu.itba.sia.perceptrons.backpropagation.CutCondition> cutConditions = new LinkedList<ar.edu.itba.sia.perceptrons.backpropagation.CutCondition>();
+		cutConditions.add(new EpochsCutCondition(5000));
+		cutConditions.add(new ErrorCutCondition(testPatterns, 0.0001));
+		ChainedCutCondition cutCondition = new ChainedCutCondition(cutConditions);
+
+		BackpropagationAlgorithm backpropagation = new BackpropagationAlgorithm(new GradientDescentDeltaCalculator(0.1, new TanhDMatrixFunction()), cutCondition);
+		return backpropagation;
+	}
+	
 	private boolean cutConditionMet() {
 		return cutCondition.conditionMet(null);
 	}
