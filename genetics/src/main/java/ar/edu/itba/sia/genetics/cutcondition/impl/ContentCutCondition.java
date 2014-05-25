@@ -26,7 +26,7 @@ public class ContentCutCondition implements CutCondition {
 	
 	public boolean conditionMet(List<Fenotype> fenotypes) {
 
-		Collections.sort(fenotypes, new FenotypeComparator());
+		Collections.sort(fenotypes, new FenotypeComparator(fitnessFunction));
 		double actualfitness = fitnessFunction.evaluate(fenotypes.get(0));
 		if(Math.abs(actualfitness - fitness) < epsilon) {
 			this.haltedTimes++;

@@ -19,7 +19,7 @@ public class ScopeCutCondition implements CutCondition{
 	}
 	
 	public boolean conditionMet(List<Fenotype> fenotypes) {
-		Collections.sort(fenotypes, new FenotypeComparator());
+		Collections.sort(fenotypes, new FenotypeComparator(fitnessFunction));
 		double actualfitness = fitnessFunction.evaluate(fenotypes.get(0));
 		if(actualfitness>maxScope){
 			return false;

@@ -5,13 +5,16 @@ import java.util.List;
 import java.util.Random;
 
 import ar.edu.itba.sia.genetics.fenotypes.Fenotype;
+import ar.edu.itba.sia.genetics.fenotypes.FitnessFunction;
 import ar.edu.itba.sia.genetics.selectors.FenotypeSelector;
 
 public class RouletteFenotypeSelector implements FenotypeSelector{
 
-	private int k;
+	private final FitnessFunction fitnessFunction;
+	private final int k;
 	
-	public RouletteFenotypeSelector(int k){
+	public RouletteFenotypeSelector(FitnessFunction fitnessFunction, int k){
+		this.fitnessFunction = fitnessFunction;
 		this.k=k;
 	}
 	
@@ -22,7 +25,7 @@ public class RouletteFenotypeSelector implements FenotypeSelector{
 		
 		
 		for(Fenotype f:fenotypes){
-			sumFitness+=f.fitnessFunction();
+			sumFitness+=fitnessFunction.evaluate(f);
 		}
 		
 		averageFitness=sumFitness/fenotypes.size();
@@ -30,7 +33,7 @@ public class RouletteFenotypeSelector implements FenotypeSelector{
 		
 		int i=1;
 		for(Fenotype f:fenotypes){
-			averageFitnessAcumulated[i]=averageFitnessAcumulated[i-1]+(f.fitnessFunction()/averageFitness);
+			averageFitnessAcumulated[i]=averageFitnessAcumulated[i-1]+(fitnessFunction.evaluate(f)/averageFitness);
 			i++;
 		}
 				

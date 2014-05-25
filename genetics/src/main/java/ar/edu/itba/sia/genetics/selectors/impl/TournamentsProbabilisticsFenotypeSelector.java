@@ -5,14 +5,16 @@ import java.util.List;
 import java.util.Random;
 
 import ar.edu.itba.sia.genetics.fenotypes.Fenotype;
+import ar.edu.itba.sia.genetics.fenotypes.FitnessFunction;
 import ar.edu.itba.sia.genetics.selectors.FenotypeSelector;
 
 public class TournamentsProbabilisticsFenotypeSelector implements FenotypeSelector{
 
-	private int k;
+	private final FitnessFunction fitnessFunction;
+	private final int k;
 	
-	
-	public TournamentsProbabilisticsFenotypeSelector(int k){
+	public TournamentsProbabilisticsFenotypeSelector(FitnessFunction fitnessFunction, int k){
+		this.fitnessFunction = fitnessFunction;
 		this.k=k;
 	}
 	
@@ -32,10 +34,10 @@ public class TournamentsProbabilisticsFenotypeSelector implements FenotypeSelect
 			f2=fenotypes.get(individuals[1]);
 			double probability= random.nextDouble();
 			if(probability<0.75){
-				elite=(f1.fitnessFunction()>f2.fitnessFunction())?f1:f2;				
+				elite=(fitnessFunction.evaluate(f1) > fitnessFunction.evaluate(f2))?f1:f2;
 			}
 			else{
-				elite=(f1.fitnessFunction()<f2.fitnessFunction())?f1:f2;
+				elite=(fitnessFunction.evaluate(f1) < fitnessFunction.evaluate(f2))?f1:f2;
 			}
 			
 			selectedList.add(elite);
