@@ -14,16 +14,11 @@ public class EliteFenotypeSelector implements FenotypeSelector{
 	private final FitnessFunction fitnessFunction;
 	private final int k;
 	
-	public EliteFenotypeSelector(FitnessFunction fitnessFunction, int k){
+	public EliteFenotypeSelector(int k, FitnessFunction fitnessFunction){
 		this.fitnessFunction = fitnessFunction;
 		this.k=k;
 	}
 	
-	
-	public void replace(Set<Fenotype> fenotypes, Set<Fenotype> selected) {
-	}
-
-
 	public List<Fenotype> select(List<Fenotype> fenotypes) {
 		Collections.sort(fenotypes, new FenotypeComparator(fitnessFunction));
 		List<Fenotype> selectedList= fenotypes.subList(0, k);

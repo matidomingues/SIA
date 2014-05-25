@@ -11,8 +11,8 @@ import java.util.Random;
 
 public class AnularCrossover extends Crossover {
 
-	public AnularCrossover(FenotypeBuilder fenotypeBuilder, FenotypeSplitter splitter) {
-		super(fenotypeBuilder, splitter);
+	public AnularCrossover(FenotypeBuilder fenotypeBuilder, FenotypeSplitter splitter, double probability) {
+		super(fenotypeBuilder, splitter, probability);
 	}
 
 	@Override

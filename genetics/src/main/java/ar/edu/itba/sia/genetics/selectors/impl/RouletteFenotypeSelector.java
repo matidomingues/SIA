@@ -13,7 +13,7 @@ public class RouletteFenotypeSelector implements FenotypeSelector{
 	private final FitnessFunction fitnessFunction;
 	private final int k;
 	
-	public RouletteFenotypeSelector(FitnessFunction fitnessFunction, int k){
+	public RouletteFenotypeSelector(int k, FitnessFunction fitnessFunction){
 		this.fitnessFunction = fitnessFunction;
 		this.k=k;
 	}

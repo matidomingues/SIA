@@ -13,7 +13,7 @@ public class UniversalFenotypeSelector implements FenotypeSelector {
 	private final FitnessFunction fitnessFunction;
 	private final int k;
 	
-	public UniversalFenotypeSelector(FitnessFunction fitnessFunction, int k){
+	public UniversalFenotypeSelector(int k, FitnessFunction fitnessFunction){
 		this.fitnessFunction = fitnessFunction;
 		this.k=k;
 	}

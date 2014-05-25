@@ -7,23 +7,18 @@ import ar.edu.itba.sia.genetics.operators.mutators.Mutator;
 import ar.edu.itba.sia.genetics.replacers.ReplacementAlgorithm;
 import ar.edu.itba.sia.genetics.selectors.FenotypeSelector;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 public class ReplacementAlgorithmTwo extends ReplacementAlgorithm {
 
 
 	public ReplacementAlgorithmTwo(FenotypeSelector selectorSelect, FenotypeSelector selectorReplace, Mutator mutator, Crossover crosser, Backpropagator backpropagator) {
-		super(selectorSelect,selectorReplace, mutator, crosser,backpropagator);
+		super(selectorSelect, selectorReplace, mutator, crosser, backpropagator);
 	}
 
 	@Override
 	public void evolve(List<Fenotype> fenotypes) {
-		List<Fenotype> children =new ArrayList<Fenotype>();
+		List<Fenotype> children = new ArrayList<Fenotype>();
 		List<Fenotype> parents = this.getSelectorSelect().select(fenotypes);
 		
 		while(children.size() < parents.size()) {
@@ -38,18 +33,5 @@ public class ReplacementAlgorithmTwo extends ReplacementAlgorithm {
 		List<Fenotype> oldGenerationRemains=this.getSelectorReplace().select(fenotypes);
 		fenotypes.retainAll(oldGenerationRemains);
 		fenotypes.addAll(mutations);
-	}
-
-	private void shuffle(Fenotype[] ar)
-	{
-		Random rnd = new Random();
-		for (int i = ar.length - 1; i > 0; i--)
-		{
-			int index = rnd.nextInt(i + 1);
-			// Simple swap
-			Fenotype a = ar[index];
-			ar[index] = ar[i];
-			ar[i] = a;
-		}
 	}
 }

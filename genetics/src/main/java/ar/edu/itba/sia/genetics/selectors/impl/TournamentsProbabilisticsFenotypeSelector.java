@@ -13,7 +13,7 @@ public class TournamentsProbabilisticsFenotypeSelector implements FenotypeSelect
 	private final FitnessFunction fitnessFunction;
 	private final int k;
 	
-	public TournamentsProbabilisticsFenotypeSelector(FitnessFunction fitnessFunction, int k){
+	public TournamentsProbabilisticsFenotypeSelector(int k, FitnessFunction fitnessFunction){
 		this.fitnessFunction = fitnessFunction;
 		this.k=k;
 	}

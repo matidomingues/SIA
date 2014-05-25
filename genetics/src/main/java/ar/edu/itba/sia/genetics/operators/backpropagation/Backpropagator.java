@@ -30,8 +30,8 @@ public class Backpropagator {
 	
 	private boolean doBackpropagation(){
 		Random random = new Random(System.nanoTime());
-		double crossoverProb=random.nextDouble(); 
-		return crossoverProb>BACKPROPAGATION_PROBABILITY;
+		double crossoverProb = random.nextDouble();
+		return crossoverProb > BACKPROPAGATION_PROBABILITY;
 	}
 	
 	

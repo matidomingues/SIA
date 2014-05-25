@@ -10,8 +10,8 @@ import java.util.*;
 
 public class TwoPointCrossover extends Crossover {
 
-	public TwoPointCrossover(FenotypeBuilder fenotypeBuilder, FenotypeSplitter splitter) {
-		super(fenotypeBuilder, splitter);
+	public TwoPointCrossover(FenotypeBuilder fenotypeBuilder, FenotypeSplitter splitter, double probability) {
+		super(fenotypeBuilder, splitter, probability);
 	}
 
 	@Override

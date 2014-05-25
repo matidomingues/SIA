@@ -12,11 +12,11 @@ import java.util.Random;
 
 public class UniformCrossover extends Crossover {
 
-	private final float probability;
+	private final double ocurranceProbability;
 
-	public UniformCrossover(FenotypeBuilder fenotypeBuilder, FenotypeSplitter splitter, float probability) {
-		super(fenotypeBuilder, splitter);
-		this.probability = probability;
+	public UniformCrossover(FenotypeBuilder fenotypeBuilder, FenotypeSplitter splitter, double probability, double ocurrenceProbability ) {
+		super(fenotypeBuilder, splitter, probability);
+		this.ocurranceProbability = ocurrenceProbability;
 	}
 
 	@Override
@@ -26,7 +26,7 @@ public class UniformCrossover extends Crossover {
 		boolean passed = true;
 		rangePointsList.add(0);
 		for (int i = 1; i < parent1.size() - 1; i++) {
-			if (random.nextFloat() > probability) {
+			if (random.nextDouble() > ocurranceProbability) {
 				if (!passed) {
 					rangePointsList.add(i);
 				}

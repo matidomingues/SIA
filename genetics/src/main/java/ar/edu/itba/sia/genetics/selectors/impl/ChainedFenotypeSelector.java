@@ -6,11 +6,10 @@ import java.util.List;
 import ar.edu.itba.sia.genetics.fenotypes.Fenotype;
 import ar.edu.itba.sia.genetics.selectors.FenotypeSelector;
 
-public class DuetFenotypeSelector implements FenotypeSelector{
+public class ChainedFenotypeSelector implements FenotypeSelector{
 	private final List<FenotypeSelector> selectors;
 	
-	
-	public DuetFenotypeSelector(List<FenotypeSelector> selectors){
+	public ChainedFenotypeSelector(List<FenotypeSelector> selectors){
 		this.selectors = selectors;
 	}
 	
@@ -20,5 +19,9 @@ public class DuetFenotypeSelector implements FenotypeSelector{
 			list.addAll(f.select(fenotypes));
 		}
 		return list;
+	}
+
+	public List<FenotypeSelector> getSelectors() {
+		return this.selectors;
 	}
 }

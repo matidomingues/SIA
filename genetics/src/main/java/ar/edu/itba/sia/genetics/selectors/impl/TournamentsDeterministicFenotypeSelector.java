@@ -15,7 +15,7 @@ public class TournamentsDeterministicFenotypeSelector implements
 	private final int k;
 	private final int m;
 
-	public TournamentsDeterministicFenotypeSelector(FitnessFunction fitnessFunction, int m, int k) {
+	public TournamentsDeterministicFenotypeSelector(int m, int k, FitnessFunction fitnessFunction) {
 		this.fitnessFunction = fitnessFunction;
 		this.k = k;
 		this.m = m;

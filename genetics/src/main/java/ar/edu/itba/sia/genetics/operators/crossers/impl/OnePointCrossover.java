@@ -12,8 +12,8 @@ import java.util.Random;
 
 public class OnePointCrossover extends Crossover {
 
-	public OnePointCrossover(FenotypeBuilder fenotypeBuilder, FenotypeSplitter splitter) {
-		super(fenotypeBuilder, splitter);
+	public OnePointCrossover(FenotypeBuilder fenotypeBuilder, FenotypeSplitter splitter, double probability) {
+		super(fenotypeBuilder, splitter, probability);
 	}
 
 	@Override

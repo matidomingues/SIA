@@ -1,20 +1,21 @@
 package ar.edu.itba.sia.genetics.cutcondition.impl;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import ar.edu.itba.sia.genetics.cutcondition.CutCondition;
 import ar.edu.itba.sia.genetics.fenotypes.Fenotype;
-import ar.edu.itba.sia.genetics.utils.FenotypeComparator;
 
 public class StructureCutCondition implements CutCondition{
 
-	private static final double POPULATIONPERCENTAGE =0.9;
-	private static final int MAXCONSECUTIVETIMES=10;
+	private final double populationPercentage;
+	private final int maxConsecutiveTimes;
 	private List<Fenotype> lastGeneration;
 	private int repeatedTimes=0;
-	public StructureCutCondition(){
+
+	public StructureCutCondition(double populationPercentage, int maxConsecutiveTimes) {
+		this.populationPercentage = populationPercentage;
+		this.maxConsecutiveTimes = maxConsecutiveTimes;
 		this.lastGeneration=new ArrayList<Fenotype>();
 	}
 	
@@ -30,8 +31,8 @@ public class StructureCutCondition implements CutCondition{
 			}
 		}
 		
-		if((repeated/lastGeneration.size())>POPULATIONPERCENTAGE){
-			if(repeatedTimes>=MAXCONSECUTIVETIMES){
+		if((repeated/lastGeneration.size())> populationPercentage){
+			if(repeatedTimes>= maxConsecutiveTimes){
 				return false;
 			}
 			else{

@@ -14,7 +14,7 @@ public class ReplacementAlgorithmOne extends ReplacementAlgorithm {
 
 //ojo que en este caso el selectorSelect tiene que ser k=2!!! (hay que ver bien que pasa cuando se usa elite)
 	public ReplacementAlgorithmOne(FenotypeSelector selectorSelect, FenotypeSelector selectorReplace, Mutator mutator, Crossover crosser, Backpropagator backpropagator) {
-		super(selectorSelect,selectorReplace, mutator, crosser,backpropagator);
+		super(selectorSelect,selectorReplace, mutator, crosser, backpropagator);
 	}
 
 	@Override

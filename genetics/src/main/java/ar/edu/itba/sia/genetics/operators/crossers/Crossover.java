@@ -14,10 +14,12 @@ public abstract class Crossover {
 	private static final double CROSSOVER_PROBABILITY=0.5;
 	private final FenotypeBuilder fenotypeBuilder;
 	private final FenotypeSplitter splitter;
+	private final double probability;
 
-	public Crossover(FenotypeBuilder fenotypeBuilder, FenotypeSplitter splitter) {
+	public Crossover(FenotypeBuilder fenotypeBuilder, FenotypeSplitter splitter, double probability) {
 		this.fenotypeBuilder = fenotypeBuilder;
 		this.splitter = splitter;
+		this.probability = probability;
 	}
 
 	public List<Fenotype> crossover(Fenotype parent1, Fenotype parent2) {
@@ -80,7 +82,7 @@ public abstract class Crossover {
 	public boolean doCrossover(){
 		Random random = new Random(System.nanoTime());
 		double crossoverProb=random.nextDouble(); 
-		return crossoverProb>CROSSOVER_PROBABILITY;
+		return crossoverProb>probability;
 	}
 
 }
