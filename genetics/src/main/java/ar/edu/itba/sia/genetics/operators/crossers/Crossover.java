@@ -11,7 +11,6 @@ import org.jblas.ranges.Range;
 import java.util.*;
 
 public abstract class Crossover {
-	private static final double CROSSOVER_PROBABILITY=0.5;
 	private final FenotypeBuilder fenotypeBuilder;
 	private final FenotypeSplitter splitter;
 	private final double probability;
@@ -33,7 +32,7 @@ public abstract class Crossover {
 		}
 		if(doCrossover()){
 		List<Range> ranges = getRanges(parent1, parent2);
-
+		
 		List<List<Allele>> parent1Alleles = splitter.split(parent1, ranges);
 		List<List<Allele>> parent2Alleles = splitter.split(parent2, ranges);
 
@@ -53,7 +52,7 @@ public abstract class Crossover {
 		if (rangePoints.length < 2) throw new IllegalArgumentException("Too few split points.");
 		Arrays.sort(rangePoints);
 		List<Range> ranges = new ArrayList<Range>(rangePoints.length - 1);
-		for (int i = 0; i < rangePoints.length; i++) {
+		for (int i = 1; i < rangePoints.length; i++) {
 			ranges.add(new IntervalRange(rangePoints[i - 1], rangePoints[i]));
 		}
 		return ranges;

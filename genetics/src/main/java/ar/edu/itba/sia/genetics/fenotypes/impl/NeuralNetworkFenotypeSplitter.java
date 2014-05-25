@@ -8,11 +8,12 @@ import org.jblas.ranges.Range;
 import ar.edu.itba.sia.genetics.fenotypes.Allele;
 import ar.edu.itba.sia.genetics.fenotypes.Fenotype;
 import ar.edu.itba.sia.genetics.fenotypes.FenotypeSplitter;
+import ar.edu.itba.sia.perceptrons.PerceptronNetwork;
 
 public class NeuralNetworkFenotypeSplitter implements FenotypeSplitter {
 
 	public List<List<Allele>> split(Fenotype parent1, List<Range> splitPoints) {
-		if (!(parent1 instanceof PerceptronNetworkFitnessFunction)) {
+		if (!(parent1 instanceof PerceptronNetwork)) {
 			throw new IllegalArgumentException();
 		}
 
@@ -27,7 +28,7 @@ public class NeuralNetworkFenotypeSplitter implements FenotypeSplitter {
 				range.next();
 				to = range.value();
 			}
-
+			range.init(from, to);
 			List<Allele> subList = originalAlleles.subList(from, to);
 			if (!(subList == null || subList.isEmpty())) {
 				splittedList.add(subList);

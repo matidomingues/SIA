@@ -33,7 +33,7 @@ public class NeuralNetworkFenotypeBuilder implements FenotypeBuilder{
 	public Fenotype build() {
 		List<Layer> layers = new ArrayList<Layer>(architecture.length - 2);
 
-		for (int i = 1; i < architecture.length; i++) {
+		for (int i = 1; i < architecture.length-1; i++) {
 			layers.add(new Layer(DoubleMatrix.rand(architecture[i],architecture[i-1] + 1), transferenceFunctions.get(i-1)));
 		}
 
@@ -45,7 +45,7 @@ public class NeuralNetworkFenotypeBuilder implements FenotypeBuilder{
 
 		Iterator<Allele> childAllelesIt = childAlleles.iterator();
 		List<Layer> layers = new ArrayList<Layer>(architecture.length - 2);
-		int i = 0;
+		int i = 1;
 		while (childAllelesIt.hasNext()) {
 			Layer l = buildLayer(childAllelesIt, i);
 			layers.add(l);
