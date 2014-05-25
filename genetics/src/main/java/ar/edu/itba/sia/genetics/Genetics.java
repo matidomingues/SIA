@@ -14,13 +14,11 @@ import ar.edu.itba.sia.genetics.operators.mutators.impl.ClassicMutator;
 import ar.edu.itba.sia.genetics.replacers.GeneticReplacer;
 import ar.edu.itba.sia.genetics.replacers.ReplacementAlgorithm;
 import ar.edu.itba.sia.genetics.replacers.impl.ReplacementAlgorithmOne;
-import ar.edu.itba.sia.genetics.replacers.impl.ReplacementAlgorithmTwo;
 import ar.edu.itba.sia.genetics.selectors.FenotypeSelector;
 import ar.edu.itba.sia.genetics.selectors.impl.EliteFenotypeSelector;
-import ar.edu.itba.sia.genetics.selectors.impl.UniversalFenotypeSelector;
+import ar.edu.itba.sia.genetics.utils.CachingFenotypeComparator;
 import ar.edu.itba.sia.perceptrons.Layer;
 import ar.edu.itba.sia.perceptrons.Pattern;
-import ar.edu.itba.sia.perceptrons.PerceptronNetwork;
 import ar.edu.itba.sia.perceptrons.backpropagation.BackpropagationAlgorithm;
 import ar.edu.itba.sia.perceptrons.backpropagation.impl.GradientDescentDeltaCalculator;
 import ar.edu.itba.sia.perceptrons.backpropagation.impl.TanhDMatrixFunction;
@@ -31,6 +29,7 @@ import ar.edu.itba.sia.perceptrons.utils.ErrorCutCondition;
 import ar.edu.itba.sia.utils.MatrixFunction;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -512,9 +511,18 @@ public class Genetics {
 		transferenceFunctions.add(new TanhMatrixFunction());
 		transferenceFunctions.add(new TanhMatrixFunction());
 		transferenceFunctions.add(new TanhMatrixFunction());
+		transferenceFunctions.add(new TanhMatrixFunction());
 		this.fenotypeBuilder = new NeuralNetworkFenotypeBuilder(arquitecture, transferenceFunctions);
-		FitnessFunction fitnessFunction= load();		
-		this.replacementAlgorithm=new ReplacementAlgorithmOne(new EliteFenotypeSelector(2, fitnessFunction), new EliteFenotypeSelector(2, fitnessFunction), new ClassicMutator(), new AnularCrossover(fenotypeBuilder, new NeuralNetworkFenotypeSplitter(), 0.9), new Backpropagator(loadBackpropagationAlgoritm(), learningPatterns()));
+		FitnessFunction fitnessFunction= load();
+		Comparator<Fenotype> fenotypeComparator = new CachingFenotypeComparator(fitnessFunction);
+		this.replacementAlgorithm =
+				new ReplacementAlgorithmOne(
+						new EliteFenotypeSelector(2, fitnessFunction, fenotypeComparator),
+						new EliteFenotypeSelector(2, fitnessFunction, fenotypeComparator),
+						new ClassicMutator(),
+						new AnularCrossover(fenotypeBuilder,
+								new NeuralNetworkFenotypeSplitter(), 0.9),
+						new Backpropagator(loadBackpropagationAlgoritm(), learningPatterns()));
 	}
 
 	private List<Fenotype> initPopulation(int N) {
