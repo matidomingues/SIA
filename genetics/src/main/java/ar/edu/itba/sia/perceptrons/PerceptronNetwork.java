@@ -105,5 +105,21 @@ public class PerceptronNetwork implements Fenotype {
 		return alleles;  //To change body of implemented methods use File | Settings | File Templates.
  	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null || !obj.getClass().equals(this.getClass())) return  false;
 
+		if (obj == this) return true;
+
+		PerceptronNetwork pn = (PerceptronNetwork) obj;
+
+		if (pn.size() != this.size()) return false;
+		if (pn.getLayers().size() != this.getLayers().size()) return false;
+
+		for (int i = 0; i < this.size(); i++) {
+			if (!pn.getLayers().get(i).equals(this.getLayers().get(i))) return false;
+		}
+
+		return true;
+	}
 }

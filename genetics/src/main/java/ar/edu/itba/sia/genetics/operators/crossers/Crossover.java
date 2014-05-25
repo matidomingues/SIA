@@ -53,7 +53,9 @@ public abstract class Crossover {
 		Arrays.sort(rangePoints);
 		List<Range> ranges = new ArrayList<Range>(rangePoints.length - 1);
 		for (int i = 1; i < rangePoints.length; i++) {
-			ranges.add(new IntervalRange(rangePoints[i - 1], rangePoints[i]));
+			Range range = new IntervalRange(rangePoints[i - 1], rangePoints[i]);
+			range.init(rangePoints[i - 1], rangePoints[i]);
+			ranges.add(range);
 		}
 		return ranges;
 	}

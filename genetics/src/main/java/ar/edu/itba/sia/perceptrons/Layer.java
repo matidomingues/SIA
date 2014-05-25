@@ -34,4 +34,18 @@ public class Layer {
 	public String toString() {
 		return weights.toString();
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null || !obj.getClass().equals(this.getClass())) return false;
+
+		if (obj == this) return true;
+
+		Layer l = (Layer) obj;
+
+		if (!l.getWeights().equals(this.getWeights())) return false;
+		if (!l.getTransferenceFunction().equals(this.getTransferenceFunction())) return false;
+
+		return true;
+	}
 }

@@ -2,6 +2,7 @@ package ar.edu.itba.sia.services;
 
 import ar.edu.itba.sia.genetics.cutcondition.CutCondition;
 import ar.edu.itba.sia.genetics.cutcondition.impl.*;
+import ar.edu.itba.sia.genetics.fenotypes.Fenotype;
 import ar.edu.itba.sia.genetics.fenotypes.FenotypeBuilder;
 import ar.edu.itba.sia.genetics.fenotypes.FenotypeSplitter;
 import ar.edu.itba.sia.genetics.fenotypes.FitnessFunction;
@@ -23,6 +24,7 @@ import ar.edu.itba.sia.genetics.replacers.impl.ReplacementAlgorithmThree;
 import ar.edu.itba.sia.genetics.replacers.impl.ReplacementAlgorithmTwo;
 import ar.edu.itba.sia.genetics.selectors.FenotypeSelector;
 import ar.edu.itba.sia.genetics.selectors.impl.*;
+import ar.edu.itba.sia.genetics.utils.CachingFenotypeComparator;
 import ar.edu.itba.sia.perceptrons.Pattern;
 import ar.edu.itba.sia.perceptrons.backpropagation.BackpropagationAlgorithm;
 import ar.edu.itba.sia.perceptrons.backpropagation.DeltaCalculator;
@@ -43,6 +45,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -56,6 +59,7 @@ public class ConfigurationService {
 	private static List<MatrixFunction> transferenceFunctions;
 
 	private static FitnessFunction fitnessFunction;
+	private static Comparator<Fenotype> fenotypeComparator;
 
 	private static BackpropagationAlgorithm backpropagation;
 	private static ar.edu.itba.sia.perceptrons.backpropagation.CutCondition backpropagationCutCondition;
@@ -79,6 +83,8 @@ public class ConfigurationService {
 			fitnessFunction = getFitnessFunction();
 
 			backpropagation = getBackpropagation();
+
+			fenotypeComparator = new CachingFenotypeComparator(getFitnessFunction());
 
 			selectionSelector = getSelectionSelector();
 			replacementSelector = getReplacementSelector();
@@ -314,7 +320,7 @@ public class ConfigurationService {
 			if (selectors == null) throw new Error("Expected more selectors");
 			selector = new ChainedFenotypeSelector(selectors);
 		} else if (selectorName.compareToIgnoreCase("elite") == 0) {
-			selector = new EliteFenotypeSelector(k, getFitnessFunction());
+			selector = new EliteFenotypeSelector(k, getFitnessFunction(), fenotypeComparator);
 		} else if (selectorName.compareToIgnoreCase("boltzman") == 0) {
 			selector = new BoltzmanFenotypeSelector(k, getFitnessFunction());
 		} else if (selectorName.compareToIgnoreCase("roulette") == 0) {
@@ -441,13 +447,13 @@ public class ConfigurationService {
 		} else if (cutConditionName.compareToIgnoreCase("content") == 0) {
 			int haltedMaxTime = configuration.getInt(cutConditionPath + "[@haltedMaxTime]");
 			double epsilon = configuration.getDouble(cutConditionPath + "[@epsilon]");
-			cutCondition = new ContentCutCondition(haltedMaxTime, epsilon, getFitnessFunction());
+			cutCondition = new ContentCutCondition(haltedMaxTime, epsilon, getFitnessFunction(), fenotypeComparator);
 		} else if (cutConditionName.compareToIgnoreCase("generations") == 0) {
 			int maxGenerations = configuration.getInt(cutConditionPath + "[@maxGenerations]");
 			cutCondition = new GenerationsCutCondition(maxGenerations);
 		} else if (cutConditionName.compareToIgnoreCase("scope") == 0) {
 			double maxScope = configuration.getInt(cutConditionPath + "[@maxScope]");
-			cutCondition = new ScopeCutCondition(maxScope, getFitnessFunction());
+			cutCondition = new ScopeCutCondition(maxScope, getFitnessFunction(), fenotypeComparator);
 		} else if (cutConditionName.compareToIgnoreCase("structure") == 0) {
 			double populationPercentage = configuration.getDouble(cutConditionPath + "[@populationPercentage]");
 			int maxConsecutiveTimes = configuration.getInt(cutConditionPath + "[@maxConsecutiveTimes]");

@@ -10,14 +10,14 @@ import ar.edu.itba.sia.perceptrons.PerceptronNetwork;
 import ar.edu.itba.sia.perceptrons.backpropagation.BackpropagationAlgorithm;
 
 public class Backpropagator {
-	private static final double BACKPROPAGATION_PROBABILITY=0.5;
+	private static final double BACKPROPAGATION_PROBABILITY=1.0;
 
 	private final BackpropagationAlgorithm backpropagation;
 	private final List<Pattern> patterns;
 
 	public Backpropagator(BackpropagationAlgorithm backpropagation, List<Pattern> patterns) {
 		this.backpropagation = backpropagation;
-		this.patterns = Collections.unmodifiableList(patterns);
+		this.patterns = patterns;
 	}
 	
 	public Fenotype backpropagate(Fenotype f){

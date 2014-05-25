@@ -20,4 +20,16 @@ public class TanhMatrixFunction implements MatrixFunction{
 	public DoubleMatrix apply(DoubleMatrix matrix) {
 		return MatrixFunctions.tanh(matrix.mul(beta)); // tanh(beta * matrix);
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null || !obj.getClass().equals(this.getClass())) return false;
+
+		if (obj == this) return true;
+
+		TanhMatrixFunction f = (TanhMatrixFunction)obj;
+		if (f.beta != this.beta) return false;
+
+		return true;
+	}
 }
