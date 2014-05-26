@@ -5,4 +5,5 @@ import java.util.List;
 public interface FenotypeBuilder {
 
 	Fenotype build(List<Allele> childAlleles);
+	Fenotype clone(Fenotype f);
 }

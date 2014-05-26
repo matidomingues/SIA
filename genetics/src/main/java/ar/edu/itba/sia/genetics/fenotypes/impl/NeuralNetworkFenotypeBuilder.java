@@ -65,4 +65,9 @@ public class NeuralNetworkFenotypeBuilder implements FenotypeBuilder{
 				transferenceFunctions.get(i - 1));
 	}
 
+	public Fenotype clone(Fenotype f){
+		PerceptronNetwork p=(PerceptronNetwork)f;
+		return new PerceptronNetwork(p.getLayers());
+
+	}
 }

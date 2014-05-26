@@ -40,8 +40,8 @@ public abstract class Crossover {
 		children.add(mixParents(parent2Alleles, parent1Alleles));
 		}
 		else{
-		 children.add(parent1);
-		 children.add(parent2);
+		 children.add(fenotypeBuilder.clone(parent1));
+		 children.add(fenotypeBuilder.clone(parent2));
 		}
 		return children;
 	}

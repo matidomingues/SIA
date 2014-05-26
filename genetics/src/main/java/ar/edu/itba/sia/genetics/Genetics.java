@@ -526,8 +526,8 @@ public class Genetics {
 		Comparator<Fenotype> fenotypeComparator = new CachingFenotypeComparator(fitnessFunction);
 		this.replacementAlgorithm =
 				new ReplacementAlgorithmTwo(
-						new RouletteFenotypeSelector(90, fitnessFunction),
-						new RouletteFenotypeSelector(90, fitnessFunction),
+						new EliteFenotypeSelector(90, fitnessFunction,fenotypeComparator),
+						new EliteFenotypeSelector(150-90, fitnessFunction,fenotypeComparator),
 						new ClassicMutator(),
 						new AnularCrossover(fenotypeBuilder,
 								new NeuralNetworkFenotypeSplitter(), 0.6),
