@@ -28,6 +28,8 @@ public class PerceptronNetworkFitnessFunction implements FitnessFunction {
 			DoubleMatrix result = network.compute(p);
 			error += MatrixFunctions.pow(p.getExpectedOutputs().sub(result), 2).scalar();
 		}
-		return 1.0/error;
+		//System.out.println((error/patterns.size()));
+		
+		return  1.0/(error/patterns.size());
 	}
 }
