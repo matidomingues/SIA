@@ -7,6 +7,10 @@ import ar.edu.itba.sia.genetics.operators.mutators.Mutator;
 
 public class ModernMutator extends Mutator {
 
+	public ModernMutator(double probability) {
+		super(probability);
+	}
+
 	@Override
 	public Fenotype mutate(Fenotype fenotype) {
 		if (super.domutation()) {

@@ -51,86 +51,96 @@ import java.util.List;
 
 public class ConfigurationService {
 
-	private static final Configuration configuration;
+	private static ConfigurationService instance;
+	private static final Object LOCKER = new Object();
 
-	private static int[] architecture;
-	private static List<Pattern> patterns;
-	private static int testPatternsQty;
-	private static List<MatrixFunction> transferenceFunctions;
+	private Configuration configuration;
 
-	private static FitnessFunction fitnessFunction;
-	private static Comparator<Fenotype> fenotypeComparator;
+	private int[] architecture;
+	private List<Pattern> patterns;
+	private int testPatternsQty;
+	private List<MatrixFunction> transferenceFunctions;
 
-	private static BackpropagationAlgorithm backpropagation;
-	private static ar.edu.itba.sia.perceptrons.backpropagation.CutCondition backpropagationCutCondition;
-	private static DeltaCalculator deltaCalculator;
+	private FitnessFunction fitnessFunction;
+	private Comparator<Fenotype> fenotypeComparator;
 
-	private static ReplacementAlgorithm replacementAlgorithm;
-	private static FenotypeSelector selectionSelector;
-	private static FenotypeSelector replacementSelector;
-	private static Mutator mutator;
-	private static Crossover crosser;
-	private static Backpropagator backpropagator;
-	private static CutCondition geneticCutCondition;
+	private BackpropagationAlgorithm backpropagation;
+	private ar.edu.itba.sia.perceptrons.backpropagation.CutCondition backpropagationCutCondition;
+	private DeltaCalculator deltaCalculator;
 
-	static {
+	private ReplacementAlgorithm replacementAlgorithm;
+	private FenotypeSelector selectionSelector;
+	private FenotypeSelector replacementSelector;
+	private Mutator mutator;
+	private Crossover crosser;
+	private Backpropagator backpropagator;
+	private CutCondition geneticCutCondition;
+	private FenotypeBuilder fenotypeBuilder;
+	private int population;
+
+	private ConfigurationService() {
 		try {
-			configuration = new XMLConfiguration("application.config");
+			configuration = new XMLConfiguration("config.xml");
 
 			architecture = getArchitecture();
 			patterns = getPatterns();
 			testPatternsQty = getTestPatternsQty();
-			fitnessFunction = getFitnessFunction();
 
 			backpropagation = getBackpropagation();
 
-			fenotypeComparator = new CachingFenotypeComparator(getFitnessFunction());
-
+			fenotypeBuilder = getFenotypeBuilder();
+			fenotypeComparator = getFenotypeComparator();
+			fitnessFunction = getFitnessFunction();
+			population = getPopulation();
 			selectionSelector = getSelectionSelector();
 			replacementSelector = getReplacementSelector();
 			mutator = getMutator();
 			crosser = getCrosser();
 			geneticCutCondition = getGeneticCutCondition();
-			backpropagator = new Backpropagator(backpropagation, getTestPatterns());
-
+			backpropagator = getBackpropagator();
 			replacementAlgorithm = getReplacementAlgorithm();
+
 		} catch (ConfigurationException e) {
 			throw new Error("Unable to load configuration file! Aborting");
 		}
 	}
 
-    public static int[] getArchitecture() {
+	public  int[] getArchitecture() {
 		if (architecture == null) {
-			List<Object> architecture = configuration.getList("config.architecture.layer");
-			if (architecture.isEmpty()) throw new Error("No architecture found");
-			transferenceFunctions = new ArrayList<MatrixFunction>(architecture.size() - 2);
-			ConfigurationService.architecture = new int[architecture.size()];
-			int i = 0;
-			for (Object o : architecture) {
-				try {
-					ConfigurationService.architecture[i] = Integer.parseInt((String)o);
-					if (i == 0 || i == architecture.size() - 1) {
-						Object of = configuration.getProperty("config.architecture.layer(" + i + ")[@function]");
-						if (of == null) throw new Error("No transference function defined for layer " + i);
-						String matrixFunctionName = (String)of;
-						if (matrixFunctionName.compareToIgnoreCase("tanh") == 0) {
-							transferenceFunctions.add(new TanhMatrixFunction());
-						} else {
-							throw new Error("Uknown transference function");
+			synchronized (this) {
+				if (architecture == null) {
+					List<Object> architecture = configuration.getList("architecture.layer");
+					if (architecture.isEmpty()) throw new Error("No architecture found");
+					transferenceFunctions = new ArrayList<MatrixFunction>(architecture.size() - 1);
+					this.architecture = new int[architecture.size()];
+					int i = 0;
+					for (Object o : architecture) {
+						try {
+							this.architecture[i] = Integer.parseInt((String)o);
+							if (i != 0) {
+								Object of = configuration.getProperty("architecture.layer(" + i + ")[@function]");
+								if (of == null) throw new Error("No transference function defined for layer " + i);
+								String matrixFunctionName = (String)of;
+								if (matrixFunctionName.compareToIgnoreCase("tanh") == 0) {
+									transferenceFunctions.add(new TanhMatrixFunction());
+								} else {
+									throw new Error("Uknown transference function");
+								}
+							}
+						} catch (NumberFormatException nfe) {
+							throw new Error("Layer " + i + " isn't a valid integer.");
 						}
+						i++;
 					}
-				} catch (NumberFormatException nfe) {
-					throw new Error("Layer " + i + " isn't a valid integer.");
 				}
-				i++;
 			}
 		}
 		return architecture;
 	}
 
-	public static ReplacementAlgorithm getReplacementAlgorithm() {
+	public  ReplacementAlgorithm getReplacementAlgorithm() {
 		if (replacementAlgorithm == null) {
-			int replacementId = configuration.getInt("config.genetics.replacer", 1);
+			int replacementId = configuration.getInt("genetics.replacer");
 			switch (replacementId) {
 				case 1:
 					replacementAlgorithm = new ReplacementAlgorithmOne(getSelectionSelector(),
@@ -157,20 +167,24 @@ public class ConfigurationService {
 		return replacementAlgorithm;
 	}
 
-	public static List<Pattern> getPatterns() {
+	public  List<Pattern> getPatterns() {
 		if (patterns == null) {
 			patterns = new LinkedList<Pattern>();
-			String patternsFilePath = configuration.getString("config.patterns");
+			String patternsFilePath = configuration.getString("patterns");
 			if (Strings.isNullOrEmpty(patternsFilePath)) throw new Error("No patterns file found");
 			try {
-				CSVReader csvReader = new CSVReader(new FileReader(patternsFilePath));
+				CSVReader csvReader = new CSVReader(new FileReader(patternsFilePath), ';');
 				String[] line;
 				while ((line = csvReader.readNext()) != null) {
 					double[] patternAr = new double[line.length];
 					for (int i = 0; i < line.length; i++) {
-						patternAr[i] = Double.parseDouble(line[i]);
+						try {
+							patternAr[i] = Double.parseDouble(line[i]);
+						} catch (NumberFormatException nfe) {
+							patternAr[i] = Integer.parseInt(line[i]);
+						}
 					}
-					patterns.add(new Pattern(new DoubleMatrix(patternAr)));
+					patterns.add(new Pattern(new DoubleMatrix(patternAr).transpose()));
 				}
 				csvReader.close();
 			} catch (FileNotFoundException e) {
@@ -184,10 +198,10 @@ public class ConfigurationService {
 		return patterns;
 	}
 
-	public static int getTestPatternsQty() {
+	public  int getTestPatternsQty() {
 		if (testPatternsQty == 0) {
-			if (configuration.containsKey("config.testPatternsQty")) {
-				testPatternsQty = configuration.getInt("config.testPatternsQty");
+			if (configuration.containsKey("patterns[@test]")) {
+				testPatternsQty = configuration.getInt("patterns[@test]");
 				if (testPatternsQty < 0) throw new Error("Invalid test patterns quantity");
 				if (testPatternsQty > patterns.size()) throw new Error("Test patterns quantity exceeds patterns quantity");
 			} else {
@@ -197,13 +211,13 @@ public class ConfigurationService {
 		return testPatternsQty;
 	}
 
-	public static DeltaCalculator getDeltaCalculator() {
+	public  DeltaCalculator getDeltaCalculator() {
 		if (deltaCalculator == null) {
-			String deltaCalculatorName = configuration.getString("config.backpropagation.deltacalculator");
+			String deltaCalculatorName = configuration.getString("backpropagation.deltacalculator");
 			if (Strings.isNullOrEmpty(deltaCalculatorName)) throw new Error("No delta calculation method defined");
 			if (deltaCalculatorName.compareToIgnoreCase("gradient-descent") == 0) {
-				double etha = configuration.getDouble("config.backpropagation.deltacalculator[@etha]");
-				String functionName = configuration.getString("config.backpropagation.deltacalculator[@function]");
+				double etha = configuration.getDouble("backpropagation.deltacalculator[@etha]");
+				String functionName = configuration.getString("backpropagation.deltacalculator[@function]");
 				MatrixFunction dFunction;
 				if (Strings.isNullOrEmpty(functionName)) throw new Error("No function defined for gradient descent");
 				if (functionName.compareToIgnoreCase("tanh") == 0) {
@@ -219,14 +233,14 @@ public class ConfigurationService {
 		return deltaCalculator;
 	}
 
-	public static Crossover getCrosser() {
+	public  Crossover getCrosser() {
 		if (crosser == null) {
-			String crosserName = configuration.getString("config.genetics.crossover");
+			String crosserName = configuration.getString("genetics.crossover");
 			if (Strings.isNullOrEmpty(crosserName)) throw new Error("No crossover method selected");
 			FenotypeBuilder builder = new NeuralNetworkFenotypeBuilder(getArchitecture(),
 					getTransferenceFunctions());
 			FenotypeSplitter splitter = new NeuralNetworkFenotypeSplitter();
-			double probability = configuration.getDouble("config.genetics.crossover[@probability]");
+			double probability = configuration.getDouble("genetics.crossover[@probability]");
 			if (crosserName.compareToIgnoreCase("anular") == 0) {
 				crosser = new AnularCrossover(builder, splitter, probability);
 			} else if (crosserName.compareToIgnoreCase("one-point") == 0) {
@@ -234,7 +248,7 @@ public class ConfigurationService {
 			} else if (crosserName.compareToIgnoreCase("two-point") == 0) {
 				crosser = new TwoPointCrossover(builder, splitter, probability);
 			} else if (crosserName.compareToIgnoreCase("uniform") == 0) {
-				double ocurrenceProbability = configuration.getDouble("config.genetics.crossvoer[@ocurrence]");
+				double ocurrenceProbability = configuration.getDouble("genetics.crossvoer[@ocurrence]");
 				crosser = new UniformCrossover(builder, splitter, probability, ocurrenceProbability);
 			} else {
 				throw new Error("Uknown crossover method");
@@ -243,13 +257,13 @@ public class ConfigurationService {
 		return crosser;
 	}
 
-	public static List<MatrixFunction> getTransferenceFunctions() {
+	public  List<MatrixFunction> getTransferenceFunctions() {
 		return transferenceFunctions;
 	}
 
-	public static FitnessFunction getFitnessFunction() {
+	public  FitnessFunction getFitnessFunction() {
 		if (fitnessFunction == null) {
-			int fitnessFunctionId = configuration.getInt("config.genetics.fitnessfunction");
+			int fitnessFunctionId = configuration.getInt("genetics.fitnessfunction");
 			switch (fitnessFunctionId) {
 				case 1:
 					fitnessFunction = new PerceptronNetworkFitnessFunction(getPatterns());
@@ -261,14 +275,15 @@ public class ConfigurationService {
 		return fitnessFunction;
 	}
 
-	public static Mutator getMutator() {
+	public  Mutator getMutator() {
 		if (mutator == null) {
-			String selectorName = configuration.getString("config.genetics.mutator");
+			String selectorName = configuration.getString("genetics.mutator");
 			if (Strings.isNullOrEmpty(selectorName)) throw new Error("No mutator name found");
+			double probability = configuration.getDouble("genetics.mutator[@probability]");
 			if (selectorName.compareToIgnoreCase("classic") == 0) {
-				mutator = new ClassicMutator();
+				mutator = new ClassicMutator(probability);
 			} else if (selectorName.compareToIgnoreCase("modern") == 0) {
-				mutator = new ModernMutator();
+				mutator = new ModernMutator(probability);
 			} else {
 				throw new Error("Unknown mutator");
 			}
@@ -276,21 +291,21 @@ public class ConfigurationService {
 		return mutator;
 	}
 
-	public static FenotypeSelector getReplacementSelector() {
+	public  FenotypeSelector getReplacementSelector() {
 		if (replacementSelector == null) {
-			replacementSelector = getSelector("config.genetics.replacementselector");
+			replacementSelector = getSelector("genetics.replacementselector");
 		}
 		return replacementSelector;
 	}
 
-	public static FenotypeSelector getSelectionSelector() {
+	public  FenotypeSelector getSelectionSelector() {
 		if (selectionSelector == null) {
-			selectionSelector = getSelector("config.genetics.selectionselector");
+			selectionSelector = getSelector("genetics.selectionselector");
 		}
 		return selectionSelector;
 	}
 
-	private static FenotypeSelector getSelector(String preffix) {
+	private  FenotypeSelector getSelector(String preffix) {
 		FenotypeSelector selector = null;
 		String selectorPath = preffix + ".selector";
 		List<Object> selectorsNames = configuration.getList(selectorPath);
@@ -312,7 +327,7 @@ public class ConfigurationService {
 		return selector;
 	}
 
-	private static FenotypeSelector getSingleSelector(String selectorPath, List<FenotypeSelector> selectors) {
+	private  FenotypeSelector getSingleSelector(String selectorPath, List<FenotypeSelector> selectors) {
 		FenotypeSelector selector;
 		int k = configuration.getInt(selectorPath + "[@k]");
 		String selectorName = configuration.getString(selectorPath);
@@ -338,7 +353,7 @@ public class ConfigurationService {
 		return selector;  //To change body of created methods use File | Settings | File Templates.
 	}
 
-	public static BackpropagationAlgorithm getBackpropagation() {
+	public  BackpropagationAlgorithm getBackpropagation() {
 		if (backpropagation == null) {
 			deltaCalculator = getDeltaCalculator();
 			backpropagationCutCondition = getBackpropagationCutCondition();
@@ -347,29 +362,27 @@ public class ConfigurationService {
 		return backpropagation;
 	}
 
-	public static ar.edu.itba.sia.perceptrons.backpropagation.CutCondition getBackpropagationCutCondition() {
+	public  ar.edu.itba.sia.perceptrons.backpropagation.CutCondition getBackpropagationCutCondition() {
 		if (backpropagationCutCondition == null) {
-			List<Object> cutConditionsNames = configuration.getList("config.backpropagation.cutconditions.cutconidtion");
+			List<Object> cutConditionsNames = configuration.getList("backpropagation.cutconditions.cutcondition");
 			if (cutConditionsNames.isEmpty()) throw new Error("No cut condition especified for backpropagation");
 			if (cutConditionsNames.size() == 1) {
-				String cutConditionName = (String) cutConditionsNames.get(0);
-				backpropagationCutCondition = getSingleBackpropagationCutCondition(cutConditionName, null);
+				String cutConditionPath = "backpropagation.cutconditions.cutcondition";
+				backpropagationCutCondition = getSingleBackpropagationCutCondition(cutConditionPath, null);
 			} else {
 				List<ar.edu.itba.sia.perceptrons.backpropagation.CutCondition> cutConditions
 						= new ArrayList<ar.edu.itba.sia.perceptrons.backpropagation.CutCondition>(cutConditionsNames.size());
 				ar.edu.itba.sia.perceptrons.utils.ChainedCutCondition chainedCutCondition = null;
-				for (int i
-							 = 0; i < cutConditionsNames.size(); i++) {
-					String name = String.format("config.backpropagation.cutconditions.cutconidtion(%d)", i);
+				for (int i= 0; i < cutConditionsNames.size(); i++) {
+					String name = String.format("backpropagation.cutconditions.cutcondition(%d)", i);
 					if (Strings.isNullOrEmpty(name)) throw new Error("Empty cut condition found");
 					ar.edu.itba.sia.perceptrons.backpropagation.CutCondition cutCondition
 							= getSingleBackpropagationCutCondition(name, cutConditions);
-					if (cutCondition instanceof ChainedCutCondition) {
+					if (cutCondition instanceof ar.edu.itba.sia.perceptrons.utils.ChainedCutCondition) {
 						chainedCutCondition = (ar.edu.itba.sia.perceptrons.utils.ChainedCutCondition)cutCondition;
 					} else {
 						cutConditions.add(cutCondition);
 					}
-					i++;
 				}
 				if (chainedCutCondition == null) throw new Error("Chained cut condition expected");
 				backpropagationCutCondition = chainedCutCondition;
@@ -378,16 +391,17 @@ public class ConfigurationService {
 		return backpropagationCutCondition;
 	}
 
-	private static ar.edu.itba.sia.perceptrons.backpropagation.CutCondition
+	private  ar.edu.itba.sia.perceptrons.backpropagation.CutCondition
 							getSingleBackpropagationCutCondition(String cutConditionPath,
 																 List<ar.edu.itba.sia.perceptrons.backpropagation.CutCondition> chainedConditions) {
 		ar.edu.itba.sia.perceptrons.backpropagation.CutCondition cutCondition;
 		String cutConditionName = configuration.getString(cutConditionPath);
+		if (Strings.isNullOrEmpty(cutConditionName)) throw new Error("No cut condition found");
 		if (cutConditionName.compareToIgnoreCase("chained") == 0) {
 			if (chainedConditions == null) throw new Error("Expected more cut conditions");
 			cutCondition = new ar.edu.itba.sia.perceptrons.utils.ChainedCutCondition(chainedConditions);
 		} else if (cutConditionName.compareToIgnoreCase("epochs") == 0) {
-			int maxEpochs = configuration.getInt(cutConditionPath + "[@qty]");
+			int maxEpochs = configuration.getInt(cutConditionPath + "[@epochs]");
 			cutCondition = new EpochsCutCondition(maxEpochs);
 		} else if (cutConditionName.compareToIgnoreCase("error") == 0) {
 			double epsilon = configuration.getDouble(cutConditionPath + "[@epsilon]");
@@ -398,38 +412,37 @@ public class ConfigurationService {
 		return cutCondition;
 	}
 
-	public static List<Pattern> getLearningPatterns() {
+	public  List<Pattern> getLearningPatterns() {
 		if (testPatternsQty == -1) return getPatterns();
 		return patterns.subList(0, patterns.size() - testPatternsQty);
 	}
 
-	public static List<Pattern> getTestPatterns() {
+	public  List<Pattern> getTestPatterns() {
 		if (testPatternsQty == -1) return getPatterns();
 		return patterns.subList(testPatternsQty, patterns.size());
 	}
 
-	public static CutCondition getGeneticCutCondition() {
+	public  CutCondition getGeneticCutCondition() {
 		if (geneticCutCondition == null) {
-			List<Object> cutConditionsNames = configuration.getList("config.genetic.cutconditions.cutcondition");
-			if (cutConditionsNames.isEmpty()) throw new Error("No cut condition especified for backpropagation");
+			List<Object> cutConditionsNames = configuration.getList("genetics.cutconditions.cutcondition");
+			if (cutConditionsNames.isEmpty()) throw new Error("No cut condition especified for genetic algorithms");
 			if (cutConditionsNames.size() == 1) {
-				String cutConditionName = (String) cutConditionsNames.get(0);
-				geneticCutCondition = getSingleGeneticCutCondition(cutConditionName, null);
+				String cutConditionPath = "genetics.cutconditions.cutcondition";
+				geneticCutCondition = getSingleGeneticCutCondition(cutConditionPath, null);
 			} else {
-				List<ar.edu.itba.sia.perceptrons.backpropagation.CutCondition> cutConditions
-						= new ArrayList<ar.edu.itba.sia.perceptrons.backpropagation.CutCondition>(cutConditionsNames.size());
+				List<CutCondition> cutConditions
+						= new ArrayList<CutCondition>(cutConditionsNames.size());
 				ChainedCutCondition chainedCutCondition = null;
 				for (int i = 0; i < cutConditionsNames.size(); i++) {
-					String name = (String)cutConditionsNames.get(i);
+					String name = String.format("genetics.cutconditions.cutcondition(%d)", i);
 					if (Strings.isNullOrEmpty(name)) throw new Error("Empty cut condition found");
-					ar.edu.itba.sia.perceptrons.backpropagation.CutCondition cutCondition
-							= getSingleBackpropagationCutCondition(name, cutConditions);
+					CutCondition cutCondition
+							= getSingleGeneticCutCondition(name, cutConditions);
 					if (cutCondition instanceof ChainedCutCondition) {
 						chainedCutCondition = (ChainedCutCondition)cutCondition;
 					} else {
 						cutConditions.add(cutCondition);
 					}
-					i++;
 				}
 				if (chainedCutCondition == null) throw new Error("Chained cut condition expected");
 				geneticCutCondition = chainedCutCondition;
@@ -438,9 +451,10 @@ public class ConfigurationService {
 		return geneticCutCondition;
 	}
 
-	private static CutCondition getSingleGeneticCutCondition(String cutConditionPath, List<CutCondition> cutConditions) {
+	private  CutCondition getSingleGeneticCutCondition(String cutConditionPath, List<CutCondition> cutConditions) {
 		CutCondition cutCondition = null;
 		String cutConditionName = configuration.getString(cutConditionPath);
+		if (Strings.isNullOrEmpty(cutConditionName)) throw new Error("No cut condition found");
 		if (cutConditionName.compareToIgnoreCase("chained") == 0) {
 			if (cutConditions == null) throw new Error("Expected more cut conditions");
 			cutCondition = new ChainedCutCondition(cutConditions);
@@ -462,5 +476,48 @@ public class ConfigurationService {
 			throw new Error("Unknown cut condition");
 		}
 		return cutCondition;
+	}
+
+	public  Backpropagator getBackpropagator() {
+		if (backpropagator == null) {
+			double probability = configuration.getDouble("genetics.backpropagation");
+			backpropagator = new Backpropagator(backpropagation, getTestPatterns(), probability);
+		}
+		return backpropagator;
+	}
+
+	public static ConfigurationService getInstance() {
+		if (instance == null) {
+			synchronized (LOCKER) {
+				if (instance == null) {
+					instance = new ConfigurationService();
+				}
+			}
+		}
+		return instance;
+	}
+
+	public int getPopulation() {
+		if (population <= 0) {
+			int population = configuration.getInt("genetics.population");
+			if (population <= 0) throw new Error("Invalid population");
+			this.population = population;
+		}
+		return population;
+	}
+
+	public FenotypeBuilder getFenotypeBuilder() {
+		if (fenotypeBuilder == null) {
+			fenotypeBuilder = new NeuralNetworkFenotypeBuilder(getArchitecture(),
+					getTransferenceFunctions());
+		}
+		return fenotypeBuilder;
+	}
+
+	public Comparator<Fenotype> getFenotypeComparator() {
+		if (fenotypeComparator == null) {
+			fenotypeComparator = new CachingFenotypeComparator(getFitnessFunction());
+		}
+		return fenotypeComparator;
 	}
 }

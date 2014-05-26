@@ -1,0 +1,36 @@
+<config>
+    <patterns test="300">/home/facundo/SIA/gps/genetics/samples2.csv</patterns>
+    <architecture>
+        <layer function="tanh">2</layer>
+        <layer function="tanh">4</layer>
+        <layer function="tanh">3</layer>
+        <layer function="tanh">3</layer>
+        <layer function="tanh">1</layer>
+    </architecture>
+    <genetics>
+        <population>100</population>
+        <replacer>1</replacer>
+        <crossover probability="0.5">anular</crossover>
+        <fitnessfunction>1</fitnessfunction>
+        <mutator probability="0.01">classic</mutator>
+        <replacementselector>
+            <selector k="10">elite</selector>
+        </replacementselector>
+        <selectionselector>
+            <selector k="10">roulette</selector>
+        </selectionselector>
+        <cutconditions>
+            <cutcondition maxGenerations="1000">generations</cutcondition>
+        </cutconditions>
+        <backpropagation>0.5</backpropagation>
+    </genetics>
+    <backpropagation>
+        <deltacalculator etha="0.1" function="tanh">gradient-descent</deltacalculator>
+        <cutconditions>
+            <cutcondition>chained</cutcondition>
+            <cutcondition epochs="20">epochs</cutcondition>
+            <cutcondition epsilon="0.001">error</cutcondition>
+        </cutconditions>
+    </backpropagation>
+
+</config>
