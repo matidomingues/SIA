@@ -31,17 +31,17 @@ public abstract class Crossover {
 			throw new IllegalArgumentException("Small fenotype.");
 		}
 		if(doCrossover()){
-		List<Range> ranges = getRanges(parent1, parent2);
-		
-		List<List<Allele>> parent1Alleles = splitter.split(parent1, ranges);
-		List<List<Allele>> parent2Alleles = splitter.split(parent2, ranges);
+			List<Range> ranges = getRanges(parent1, parent2);
 
-		children.add(mixParents(parent1Alleles, parent2Alleles));
-		children.add(mixParents(parent2Alleles, parent1Alleles));
+			List<List<Allele>> parent1Alleles = splitter.split(parent1, ranges);
+			List<List<Allele>> parent2Alleles = splitter.split(parent2, ranges);
+
+			children.add(mixParents(parent1Alleles, parent2Alleles));
+			children.add(mixParents(parent2Alleles, parent1Alleles));
 		}
 		else{
-		 children.add(fenotypeBuilder.clone(parent1));
-		 children.add(fenotypeBuilder.clone(parent2));
+			children.add(fenotypeBuilder.clone(parent1));
+			children.add(fenotypeBuilder.clone(parent2));
 		}
 		return children;
 	}

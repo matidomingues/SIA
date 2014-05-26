@@ -1,5 +1,6 @@
 <config>
-    <patterns test="300">C:\Users\Teresa\Documents\ITBA\Cuarto Año\Sistemas\ de\ Inteligencia\ Artificial\SIA3\SIA\genetics\samples2.csv</patterns>
+    <exportpath>/home/facundo/SIA/gps/genetics/exports/</exportpath>
+    <patterns test="300">/home/facundo/SIA/gps/genetics/samples2.csv</patterns>
     <architecture>
         <layer function="tanh">2</layer>
         <layer function="tanh">75</layer>
@@ -12,10 +13,10 @@
         <fitnessfunction>1</fitnessfunction>
         <mutator probability="0.01">classic</mutator>
         <replacementselector>
-            <selector k="10">elite</selector>
+            <selector k="2">boltzman</selector>
         </replacementselector>
         <selectionselector>
-            <selector k="10">roulette</selector>
+            <selector k="2">tournaments-e</selector>
         </selectionselector>
         <cutconditions>
             <cutcondition maxGenerations="1000">generations</cutcondition>

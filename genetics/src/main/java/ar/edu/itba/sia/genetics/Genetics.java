@@ -1,14 +1,15 @@
 package ar.edu.itba.sia.genetics;
 
-
-
 import java.util.*;
 
 import ar.edu.itba.sia.genetics.cutcondition.CutCondition;
 import ar.edu.itba.sia.genetics.fenotypes.Fenotype;
 import ar.edu.itba.sia.genetics.fenotypes.FenotypeBuilder;
 import ar.edu.itba.sia.genetics.replacers.ReplacementAlgorithm;
+import ar.edu.itba.sia.perceptrons.utils.ChainedCutCondition;
+import ar.edu.itba.sia.perceptrons.utils.ErrorCutCondition;
 import ar.edu.itba.sia.services.ConfigurationService;
+import ar.edu.itba.sia.services.ExportService;
 
 public class Genetics {
 
@@ -27,6 +28,16 @@ public class Genetics {
 
 		while (genetics.cutConditionMet()) {
 			genetics.work();
+
+			ar.edu.itba.sia.perceptrons.backpropagation.CutCondition bpCutCondition =
+					ConfigurationService.getInstance().getBackpropagationCutCondition();
+			if (bpCutCondition instanceof ChainedCutCondition) {
+				for (ar.edu.itba.sia.perceptrons.backpropagation.CutCondition cc : ((ChainedCutCondition) bpCutCondition).getCutConditions()) {
+					if (cc instanceof ErrorCutCondition) {
+						ExportService.getInstance().exportErrorImage(((ErrorCutCondition) cc).getErrorHistory());
+					}
+				}
+			}
 		}
 	}
 
@@ -39,8 +50,7 @@ public class Genetics {
 
 
 	public void work() {
-		replacementAlgorithm.equals(fenotypes);
-
+		replacementAlgorithm.evolve(fenotypes);
 	}
 
 	private List<Fenotype> initPopulation(int N) {

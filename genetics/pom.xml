@@ -35,7 +35,25 @@
             <artifactId>opencsv</artifactId>
             <version>2.3</version>
         </dependency>
+        <dependency>
+            <groupId>de.erichseifert.gral</groupId>
+            <artifactId>gral-core</artifactId>
+            <version>0.9</version>
+        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.panayotis</groupId>-->
+            <!--<artifactId>gnuplot</artifactId>-->
+            <!--<version>0.5.0</version>-->
+            <!--<systemPath>${project.basedir}/src/lib/JavaPlot.jar</systemPath>-->
+        <!--</dependency>-->
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>erichseifert.de</id>
+            <url>http://mvn.erichseifert.de/maven2</url>
+        </repository>
+    </repositories>
 
     <build>
         <plugins>

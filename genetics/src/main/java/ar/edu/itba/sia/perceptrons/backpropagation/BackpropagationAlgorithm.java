@@ -59,19 +59,15 @@ public class BackpropagationAlgorithm {
 		return epochs;
 	}
 
-	public double getLastError() {
-		return errorHistory.get(errorHistory.size() - 1);
-	}
-
-	public List<Double> getErrorHistory() {
-		return Collections.unmodifiableList(errorHistory);
-	}
-
 	public PerceptronNetwork getNetwork() {
 		return this.network;
 	}
 
 	public List<Pattern> getPatterns() {
 		return this.patterns;
+	}
+
+	public CutCondition getCutCondition() {
+		return cutCondition;
 	}
 }

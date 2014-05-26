@@ -39,8 +39,9 @@ public class Backpropagator {
 		double crossoverProb = random.nextDouble();
 		return crossoverProb < backpropagationProbability;
 	}
-	
-	
-	
+
+	public BackpropagationAlgorithm getBackpropagation() {
+		return backpropagation;
+	}
 	
 }

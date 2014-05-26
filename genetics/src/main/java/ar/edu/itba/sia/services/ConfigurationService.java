@@ -44,6 +44,8 @@ import org.jblas.DoubleMatrix;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -59,15 +61,16 @@ public class ConfigurationService {
 	private int[] architecture;
 	private List<Pattern> patterns;
 	private int testPatternsQty;
+	private int population;
+
 	private List<MatrixFunction> transferenceFunctions;
-
 	private FitnessFunction fitnessFunction;
-	private Comparator<Fenotype> fenotypeComparator;
 
+	private Comparator<Fenotype> fenotypeComparator;
 	private BackpropagationAlgorithm backpropagation;
 	private ar.edu.itba.sia.perceptrons.backpropagation.CutCondition backpropagationCutCondition;
-	private DeltaCalculator deltaCalculator;
 
+	private DeltaCalculator deltaCalculator;
 	private ReplacementAlgorithm replacementAlgorithm;
 	private FenotypeSelector selectionSelector;
 	private FenotypeSelector replacementSelector;
@@ -76,7 +79,8 @@ public class ConfigurationService {
 	private Backpropagator backpropagator;
 	private CutCondition geneticCutCondition;
 	private FenotypeBuilder fenotypeBuilder;
-	private int population;
+
+	private Path exportPath;
 
 	private ConfigurationService() {
 		try {
@@ -100,6 +104,7 @@ public class ConfigurationService {
 			backpropagator = getBackpropagator();
 			replacementAlgorithm = getReplacementAlgorithm();
 
+			exportPath = getExportPath();
 		} catch (ConfigurationException e) {
 			throw new Error("Unable to load configuration file! Aborting");
 		}
@@ -519,5 +524,15 @@ public class ConfigurationService {
 			fenotypeComparator = new CachingFenotypeComparator(getFitnessFunction());
 		}
 		return fenotypeComparator;
+	}
+
+	public Path getExportPath() {
+		if (exportPath == null) {
+			String sExportPath = configuration.getString("exportpath");
+			if (Strings.isNullOrEmpty(sExportPath)) throw new Error("No export path found");
+			exportPath = Paths.get(sExportPath);
+			if (!exportPath.toFile().isDirectory()) throw new Error("The export path is not a directory");
+		}
+		return exportPath;
 	}
 }
