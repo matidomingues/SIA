@@ -44,6 +44,7 @@ public class PerceptronNetwork implements Fenotype {
 		if (deltas.size() != layers.size()) throw new IllegalArgumentException("List sizes mistmatch.");
 		for (int i = 0; i < deltas.size(); i++) {
 			layers.get(i).getWeights().addi(deltas.get(i));
+			layers.get(i).setPreviouseDelta(deltas.get(i));
 		}
 	}
 

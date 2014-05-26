@@ -8,10 +8,12 @@ public class Layer {
 
 	private final DoubleMatrix weights;
 	private final MatrixFunction transferenceFunction;
+	private DoubleMatrix previouseDelta;
 
 	public Layer(DoubleMatrix weights, MatrixFunction transferenceFunction) {
 		this.weights = weights;
 		this.transferenceFunction = transferenceFunction;
+		this.previouseDelta = DoubleMatrix.zeros(weights.rows, weights.columns);
 	}
 
 	public DoubleMatrix getWeights() {
@@ -28,6 +30,14 @@ public class Layer {
 
 	public DoubleMatrix getH(DoubleMatrix input) {
 		return weights.mmul(input.transpose()).transpose();
+	}
+
+	public DoubleMatrix getPreviouseDelta() {
+		return previouseDelta;
+	}
+
+	public void setPreviouseDelta(DoubleMatrix delta) {
+		this.previouseDelta = delta;
 	}
 
 	@Override

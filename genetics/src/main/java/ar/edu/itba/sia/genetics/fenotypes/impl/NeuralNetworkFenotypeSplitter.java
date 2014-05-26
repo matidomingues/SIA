@@ -21,14 +21,13 @@ public class NeuralNetworkFenotypeSplitter implements FenotypeSplitter {
 		List<Allele> originalAlleles = parent1.getAlleles();
 
 		for (Range range : splitPoints) {
+			List<Allele> subList = new ArrayList<Allele>(originalAlleles.size()/2);
 			int from = range.value();
-			int to = range.value();
-			while (range.hasMore()) {
-				range.next();
-				to = range.value();
+			for (int i = range.value(); range.hasMore(); range.next()) {
+				subList.add(originalAlleles.get(i));
 			}
+			int to = range.value();
 			range.init(from, to);
-			List<Allele> subList = originalAlleles.subList(from, to);
 			if (!(subList == null || subList.isEmpty())) {
 				splittedList.add(subList);
 			}

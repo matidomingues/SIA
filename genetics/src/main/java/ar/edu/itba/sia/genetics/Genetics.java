@@ -35,15 +35,6 @@ public class Genetics {
 		List<Double> fitnessHistory = new LinkedList<Double>();
 		while (genetics.cutConditionMet()) {
 			genetics.work();
-//			ar.edu.itba.sia.perceptrons.backpropagation.CutCondition bpCutCondition =
-//					ConfigurationService.getInstance().getBackpropagationCutCondition();
-//			if (bpCutCondition instanceof ChainedCutCondition) {
-//				for (ar.edu.itba.sia.perceptrons.backpropagation.CutCondition cc : ((ChainedCutCondition) bpCutCondition).getCutConditions()) {
-//					if (cc instanceof ErrorCutCondition) {
-//						ExportService.getInstance().exportErrorCSV(((ErrorCutCondition) cc).getErrorHistory());
-//					}
-//				}
-//			}
 			errorHistory.add(genetics.getMeanError(ConfigurationService.getInstance().getPatterns()));
 			fitnessHistory.add(genetics.getMeanFitness());
 		}
@@ -87,7 +78,7 @@ public class Genetics {
 		double error = 0.0;
 		for(Fenotype f : this.fenotypes) {
 			for (Pattern p : ConfigurationService.getInstance().getPatterns()) {
-				DoubleMatrix result = ((PerceptronNetwork) f).compute(p);
+				DoubleMatrix result = ((PerceptronNetwork) f).compute(p).sub(p.getExpectedOutputs());
 				error = error + MatrixFunctions.pow(result, 2).scalar()/2.0;
 			}
 		}

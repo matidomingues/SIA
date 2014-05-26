@@ -317,7 +317,6 @@ public class ConfigurationService {
 		FenotypeSelector selector = null;
 		String selectorPath = preffix + ".selector";
 		List<Object> selectorsNames = configuration.getList(selectorPath);
-		if (selectorsNames.isEmpty()) throw new Error("No selection method found");
 		if (selectorsNames.size() == 1) {
 			selector = getSingleSelector(selectorPath, null);
 		} else {
@@ -337,26 +336,28 @@ public class ConfigurationService {
 
 	private  FenotypeSelector getSingleSelector(String selectorPath, List<FenotypeSelector> selectors) {
 		FenotypeSelector selector;
-		int k = configuration.getInt(selectorPath + "[@k]");
 		String selectorName = configuration.getString(selectorPath);
 		if (selectorName.compareToIgnoreCase("chained") == 0) {
 			if (selectors == null) throw new Error("Expected more selectors");
 			selector = new ChainedFenotypeSelector(selectors);
-		} else if (selectorName.compareToIgnoreCase("elite") == 0) {
-			selector = new EliteFenotypeSelector(k, getFitnessFunction(), fenotypeComparator);
-		} else if (selectorName.compareToIgnoreCase("boltzman") == 0) {
-			selector = new BoltzmanFenotypeSelector(k, getFitnessFunction());
-		} else if (selectorName.compareToIgnoreCase("roulette") == 0) {
-			selector = new RouletteFenotypeSelector(k, getFitnessFunction());
-		} else if (selectorName.compareToIgnoreCase("tournaments-d") == 0) {
-			int m = configuration.getInt(selectorPath + "[@m]");
-			selector = new TournamentsDeterministicFenotypeSelector(m, k, getFitnessFunction());
-		} else if (selectorName.compareToIgnoreCase("tournaments-e") == 0) {
-			selector = new TournamentsProbabilisticsFenotypeSelector(k, getFitnessFunction());
-		} else if (selectorName.compareToIgnoreCase("universal") == 0) {
-			selector = new UniversalFenotypeSelector(k, getFitnessFunction());
 		} else {
-			throw new Error("Unknown selection selector");
+			int k = configuration.getInt(selectorPath + "[@k]");
+			if (selectorName.compareToIgnoreCase("elite") == 0) {
+				selector = new EliteFenotypeSelector(k, getFitnessFunction(), fenotypeComparator);
+			} else if (selectorName.compareToIgnoreCase("boltzmann") == 0) {
+				selector = new BoltzmanFenotypeSelector(k, getFitnessFunction());
+			} else if (selectorName.compareToIgnoreCase("roulette") == 0) {
+				selector = new RouletteFenotypeSelector(k, getFitnessFunction());
+			} else if (selectorName.compareToIgnoreCase("tournaments-d") == 0) {
+				int m = configuration.getInt(selectorPath + "[@m]");
+				selector = new TournamentsDeterministicFenotypeSelector(m, k, getFitnessFunction());
+			} else if (selectorName.compareToIgnoreCase("tournaments-e") == 0) {
+				selector = new TournamentsProbabilisticsFenotypeSelector(k, getFitnessFunction());
+			} else if (selectorName.compareToIgnoreCase("universal") == 0) {
+				selector = new UniversalFenotypeSelector(k, getFitnessFunction());
+			} else {
+				throw new Error("Unknown selection selector");
+			}
 		}
 		return selector;  //To change body of created methods use File | Settings | File Templates.
 	}

@@ -42,7 +42,7 @@ public class GradientDescentDeltaCalculator implements DeltaCalculator {
 		}
 
 		for (int i = 0; i< deltas.size(); i++) {
-			DoubleMatrix newDelta = deltas.get(i).transpose().mmul(vs.get(i)).mul(etha).add(previousDelta.mul(alpha));
+			DoubleMatrix newDelta = deltas.get(i).transpose().mmul(vs.get(i)).mul(etha).add(network.getLayers().get(i).getPreviouseDelta().mul(alpha));
 			deltas.set(i, newDelta);
 		}
 	}
