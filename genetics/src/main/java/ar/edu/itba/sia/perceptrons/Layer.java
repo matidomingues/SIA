@@ -1,7 +1,7 @@
 package ar.edu.itba.sia.perceptrons;
 
-import ar.edu.itba.sia.genetics.fenotypes.Allele;
 import ar.edu.itba.sia.utils.MatrixFunction;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.jblas.DoubleMatrix;
 
 public class Layer {
@@ -47,5 +47,18 @@ public class Layer {
 		if (!l.getTransferenceFunction().equals(this.getTransferenceFunction())) return false;
 
 		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		HashCodeBuilder hcb = new HashCodeBuilder();
+
+		for (int i = 0; i < weights.rows; i++) {
+			for (int j = 0; j < weights.columns; j++) {
+				hcb = hcb.append(weights.get(i,j));
+			}
+		}
+
+		return hcb.hashCode();
 	}
 }

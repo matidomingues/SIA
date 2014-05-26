@@ -1,18 +1,17 @@
 package ar.edu.itba.sia.genetics.fenotypes.impl;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-
 import ar.edu.itba.sia.genetics.fenotypes.Allele;
 import ar.edu.itba.sia.genetics.fenotypes.Fenotype;
 import ar.edu.itba.sia.genetics.fenotypes.FenotypeBuilder;
 import ar.edu.itba.sia.perceptrons.Layer;
 import ar.edu.itba.sia.perceptrons.PerceptronNetwork;
-import ar.edu.itba.sia.perceptrons.backpropagation.impl.TanhMatrixFunction;
 import ar.edu.itba.sia.utils.MatrixFunction;
 import org.jblas.DoubleMatrix;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 public class NeuralNetworkFenotypeBuilder implements FenotypeBuilder{
 

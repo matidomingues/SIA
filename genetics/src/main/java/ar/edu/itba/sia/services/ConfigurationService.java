@@ -223,6 +223,9 @@ public class ConfigurationService {
 			if (deltaCalculatorName.compareToIgnoreCase("gradient-descent") == 0) {
 				double etha = configuration.getDouble("backpropagation.deltacalculator[@etha]");
 				String functionName = configuration.getString("backpropagation.deltacalculator[@function]");
+				double a = configuration.getDouble("backpropagation.deltacalculator[@a]");
+				double b = configuration.getDouble("backpropagation.deltacalculator[@b]");
+				double alpha = configuration.getDouble("backpropagation.deltacalculator[@alpha]");
 				MatrixFunction dFunction;
 				if (Strings.isNullOrEmpty(functionName)) throw new Error("No function defined for gradient descent");
 				if (functionName.compareToIgnoreCase("tanh") == 0) {
@@ -230,7 +233,7 @@ public class ConfigurationService {
 				} else {
 					throw new Error("Uknown gradient descent function");
 				}
-				deltaCalculator = new GradientDescentDeltaCalculator(etha, dFunction);
+				deltaCalculator = new GradientDescentDeltaCalculator(etha, a, b, alpha, dFunction);
 			} else {
 				throw new Error("Uknown delta calculation method");
 			}

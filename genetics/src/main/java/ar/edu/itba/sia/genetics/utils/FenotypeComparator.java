@@ -1,9 +1,9 @@
 package ar.edu.itba.sia.genetics.utils;
 
-import java.util.Comparator;
-
 import ar.edu.itba.sia.genetics.fenotypes.Fenotype;
 import ar.edu.itba.sia.genetics.fenotypes.FitnessFunction;
+
+import java.util.Comparator;
 
 public class FenotypeComparator implements Comparator<Fenotype> {
 

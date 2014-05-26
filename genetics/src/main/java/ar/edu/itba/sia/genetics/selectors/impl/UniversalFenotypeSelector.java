@@ -1,12 +1,12 @@
 package ar.edu.itba.sia.genetics.selectors.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
 import ar.edu.itba.sia.genetics.fenotypes.Fenotype;
 import ar.edu.itba.sia.genetics.fenotypes.FitnessFunction;
 import ar.edu.itba.sia.genetics.selectors.FenotypeSelector;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class UniversalFenotypeSelector implements FenotypeSelector {
 

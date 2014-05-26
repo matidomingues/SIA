@@ -12,13 +12,19 @@ import java.util.List;
 public class GradientDescentDeltaCalculator implements DeltaCalculator {
 
 	private final double etha;
+	private final double a;
+	private final double b;
+	private final double alpha;
 	private final MatrixFunction function;
+	private DoubleMatrix previousDelta;
 
-	public GradientDescentDeltaCalculator(double etha, MatrixFunction function) {
+	public GradientDescentDeltaCalculator(double etha, double a, double b, double alpha, MatrixFunction function) {
 		this.etha = etha;
+		this.a = a;
+		this.b = b;
+		this.alpha = alpha;
 		this.function = function;
 	}
-
 	
 	public void calculate(PerceptronNetwork network, Pattern pattern,
 						  List<DoubleMatrix> hs, List<DoubleMatrix> vs, List<DoubleMatrix> deltas) {
@@ -36,7 +42,7 @@ public class GradientDescentDeltaCalculator implements DeltaCalculator {
 		}
 
 		for (int i = 0; i< deltas.size(); i++) {
-			DoubleMatrix newDelta = deltas.get(i).transpose().mmul(vs.get(i)).mul(etha);
+			DoubleMatrix newDelta = deltas.get(i).transpose().mmul(vs.get(i)).mul(etha).add(previousDelta.mul(alpha));
 			deltas.set(i, newDelta);
 		}
 	}

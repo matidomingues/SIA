@@ -1,14 +1,12 @@
 package ar.edu.itba.sia.genetics.selectors.impl;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
-
 import ar.edu.itba.sia.genetics.fenotypes.Fenotype;
 import ar.edu.itba.sia.genetics.fenotypes.FitnessFunction;
 import ar.edu.itba.sia.genetics.selectors.FenotypeSelector;
-import ar.edu.itba.sia.genetics.utils.FenotypeComparator;
+
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 public class EliteFenotypeSelector implements FenotypeSelector{
 

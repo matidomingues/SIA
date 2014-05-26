@@ -1,13 +1,12 @@
 package ar.edu.itba.sia.genetics.operators.backpropagation;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-
 import ar.edu.itba.sia.genetics.fenotypes.Fenotype;
 import ar.edu.itba.sia.perceptrons.Pattern;
 import ar.edu.itba.sia.perceptrons.PerceptronNetwork;
 import ar.edu.itba.sia.perceptrons.backpropagation.BackpropagationAlgorithm;
+
+import java.util.List;
+import java.util.Random;
 
 public class Backpropagator {
 

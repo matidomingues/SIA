@@ -1,18 +1,11 @@
 package ar.edu.itba.sia.services;
 
 import ar.edu.itba.sia.perceptrons.Layer;
-import ar.edu.itba.sia.perceptrons.Pattern;
 import ar.edu.itba.sia.perceptrons.PerceptronNetwork;
 import au.com.bytecode.opencsv.CSVWriter;
-import de.erichseifert.gral.data.DataTable;
-import de.erichseifert.gral.io.data.DataWriter;
-import de.erichseifert.gral.io.data.DataWriterFactory;
-import de.erichseifert.gral.plots.XYPlot;
-import de.erichseifert.gral.plots.lines.DefaultLineRenderer2D;
 import org.jblas.DoubleMatrix;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
@@ -36,10 +29,12 @@ public class ExportService {
 
 	public void exportAsCSV(PerceptronNetwork network) {
 		try {
-			File file = File.createTempFile("network", ".csv",
-					ConfigurationService.getInstance().getExportPath().toFile());
-			CSVWriter writer = new CSVWriter(new FileWriter(file));
+			int li = 0;
+			long timestamp = System.currentTimeMillis();
 			for (Layer l : network.getLayers()) {
+				File file = File.createTempFile(String.format("network-%d-layer-%d-", timestamp, li), ".csv",
+						ConfigurationService.getInstance().getExportPath().toFile());
+				CSVWriter writer = new CSVWriter(new FileWriter(file), ';', ' ');
 				DoubleMatrix weights = l.getWeights();
 				for (int i = 0; i < weights.rows; i++) {
 					String[] nextLine = new String[weights.columns];
@@ -48,8 +43,9 @@ public class ExportService {
 					}
 					writer.writeNext(nextLine);
 				}
+				writer.close();
+				li++;
 			}
-			writer.close();
 		} catch (IOException e) {
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 		}
@@ -58,9 +54,9 @@ public class ExportService {
 
 	public void exportErrorCSV(List<Double> error) {
 		try {
-			File file = File.createTempFile("error-" + new Date(System.currentTimeMillis()).toString(),
+			File file = File.createTempFile("error-" + System.currentTimeMillis() + "-",
 					".csv", ConfigurationService.getInstance().getExportPath().toFile());
-			CSVWriter writer = new CSVWriter(new FileWriter(file));
+			CSVWriter writer = new CSVWriter(new FileWriter(file), ';', ' ');
 			String[] line = new String[error.size()];
 			for (int i = 0; i < error.size(); i++) {
 				line[i] = error.get(i).toString();
@@ -72,27 +68,19 @@ public class ExportService {
 		}
 	}
 
-	public void exportErrorImage(List<Double> errors) {
+	public void exportFitnessCSV(List<Double> fitness) {
 		try {
-
-			File file = File.createTempFile("error-image-", ".png",
-					ConfigurationService.getInstance().getExportPath().toFile());
-			DataTable data = new DataTable(Integer.class, Double.class);
-			for (int i = 0; i < errors.size(); i++) {
-				data.add(i, errors.get(i));
+			File file = File.createTempFile("fitness-" + System.currentTimeMillis() + "-",
+					".csv", ConfigurationService.getInstance().getExportPath().toFile());
+			CSVWriter writer = new CSVWriter(new FileWriter(file), ';', ' ');
+			String[] line = new String[fitness.size()];
+			for (int i = 0; i < fitness.size(); i++) {
+				line[i] = fitness.get(i).toString();
 			}
-			XYPlot plot = new XYPlot(data);
-			plot.setLineRenderer(data, new DefaultLineRenderer2D());
-			DataWriterFactory dataWriterFactory = DataWriterFactory.getInstance();
-			DataWriter dataWriter = dataWriterFactory.get("text/csv");
-			dataWriter.write(data, new FileOutputStream(file));
+			writer.writeNext(line);
+			writer.close();
 		} catch (IOException e) {
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 		}
 	}
-
-	public void exportComparisonImage(PerceptronNetwork n1, PerceptronNetwork n2, List<Pattern> patterns) {
-
-	}
-
 }

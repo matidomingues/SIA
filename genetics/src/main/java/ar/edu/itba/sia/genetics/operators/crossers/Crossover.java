@@ -4,7 +4,6 @@ import ar.edu.itba.sia.genetics.fenotypes.Allele;
 import ar.edu.itba.sia.genetics.fenotypes.Fenotype;
 import ar.edu.itba.sia.genetics.fenotypes.FenotypeBuilder;
 import ar.edu.itba.sia.genetics.fenotypes.FenotypeSplitter;
-
 import org.jblas.ranges.IntervalRange;
 import org.jblas.ranges.Range;
 

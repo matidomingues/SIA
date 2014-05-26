@@ -1,8 +1,8 @@
 package ar.edu.itba.sia.genetics.operators.mutators;
 
-import java.util.Random;
-
 import ar.edu.itba.sia.genetics.fenotypes.Fenotype;
+
+import java.util.Random;
 
 public abstract class Mutator {
 	private final double probability;

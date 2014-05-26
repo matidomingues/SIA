@@ -7,16 +7,16 @@
         <layer function="tanh">1</layer>
     </architecture>
     <genetics>
-        <population>100</population>
-        <replacer>1</replacer>
-        <crossover probability="0.5">anular</crossover>
+        <population>10</population>
+        <replacer>3</replacer>
         <fitnessfunction>1</fitnessfunction>
+        <crossover probability="0.5">anular</crossover>
         <mutator probability="0.01">classic</mutator>
         <replacementselector>
-            <selector k="2">boltzman</selector>
+            <selector k="2">boltzmann</selector>
         </replacementselector>
         <selectionselector>
-            <selector k="2">tournaments-e</selector>
+            <selector k="2">roulette</selector>
         </selectionselector>
         <cutconditions>
             <cutcondition maxGenerations="1000">generations</cutcondition>
@@ -24,12 +24,11 @@
         <backpropagation>0.5</backpropagation>
     </genetics>
     <backpropagation>
-        <deltacalculator etha="0.01" function="tanh">gradient-descent</deltacalculator>
+        <deltacalculator etha="0.01" function="tanh" a="0.01" b="0.6" alpha="0.6">gradient-descent</deltacalculator>
         <cutconditions>
             <cutcondition>chained</cutcondition>
-            <cutcondition epochs="20">epochs</cutcondition>
+            <cutcondition epochs="100">epochs</cutcondition>
             <cutcondition epsilon="0.001">error</cutcondition>
         </cutconditions>
     </backpropagation>
-
 </config>

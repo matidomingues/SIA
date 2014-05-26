@@ -3,6 +3,7 @@ package ar.edu.itba.sia.perceptrons;
 import ar.edu.itba.sia.genetics.fenotypes.Allele;
 import ar.edu.itba.sia.genetics.fenotypes.Fenotype;
 import ar.edu.itba.sia.genetics.fenotypes.impl.NeuralNetworkAllele;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.jblas.DoubleMatrix;
 import org.jblas.ranges.IntervalRange;
 
@@ -121,5 +122,16 @@ public class PerceptronNetwork implements Fenotype {
 		}
 
 		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		HashCodeBuilder hcb = new HashCodeBuilder();
+
+		for (Layer l : layers) {
+			hcb = hcb.append(l);
+		}
+
+		return hcb.hashCode();
 	}
 }

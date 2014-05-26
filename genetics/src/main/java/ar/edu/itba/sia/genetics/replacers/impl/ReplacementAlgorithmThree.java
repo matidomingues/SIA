@@ -10,10 +10,7 @@ import ar.edu.itba.sia.genetics.selectors.impl.ChainedFenotypeSelector;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
-import java.util.Set;
 
 public class ReplacementAlgorithmThree extends ReplacementAlgorithm {
 

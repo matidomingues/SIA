@@ -1,12 +1,14 @@
 package ar.edu.itba.sia.perceptrons.backpropagation;
 
-import java.util.*;
-
 import ar.edu.itba.sia.perceptrons.Layer;
 import ar.edu.itba.sia.perceptrons.Pattern;
 import ar.edu.itba.sia.perceptrons.PerceptronNetwork;
 import org.jblas.DoubleMatrix;
-import org.jblas.MatrixFunctions;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 public class BackpropagationAlgorithm {
 
 	private final DeltaCalculator deltaCalculator;

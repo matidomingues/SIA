@@ -1,13 +1,12 @@
 package ar.edu.itba.sia.genetics.cutcondition.impl;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
 import ar.edu.itba.sia.genetics.cutcondition.CutCondition;
 import ar.edu.itba.sia.genetics.fenotypes.Fenotype;
 import ar.edu.itba.sia.genetics.fenotypes.FitnessFunction;
-import ar.edu.itba.sia.genetics.utils.FenotypeComparator;
+
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 public class ScopeCutCondition implements CutCondition{
 

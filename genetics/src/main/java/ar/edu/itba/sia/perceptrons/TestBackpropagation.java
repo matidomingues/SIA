@@ -486,11 +486,14 @@ public class TestBackpropagation {
 		cutConditions.add(new EpochsCutCondition(7000));
 		cutConditions.add(new ErrorCutCondition(testPatterns, 0.001));
 		ChainedCutCondition cutCondition = new ChainedCutCondition(cutConditions);
-
-		BackpropagationAlgorithm backpropagation = new BackpropagationAlgorithm(new GradientDescentDeltaCalculator(0.01, new TanhDMatrixFunction()), cutCondition);
+		double a = 0.01;
+		double b = 0.6;
+		double alpha = 0.95;
+		BackpropagationAlgorithm backpropagation = new BackpropagationAlgorithm(
+				new GradientDescentDeltaCalculator(0.01, a, b, alpha, new TanhDMatrixFunction()), cutCondition);
 
 		backpropagation.execute(network, learningPatterns);
-		List<Double> errorH=((ErrorCutCondition)cutConditions.get(1)).getErrorHistory();
+		List<Double> errorH = ((ErrorCutCondition)cutConditions.get(1)).getErrorHistory();
 		System.out.println(String.format("Finished! Epochs left: %d Final Error = %g", backpropagation.getEpochs(), errorH.get(errorH.size()-1)));
 		System.out.println(network);
 

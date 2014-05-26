@@ -1,10 +1,10 @@
 package ar.edu.itba.sia.genetics.selectors.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import ar.edu.itba.sia.genetics.fenotypes.Fenotype;
 import ar.edu.itba.sia.genetics.selectors.FenotypeSelector;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ChainedFenotypeSelector implements FenotypeSelector{
 	private final List<FenotypeSelector> selectors;

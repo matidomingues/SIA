@@ -1,10 +1,10 @@
 package ar.edu.itba.sia.genetics.cutcondition.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import ar.edu.itba.sia.genetics.cutcondition.CutCondition;
 import ar.edu.itba.sia.genetics.fenotypes.Fenotype;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class StructureCutCondition implements CutCondition{
 

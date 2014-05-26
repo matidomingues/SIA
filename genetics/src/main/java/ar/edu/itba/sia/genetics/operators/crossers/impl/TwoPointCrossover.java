@@ -6,7 +6,8 @@ import ar.edu.itba.sia.genetics.fenotypes.FenotypeSplitter;
 import ar.edu.itba.sia.genetics.operators.crossers.Crossover;
 import org.jblas.ranges.Range;
 
-import java.util.*;
+import java.util.List;
+import java.util.Random;
 
 public class TwoPointCrossover extends Crossover {
 

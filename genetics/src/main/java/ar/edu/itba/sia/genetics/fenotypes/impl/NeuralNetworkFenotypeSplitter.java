@@ -1,14 +1,13 @@
 package ar.edu.itba.sia.genetics.fenotypes.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.jblas.ranges.Range;
-
 import ar.edu.itba.sia.genetics.fenotypes.Allele;
 import ar.edu.itba.sia.genetics.fenotypes.Fenotype;
 import ar.edu.itba.sia.genetics.fenotypes.FenotypeSplitter;
 import ar.edu.itba.sia.perceptrons.PerceptronNetwork;
+import org.jblas.ranges.Range;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class NeuralNetworkFenotypeSplitter implements FenotypeSplitter {
 
