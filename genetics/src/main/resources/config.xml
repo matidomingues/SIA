@@ -1,10 +1,8 @@
 <config>
-    <patterns test="300">/home/facundo/SIA/gps/genetics/samples2.csv</patterns>
+    <patterns test="300">C:\Users\Teresa\Documents\ITBA\Cuarto Año\Sistemas\ de\ Inteligencia\ Artificial\SIA3\SIA\genetics\samples2.csv</patterns>
     <architecture>
         <layer function="tanh">2</layer>
-        <layer function="tanh">4</layer>
-        <layer function="tanh">3</layer>
-        <layer function="tanh">3</layer>
+        <layer function="tanh">75</layer>
         <layer function="tanh">1</layer>
     </architecture>
     <genetics>
@@ -25,7 +23,7 @@
         <backpropagation>0.5</backpropagation>
     </genetics>
     <backpropagation>
-        <deltacalculator etha="0.1" function="tanh">gradient-descent</deltacalculator>
+        <deltacalculator etha="0.01" function="tanh">gradient-descent</deltacalculator>
         <cutconditions>
             <cutcondition>chained</cutcondition>
             <cutcondition epochs="20">epochs</cutcondition>

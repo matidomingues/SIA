@@ -41,7 +41,9 @@ public class ReplacementAlgorithmThree extends ReplacementAlgorithm {
 		mix.addAll(fenotypes);
 		mix.addAll(mutations);
 		List<Fenotype> newGeneration=((ChainedFenotypeSelector)this.getSelectorReplace()).getSelectors().get(1).select(mix);
-		fenotypes.retainAll(oldGeneration);
+		fenotypes.clear();
+		fenotypes.addAll(oldGeneration);
+//		fenotypes.retainAll(oldGeneration);
 		fenotypes.addAll(newGeneration);
 
 	}

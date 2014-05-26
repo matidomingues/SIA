@@ -31,7 +31,8 @@ public class ReplacementAlgorithmTwo extends ReplacementAlgorithm {
 			mutations.add(this.getBackpropagator().backpropagate(f));		
 		}
 		List<Fenotype> oldGenerationRemains=this.getSelectorReplace().select(fenotypes);
-		fenotypes.retainAll(oldGenerationRemains);
+		fenotypes.clear();
+		fenotypes.addAll(oldGenerationRemains);
 		fenotypes.addAll(mutations);
 	}
 }
