@@ -10,28 +10,34 @@ import ar.edu.itba.sia.perceptrons.PerceptronNetwork;
 import ar.edu.itba.sia.perceptrons.backpropagation.BackpropagationAlgorithm;
 
 public class Backpropagator {
-	private static final double BACKPROPAGATION_PROBABILITY=1.0;
 
+	private final double backpropagationProbability;
 	private final BackpropagationAlgorithm backpropagation;
 	private final List<Pattern> patterns;
 
-	public Backpropagator(BackpropagationAlgorithm backpropagation, List<Pattern> patterns) {
+	public Backpropagator(BackpropagationAlgorithm backpropagation, List<Pattern> patterns, double backpropagationProbability) {
 		this.backpropagation = backpropagation;
 		this.patterns = patterns;
+		this.backpropagationProbability = backpropagationProbability;
 	}
 	
 	public Fenotype backpropagate(Fenotype f){
 		
 		if(doBackpropagation()){
-			backpropagation.execute((PerceptronNetwork) f, patterns);
+			return forceBackpropagation(f);
 		}
+		return f;
+	}
+
+	public Fenotype forceBackpropagation(Fenotype f) {
+		backpropagation.execute((PerceptronNetwork) f, patterns);
 		return f;
 	}
 	
 	private boolean doBackpropagation(){
 		Random random = new Random(System.nanoTime());
 		double crossoverProb = random.nextDouble();
-		return crossoverProb > BACKPROPAGATION_PROBABILITY;
+		return crossoverProb < backpropagationProbability;
 	}
 	
 	

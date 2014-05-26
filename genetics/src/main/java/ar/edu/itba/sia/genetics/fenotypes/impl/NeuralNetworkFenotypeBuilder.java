@@ -31,7 +31,7 @@ public class NeuralNetworkFenotypeBuilder implements FenotypeBuilder{
 	}
 
 	public Fenotype build() {
-		List<Layer> layers = new ArrayList<Layer>(architecture.length - 2);
+		List<Layer> layers = new ArrayList<Layer>(architecture.length - 1);
 
 		for (int i = 1; i < architecture.length; i++) {
 			layers.add(new Layer(DoubleMatrix.rand(architecture[i],architecture[i-1] + 1), transferenceFunctions.get(i-1)));
@@ -45,7 +45,7 @@ public class NeuralNetworkFenotypeBuilder implements FenotypeBuilder{
 			throw new IllegalArgumentException(String.format("Invalid number of alleles. Recieved %d expected %d.", childAlleles.size(), sizeArchitecture));
 
 		Iterator<Allele> childAllelesIt = childAlleles.iterator();
-		List<Layer> layers = new ArrayList<Layer>(architecture.length - 2);
+		List<Layer> layers = new ArrayList<Layer>(architecture.length - 1);
 		int i = 1;
 		while (childAllelesIt.hasNext()) {
 			Layer l = buildLayer(childAllelesIt, i);

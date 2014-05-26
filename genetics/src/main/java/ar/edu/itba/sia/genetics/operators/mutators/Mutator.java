@@ -5,12 +5,17 @@ import java.util.Random;
 import ar.edu.itba.sia.genetics.fenotypes.Fenotype;
 
 public abstract class Mutator {
-	private static final double MUTATOR_PROBABILITY=0.01;
+	private final double probability;
+
+	public Mutator(double probability) {
+		this.probability = probability;
+	}
+
 	public abstract Fenotype mutate(Fenotype fenotype);
 	
 	
 	public boolean domutation(){
 		Random random = new Random(System.nanoTime());
-		return random.nextDouble()<=MUTATOR_PROBABILITY;
+		return random.nextDouble() <= probability;
 	}
 }

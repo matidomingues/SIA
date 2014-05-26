@@ -83,7 +83,7 @@ public abstract class Crossover {
 	public boolean doCrossover(){
 		Random random = new Random(System.nanoTime());
 		double crossoverProb=random.nextDouble(); 
-		return crossoverProb>probability;
+		return crossoverProb < probability;
 	}
 
 }
