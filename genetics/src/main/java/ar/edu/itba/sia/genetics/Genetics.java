@@ -6,8 +6,6 @@ import ar.edu.itba.sia.genetics.fenotypes.FenotypeBuilder;
 import ar.edu.itba.sia.genetics.replacers.ReplacementAlgorithm;
 import ar.edu.itba.sia.perceptrons.Pattern;
 import ar.edu.itba.sia.perceptrons.PerceptronNetwork;
-import ar.edu.itba.sia.perceptrons.utils.ChainedCutCondition;
-import ar.edu.itba.sia.perceptrons.utils.ErrorCutCondition;
 import ar.edu.itba.sia.services.ConfigurationService;
 import ar.edu.itba.sia.services.ExportService;
 import org.jblas.DoubleMatrix;

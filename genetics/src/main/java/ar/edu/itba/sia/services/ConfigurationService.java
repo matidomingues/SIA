@@ -119,26 +119,6 @@ public class ConfigurationService {
 			initCommons();
 			initBackpropagation();
 			initGenetics();
-
-			architecture = getArchitecture();
-			patterns = getPatterns();
-			testPatternsQty = getTestPatternsQty();
-
-			backpropagation = getBackpropagation();
-
-			fenotypeBuilder = getFenotypeBuilder();
-			fenotypeComparator = getFenotypeComparator();
-			fitnessFunction = getFitnessFunction();
-			population = getPopulation();
-			selectionSelector = getSelectionSelector();
-			replacementSelector = getReplacementSelector();
-			mutator = getMutator();
-			crosser = getCrosser();
-			geneticCutCondition = getGeneticCutCondition();
-			backpropagator = getBackpropagator();
-			replacementAlgorithm = getReplacementAlgorithm();
-
-			exportPath = getExportPath();
 		} catch (ConfigurationException e) {
 			throw new Error("Unable to load configuration file! Aborting");
 		}
@@ -462,6 +442,8 @@ public class ConfigurationService {
 					selectors.add(s);
 				}
 			}
+			if (selector == null) throw new Error("Chained selector expected here");
+			if (((ChainedFenotypeSelector)selector).getSelectors().isEmpty()) throw new Error("Empty chained selector");
 		}
 		return selector;
 	}
