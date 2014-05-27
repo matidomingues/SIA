@@ -118,7 +118,7 @@ public class PerceptronNetwork implements Fenotype {
 		if (pn.size() != this.size()) return false;
 		if (pn.getLayers().size() != this.getLayers().size()) return false;
 
-		for (int i = 0; i < this.size(); i++) {
+		for (int i = 0; i < this.getLayers().size(); i++) {
 			if (!pn.getLayers().get(i).equals(this.getLayers().get(i))) return false;
 		}
 

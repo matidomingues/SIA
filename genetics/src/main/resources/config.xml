@@ -1,19 +1,21 @@
 <config>
-    <exportpath>/home/facundo/SIA/gps/genetics/exports/</exportpath>
-    <patterns test="300">/home/facundo/SIA/gps/genetics/samples2.csv</patterns>
+    <exportpath>exports/</exportpath>
+    <patterns test="300">samples2.csv</patterns>
     <architecture>
         <layer function="tanh">2</layer>
         <layer function="tanh">75</layer>
         <layer function="tanh">1</layer>
     </architecture>
     <genetics>
-        <population>10</population>
-        <replacer>3</replacer>
+        <population>50</population>
+        <replacer>1</replacer>
         <fitnessfunction>1</fitnessfunction>
         <crossover probability="0.5">anular</crossover>
-        <mutator probability="0.01">classic</mutator>
+        <mutator probability="0.01">modern</mutator>
         <replacementselector>
+        	
             <selector k="2">boltzmann</selector>
+            
         </replacementselector>
         <selectionselector>
             <selector k="2">roulette</selector>
