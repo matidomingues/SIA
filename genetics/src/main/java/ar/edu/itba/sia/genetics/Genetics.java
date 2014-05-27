@@ -6,6 +6,8 @@ import ar.edu.itba.sia.genetics.fenotypes.FenotypeBuilder;
 import ar.edu.itba.sia.genetics.replacers.ReplacementAlgorithm;
 import ar.edu.itba.sia.perceptrons.Pattern;
 import ar.edu.itba.sia.perceptrons.PerceptronNetwork;
+import ar.edu.itba.sia.perceptrons.utils.ChainedCutCondition;
+import ar.edu.itba.sia.perceptrons.utils.ErrorCutCondition;
 import ar.edu.itba.sia.services.ConfigurationService;
 import ar.edu.itba.sia.services.ExportService;
 import org.jblas.DoubleMatrix;
@@ -24,40 +26,56 @@ public class Genetics {
 	private final FenotypeBuilder fenotypeBuilder;
 
 	public static void main(String[] args) {
-		ReplacementAlgorithm replacementAlgorithm = ConfigurationService.getInstance().getReplacementAlgorithm();
-		CutCondition cutCondition = ConfigurationService.getInstance().getGeneticCutCondition();
-		FenotypeBuilder fenotypeBuilder = ConfigurationService.getInstance().getFenotypeBuilder();
-		int population = ConfigurationService.getInstance().getPopulation();
+		if (ConfigurationService.getInstance().isGeneticsEnabled()) {
+			ReplacementAlgorithm replacementAlgorithm = ConfigurationService.getInstance().getReplacementAlgorithm();
+			CutCondition cutCondition = ConfigurationService.getInstance().getGeneticCutCondition();
+			FenotypeBuilder fenotypeBuilder = ConfigurationService.getInstance().getFenotypeBuilder();
+			int population = ConfigurationService.getInstance().getPopulation();
 
-		Genetics genetics= new Genetics(replacementAlgorithm, cutCondition, fenotypeBuilder, population);
-		List<Double> errorHistory = new LinkedList<Double>();
-		List<Double> fitnessHistory = new LinkedList<Double>();
-		while (genetics.cutConditionMet()) {
-			genetics.work();
-			errorHistory.add(genetics.getMeanError(ConfigurationService.getInstance().getPatterns()));
-			fitnessHistory.add(genetics.getMeanFitness());
-			if (ConfigurationService.getInstance().getFenotypeExportation() == ConfigurationService.FenotypesExportation.ALL_EACH_GEN) {
-				for (Fenotype f : genetics.fenotypes) {
+			Genetics genetics= new Genetics(replacementAlgorithm, cutCondition, fenotypeBuilder, population);
+			List<Double> errorHistory = new LinkedList<Double>();
+			List<Double> fitnessHistory = new LinkedList<Double>();
+			while (genetics.cutConditionMet()) {
+				genetics.work();
+				errorHistory.add(genetics.getMeanError(ConfigurationService.getInstance().getPatterns()));
+				fitnessHistory.add(genetics.getMeanFitness());
+				if (ConfigurationService.getInstance().getFenotypeExportation() == ConfigurationService.FenotypesExportation.ALL_EACH_GEN) {
+					for (Fenotype f : genetics.fenotypes) {
+						ExportService.getInstance().exportAsCSV((PerceptronNetwork)f);
+					}
+				}
+				if (ConfigurationService.getInstance().getFenotypeExportation() == ConfigurationService.FenotypesExportation.BEST_EACH_GEN) {
+					Collections.sort(genetics.fenotypes, ConfigurationService.getInstance().getFenotypeComparator());
+					ExportService.getInstance().exportAsCSV((PerceptronNetwork)genetics.fenotypes.get(0));
+				}
+			}
+
+			if (ConfigurationService.getInstance().getExportFitnessHistory()) ExportService.getInstance().exportFitnessCSV(fitnessHistory);
+			if (ConfigurationService.getInstance().getExportErrorHistory()) ExportService.getInstance().exportErrorCSV(errorHistory);
+			System.out.printf("Emc = %g\n", genetics.getMeanError(ConfigurationService.getInstance().getPatterns()));
+			if (ConfigurationService.getInstance().getFenotypeExportation() == ConfigurationService.FenotypesExportation.ALL) {
+				for(Fenotype f : genetics.fenotypes) {
 					ExportService.getInstance().exportAsCSV((PerceptronNetwork)f);
 				}
 			}
-			if (ConfigurationService.getInstance().getFenotypeExportation() == ConfigurationService.FenotypesExportation.BEST_EACH_GEN) {
+			if (ConfigurationService.getInstance().getFenotypeExportation() == ConfigurationService.FenotypesExportation.BEST) {
 				Collections.sort(genetics.fenotypes, ConfigurationService.getInstance().getFenotypeComparator());
 				ExportService.getInstance().exportAsCSV((PerceptronNetwork)genetics.fenotypes.get(0));
 			}
-		}
-
-		if (ConfigurationService.getInstance().getExportFitnessHistory()) ExportService.getInstance().exportFitnessCSV(fitnessHistory);
-		if (ConfigurationService.getInstance().getExportErrorHistory()) ExportService.getInstance().exportErrorCSV(errorHistory);
-		System.out.printf("Emc = %g\n", genetics.getMeanError(ConfigurationService.getInstance().getPatterns()));
-		if (ConfigurationService.getInstance().getFenotypeExportation() == ConfigurationService.FenotypesExportation.ALL) {
-			for(Fenotype f : genetics.fenotypes) {
-				ExportService.getInstance().exportAsCSV((PerceptronNetwork)f);
+		} else {
+			ConfigurationService.getInstance().getBackpropagation().execute(
+					(PerceptronNetwork)ConfigurationService.getInstance().getFenotypeBuilder().build(),
+					ConfigurationService.getInstance().getPatterns()
+			);
+			ar.edu.itba.sia.perceptrons.backpropagation.CutCondition bpcc = ConfigurationService.getInstance().getBackpropagation().getCutCondition();
+			if (bpcc instanceof ChainedCutCondition) {
+				for (ar.edu.itba.sia.perceptrons.backpropagation.CutCondition cc
+						: ((ChainedCutCondition) bpcc).getCutConditions()) {
+					if (cc instanceof ErrorCutCondition) {
+						ExportService.getInstance().exportErrorCSV(((ErrorCutCondition) cc).getErrorHistory());
+					}
+				}
 			}
-		}
-		if (ConfigurationService.getInstance().getFenotypeExportation() == ConfigurationService.FenotypesExportation.BEST) {
-			Collections.sort(genetics.fenotypes, ConfigurationService.getInstance().getFenotypeComparator());
-			ExportService.getInstance().exportAsCSV((PerceptronNetwork)genetics.fenotypes.get(0));
 		}
 	}
 

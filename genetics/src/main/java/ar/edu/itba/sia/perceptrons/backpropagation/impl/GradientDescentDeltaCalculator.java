@@ -12,16 +12,11 @@ import java.util.List;
 public class GradientDescentDeltaCalculator implements DeltaCalculator {
 
 	private final double etha;
-	private final double a;
-	private final double b;
 	private final double alpha;
 	private final MatrixFunction function;
-	private DoubleMatrix previousDelta;
 
-	public GradientDescentDeltaCalculator(double etha, double a, double b, double alpha, MatrixFunction function) {
+	public GradientDescentDeltaCalculator(double etha, double alpha, MatrixFunction function) {
 		this.etha = etha;
-		this.a = a;
-		this.b = b;
 		this.alpha = alpha;
 		this.function = function;
 	}

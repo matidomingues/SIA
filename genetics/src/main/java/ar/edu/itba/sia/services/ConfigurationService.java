@@ -108,6 +108,7 @@ public class ConfigurationService {
 	private FenotypeBuilder fenotypeBuilder;
 	private Path exportPath;
 	private boolean exportErrorHistory;
+	private boolean useGenetics;
 
 	private boolean exportFitnessHistory;
 	private FenotypesExportation fenotypeExportation;
@@ -241,8 +242,6 @@ public class ConfigurationService {
 		if (deltaCalculatorName.compareToIgnoreCase("gradient-descent") == 0) {
 			double etha = configuration.getDouble("backpropagation.deltacalculator[@etha]");
 			String functionName = configuration.getString("backpropagation.deltacalculator[@function]");
-			double a = configuration.getDouble("backpropagation.deltacalculator[@a]");
-			double b = configuration.getDouble("backpropagation.deltacalculator[@b]");
 			double alpha = configuration.getDouble("backpropagation.deltacalculator[@alpha]");
 			MatrixFunction dFunction;
 			if (Strings.isNullOrEmpty(functionName)) throw new Error("No function defined for gradient descent");
@@ -251,23 +250,25 @@ public class ConfigurationService {
 			} else {
 				throw new Error("Uknown gradient descent function");
 			}
-			deltaCalculator = new GradientDescentDeltaCalculator(etha, a, b, alpha, dFunction);
+			deltaCalculator = new GradientDescentDeltaCalculator(etha, alpha, dFunction);
 		} else {
 			throw new Error("Uknown delta calculation method");
 		}
 	}
 
 	private void initGenetics() {
-		int population = configuration.getInt("genetics.population");
-		if (population <= 0) throw new Error("Invalid population");
-		this.population = population;
-		replacementSelector = getSelector("genetics.replacementselector");
-		selectionSelector = getSelector("genetics.selectionselector");
-		initMutator();
-		initCrosser();
-		initGeneticCutCondition();
-		initBackpropagator();
-		initReplacementAlgorithm();
+		if ((useGenetics = configuration.containsKey("genetics"))) {
+			int population = configuration.getInt("genetics.population");
+			if (population <= 0) throw new Error("Invalid population");
+			this.population = population;
+			replacementSelector = getSelector("genetics.replacementselector");
+			selectionSelector = getSelector("genetics.selectionselector");
+			initMutator();
+			initCrosser();
+			initGeneticCutCondition();
+			initBackpropagator();
+			initReplacementAlgorithm();
+		}
 	}
 
 	private void initReplacementAlgorithm() {
@@ -590,5 +591,9 @@ public class ConfigurationService {
 
 	public Path getExportPath() {
 		return exportPath;
+	}
+
+	public boolean isGeneticsEnabled() {
+		return useGenetics;
 	}
 }

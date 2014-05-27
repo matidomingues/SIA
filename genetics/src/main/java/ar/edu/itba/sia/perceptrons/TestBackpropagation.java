@@ -490,7 +490,7 @@ public class TestBackpropagation {
 		double b = 0.6;
 		double alpha = 0.95;
 		BackpropagationAlgorithm backpropagation = new BackpropagationAlgorithm(
-				new GradientDescentDeltaCalculator(0.01, a, b, alpha, new TanhDMatrixFunction()), cutCondition);
+				new GradientDescentDeltaCalculator(0.01, a, new TanhDMatrixFunction()), cutCondition);
 
 		backpropagation.execute(network, learningPatterns);
 		List<Double> errorH = ((ErrorCutCondition)cutConditions.get(1)).getErrorHistory();
