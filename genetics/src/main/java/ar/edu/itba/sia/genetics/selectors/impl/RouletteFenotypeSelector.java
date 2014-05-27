@@ -20,21 +20,21 @@ public class RouletteFenotypeSelector implements FenotypeSelector{
 	
 	public List<Fenotype> select(List<Fenotype> fenotypes) {
 		List<Fenotype> selectedList= new ArrayList<Fenotype>(k);
-		double sumFitness=0,averageFitness=0;
+		double sumFitness=0;
 		double[] averageFitnessAcumulated= new double[fenotypes.size()+1];
-		
-		
-		for(Fenotype f:fenotypes){
-			sumFitness+=fitnessFunction.evaluate(f);
-		}
-		
-		averageFitness=sumFitness/fenotypes.size();
-		averageFitnessAcumulated[0]=0;
 		
 		int i=1;
 		for(Fenotype f:fenotypes){
-			averageFitnessAcumulated[i]=averageFitnessAcumulated[i-1]+(fitnessFunction.evaluate(f)/averageFitness);
+			averageFitnessAcumulated[i]=fitnessFunction.evaluate(f);
+			sumFitness+=averageFitnessAcumulated[i];
 			i++;
+		}
+		
+		//averageFitness=sumFitness/fenotypes.size();
+		averageFitnessAcumulated[0]=0;
+		
+		for(i=1;i<averageFitnessAcumulated.length;i++){
+			averageFitnessAcumulated[i]=averageFitnessAcumulated[i]/sumFitness+averageFitnessAcumulated[i-1];
 		}
 				
 		

@@ -33,7 +33,8 @@ public class NeuralNetworkFenotypeBuilder implements FenotypeBuilder{
 		List<Layer> layers = new ArrayList<Layer>(architecture.length - 2);
 
 		for (int i = 1; i < architecture.length; i++) {
-			layers.add(new Layer(DoubleMatrix.rand(architecture[i],architecture[i-1] + 1), transferenceFunctions.get(i-1)));
+			
+			layers.add(new Layer(DoubleMatrix.rand(architecture[i],architecture[i-1] + 1).sub(0.5), transferenceFunctions.get(i-1)));
 		}
 
 		return new PerceptronNetwork(layers);
