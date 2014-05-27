@@ -14,6 +14,7 @@ import org.jblas.DoubleMatrix;
 import org.jblas.MatrixFunctions;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -37,13 +38,28 @@ public class Genetics {
 			genetics.work();
 			errorHistory.add(genetics.getMeanError(ConfigurationService.getInstance().getPatterns()));
 			fitnessHistory.add(genetics.getMeanFitness());
+			if (ConfigurationService.getInstance().getFenotypeExportation() == ConfigurationService.FenotypesExportation.ALL_EACH_GEN) {
+				for (Fenotype f : genetics.fenotypes) {
+					ExportService.getInstance().exportAsCSV((PerceptronNetwork)f);
+				}
+			}
+			if (ConfigurationService.getInstance().getFenotypeExportation() == ConfigurationService.FenotypesExportation.BEST_EACH_GEN) {
+				Collections.sort(genetics.fenotypes, ConfigurationService.getInstance().getFenotypeComparator());
+				ExportService.getInstance().exportAsCSV((PerceptronNetwork)genetics.fenotypes.get(0));
+			}
 		}
 
-		ExportService.getInstance().exportFitnessCSV(fitnessHistory);
-		ExportService.getInstance().exportErrorCSV(errorHistory);
+		if (ConfigurationService.getInstance().getExportFitnessHistory()) ExportService.getInstance().exportFitnessCSV(fitnessHistory);
+		if (ConfigurationService.getInstance().getExportErrorHistory()) ExportService.getInstance().exportErrorCSV(errorHistory);
 		System.out.printf("Emc = %g\n", genetics.getMeanError(ConfigurationService.getInstance().getPatterns()));
-		for(Fenotype f : genetics.fenotypes) {
-			ExportService.getInstance().exportAsCSV((PerceptronNetwork)f);
+		if (ConfigurationService.getInstance().getFenotypeExportation() == ConfigurationService.FenotypesExportation.ALL) {
+			for(Fenotype f : genetics.fenotypes) {
+				ExportService.getInstance().exportAsCSV((PerceptronNetwork)f);
+			}
+		}
+		if (ConfigurationService.getInstance().getFenotypeExportation() == ConfigurationService.FenotypesExportation.BEST) {
+			Collections.sort(genetics.fenotypes, ConfigurationService.getInstance().getFenotypeComparator());
+			ExportService.getInstance().exportAsCSV((PerceptronNetwork)genetics.fenotypes.get(0));
 		}
 	}
 

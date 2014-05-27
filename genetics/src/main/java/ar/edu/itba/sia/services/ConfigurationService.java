@@ -46,32 +46,59 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class ConfigurationService {
 
+	public enum FenotypesExportation {
+		ALL("all"),
+		BEST("best"),
+		BEST_EACH_GEN("best-each-gen"),
+		ALL_EACH_GEN("all-each-gen");
+
+		private static final Map<String, FenotypesExportation> translationMap;
+		private String option;
+
+		static {
+			translationMap = new HashMap<>();
+			translationMap.put(ALL.getOption(), ALL);
+			translationMap.put(BEST.getOption(), BEST);
+			translationMap.put(BEST_EACH_GEN.getOption(), BEST_EACH_GEN);
+			translationMap.put(ALL_EACH_GEN.getOption(), ALL_EACH_GEN);
+		}
+
+		private FenotypesExportation(String option) {
+			this.option = option;
+		}
+
+		public static FenotypesExportation getFenotypeExportation(String option) {
+			return translationMap.get(option);
+		}
+
+		public String getOption() {
+			return option;
+		}
+	}
 	private static ConfigurationService instance;
 	private static final Object LOCKER = new Object();
 
 	private Configuration configuration;
-
 	private int[] architecture;
+
 	private List<Pattern> patterns;
+
 	private int testPatternsQty;
 	private int population;
-
 	private List<MatrixFunction> transferenceFunctions;
 	private FitnessFunction fitnessFunction;
 
 	private Comparator<Fenotype> fenotypeComparator;
 	private BackpropagationAlgorithm backpropagation;
-	private ar.edu.itba.sia.perceptrons.backpropagation.CutCondition backpropagationCutCondition;
 
+	private ar.edu.itba.sia.perceptrons.backpropagation.CutCondition backpropagationCutCondition;
 	private DeltaCalculator deltaCalculator;
 	private ReplacementAlgorithm replacementAlgorithm;
+
 	private FenotypeSelector selectionSelector;
 	private FenotypeSelector replacementSelector;
 	private Mutator mutator;
@@ -79,12 +106,19 @@ public class ConfigurationService {
 	private Backpropagator backpropagator;
 	private CutCondition geneticCutCondition;
 	private FenotypeBuilder fenotypeBuilder;
-
 	private Path exportPath;
+	private boolean exportErrorHistory;
+
+	private boolean exportFitnessHistory;
+	private FenotypesExportation fenotypeExportation;
 
 	private ConfigurationService() {
 		try {
 			configuration = new XMLConfiguration("config.xml");
+
+			initCommons();
+			initBackpropagation();
+			initGenetics();
 
 			architecture = getArchitecture();
 			patterns = getPatterns();
@@ -110,158 +144,274 @@ public class ConfigurationService {
 		}
 	}
 
-	public  int[] getArchitecture() {
-		if (architecture == null) {
-			synchronized (this) {
-				if (architecture == null) {
-					List<Object> architecture = configuration.getList("architecture.layer");
-					if (architecture.isEmpty()) throw new Error("No architecture found");
-					transferenceFunctions = new ArrayList<MatrixFunction>(architecture.size() - 1);
-					this.architecture = new int[architecture.size()];
-					int i = 0;
-					for (Object o : architecture) {
-						try {
-							this.architecture[i] = Integer.parseInt((String)o);
-							if (i != 0) {
-								Object of = configuration.getProperty("architecture.layer(" + i + ")[@function]");
-								if (of == null) throw new Error("No transference function defined for layer " + i);
-								String matrixFunctionName = (String)of;
-								if (matrixFunctionName.compareToIgnoreCase("tanh") == 0) {
-									transferenceFunctions.add(new TanhMatrixFunction());
-								} else {
-									throw new Error("Uknown transference function");
-								}
-							}
-						} catch (NumberFormatException nfe) {
-							throw new Error("Layer " + i + " isn't a valid integer.");
-						}
-						i++;
+	private void initCommons() {
+		initArchitecture();
+		initPatterns();
+		initExportation();
+	}
+
+	private void initArchitecture() {
+		List<Object> architecture = configuration.getList("architecture.layer");
+		if (architecture.isEmpty()) throw new Error("No architecture found");
+		transferenceFunctions = new ArrayList<MatrixFunction>(architecture.size() - 1);
+		this.architecture = new int[architecture.size()];
+		int i = 0;
+		for (Object o : architecture) {
+			try {
+				this.architecture[i] = Integer.parseInt((String)o);
+				if (i != 0) {
+					Object of = configuration.getProperty("architecture.layer(" + i + ")[@function]");
+					if (of == null) throw new Error("No transference function defined for layer " + i);
+					String matrixFunctionName = (String)of;
+					if (matrixFunctionName.compareToIgnoreCase("tanh") == 0) {
+						transferenceFunctions.add(new TanhMatrixFunction());
+					} else {
+						throw new Error("Uknown transference function");
 					}
 				}
+			} catch (NumberFormatException nfe) {
+				throw new Error("Layer " + i + " isn't a valid integer.");
 			}
+			i++;
 		}
+	}
+
+	private void initPatterns() {
+		patterns = new LinkedList<Pattern>();
+		String patternsFilePath = configuration.getString("patterns");
+		if (Strings.isNullOrEmpty(patternsFilePath)) throw new Error("No patterns file found");
+		try {
+			CSVReader csvReader = new CSVReader(new FileReader(patternsFilePath), ';');
+			String[] line;
+			while ((line = csvReader.readNext()) != null) {
+				double[] patternAr = new double[line.length];
+				for (int i = 0; i < line.length; i++) {
+					try {
+						patternAr[i] = Double.parseDouble(line[i]);
+					} catch (NumberFormatException nfe) {
+						patternAr[i] = Integer.parseInt(line[i]);
+					}
+				}
+				patterns.add(new Pattern(new DoubleMatrix(patternAr).transpose()));
+			}
+			csvReader.close();
+		} catch (FileNotFoundException e) {
+			throw new Error("Patterns file not found");
+		} catch (IOException e) {
+			throw new Error("An error occurred while reading the patterns");
+		} catch (NumberFormatException nfe) {
+			throw new Error("Pattern with unknown number format");
+		}
+		// init test patterns quantity
+		if (configuration.containsKey("patterns[@test]")) {
+			testPatternsQty = configuration.getInt("patterns[@test]");
+			if (testPatternsQty < 0) throw new Error("Invalid test patterns quantity");
+			if (testPatternsQty > patterns.size()) throw new Error("Test patterns quantity exceeds patterns quantity");
+		} else {
+			testPatternsQty = -1;
+		}
+	}
+
+	private void initExportation() {
+		String sExportPath = configuration.getString("output.export.exportpath", Paths.get(".").toAbsolutePath().toString());
+		if (Strings.isNullOrEmpty(sExportPath)) throw new Error("No export path found");
+		exportPath = Paths.get(sExportPath);
+		if (!exportPath.toFile().isDirectory()) throw new Error("The export path is not a directory");
+		exportErrorHistory = configuration.getBoolean("output.export.errorhistory", false);
+		exportFitnessHistory = configuration.getBoolean("output.export.fitnesshistory", false);
+		fenotypeExportation = FenotypesExportation.getFenotypeExportation(
+				configuration.getString("output.export.fenotypes", "all"));
+	}
+
+	private void initBackpropagation() {
+		initDeltaCalculator();
+		initBackpropagationCutCondition();
+		backpropagation = new BackpropagationAlgorithm(deltaCalculator, backpropagationCutCondition);
+	}
+
+	private void initBackpropagationCutCondition() {
+		List<Object> cutConditionsNames = configuration.getList("backpropagation.cutconditions.cutcondition");
+		if (cutConditionsNames.isEmpty()) throw new Error("No cut condition especified for backpropagation");
+		if (cutConditionsNames.size() == 1) {
+			String cutConditionPath = "backpropagation.cutconditions.cutcondition";
+			backpropagationCutCondition = getSingleBackpropagationCutCondition(cutConditionPath, null);
+		} else {
+			List<ar.edu.itba.sia.perceptrons.backpropagation.CutCondition> cutConditions
+					= new ArrayList<ar.edu.itba.sia.perceptrons.backpropagation.CutCondition>(cutConditionsNames.size());
+			ar.edu.itba.sia.perceptrons.utils.ChainedCutCondition chainedCutCondition = null;
+			for (int i= 0; i < cutConditionsNames.size(); i++) {
+				String name = String.format("backpropagation.cutconditions.cutcondition(%d)", i);
+				if (Strings.isNullOrEmpty(name)) throw new Error("Empty cut condition found");
+				ar.edu.itba.sia.perceptrons.backpropagation.CutCondition cutCondition
+						= getSingleBackpropagationCutCondition(name, cutConditions);
+				if (cutCondition instanceof ar.edu.itba.sia.perceptrons.utils.ChainedCutCondition) {
+					chainedCutCondition = (ar.edu.itba.sia.perceptrons.utils.ChainedCutCondition)cutCondition;
+				} else {
+					cutConditions.add(cutCondition);
+				}
+			}
+			if (chainedCutCondition == null) throw new Error("Chained cut condition expected");
+			backpropagationCutCondition = chainedCutCondition;
+		}
+	}
+
+	private void initDeltaCalculator() {
+		String deltaCalculatorName = configuration.getString("backpropagation.deltacalculator");
+		if (Strings.isNullOrEmpty(deltaCalculatorName)) throw new Error("No delta calculation method defined");
+		if (deltaCalculatorName.compareToIgnoreCase("gradient-descent") == 0) {
+			double etha = configuration.getDouble("backpropagation.deltacalculator[@etha]");
+			String functionName = configuration.getString("backpropagation.deltacalculator[@function]");
+			double a = configuration.getDouble("backpropagation.deltacalculator[@a]");
+			double b = configuration.getDouble("backpropagation.deltacalculator[@b]");
+			double alpha = configuration.getDouble("backpropagation.deltacalculator[@alpha]");
+			MatrixFunction dFunction;
+			if (Strings.isNullOrEmpty(functionName)) throw new Error("No function defined for gradient descent");
+			if (functionName.compareToIgnoreCase("tanh") == 0) {
+				dFunction = new TanhDMatrixFunction();
+			} else {
+				throw new Error("Uknown gradient descent function");
+			}
+			deltaCalculator = new GradientDescentDeltaCalculator(etha, a, b, alpha, dFunction);
+		} else {
+			throw new Error("Uknown delta calculation method");
+		}
+	}
+
+	private void initGenetics() {
+		int population = configuration.getInt("genetics.population");
+		if (population <= 0) throw new Error("Invalid population");
+		this.population = population;
+		replacementSelector = getSelector("genetics.replacementselector");
+		selectionSelector = getSelector("genetics.selectionselector");
+		initMutator();
+		initCrosser();
+		initGeneticCutCondition();
+		initBackpropagator();
+		initReplacementAlgorithm();
+	}
+
+	private void initReplacementAlgorithm() {
+		int replacementId = configuration.getInt("genetics.replacer");
+		switch (replacementId) {
+			case 1:
+				replacementAlgorithm = new ReplacementAlgorithmOne(getSelectionSelector(),
+						getReplacementSelector(),
+						getMutator(),
+						getCrosser(),
+						backpropagator);
+				break;
+			case 2:
+				replacementAlgorithm = new ReplacementAlgorithmTwo(getSelectionSelector(),
+						getReplacementSelector(),
+						getMutator(),
+						getCrosser(),
+						backpropagator);
+				break;
+			case 3:
+				replacementAlgorithm = new ReplacementAlgorithmThree(getSelectionSelector(),
+						getReplacementSelector(),
+						getMutator(),
+						getCrosser(),
+						backpropagator);
+		}	}
+
+	private void initBackpropagator() {
+		double probability = configuration.getDouble("genetics.backpropagation");
+		backpropagator = new Backpropagator(backpropagation, getTestPatterns(), probability);
+	}
+
+	private void initGeneticCutCondition() {
+		List<Object> cutConditionsNames = configuration.getList("genetics.cutconditions.cutcondition");
+		if (cutConditionsNames.isEmpty()) throw new Error("No cut condition especified for genetic algorithms");
+		if (cutConditionsNames.size() == 1) {
+			String cutConditionPath = "genetics.cutconditions.cutcondition";
+			geneticCutCondition = getSingleGeneticCutCondition(cutConditionPath, null);
+		} else {
+			List<CutCondition> cutConditions
+					= new ArrayList<CutCondition>(cutConditionsNames.size());
+			ChainedCutCondition chainedCutCondition = null;
+			for (int i = 0; i < cutConditionsNames.size(); i++) {
+				String name = String.format("genetics.cutconditions.cutcondition(%d)", i);
+				if (Strings.isNullOrEmpty(name)) throw new Error("Empty cut condition found");
+				CutCondition cutCondition
+						= getSingleGeneticCutCondition(name, cutConditions);
+				if (cutCondition instanceof ChainedCutCondition) {
+					chainedCutCondition = (ChainedCutCondition)cutCondition;
+				} else {
+					cutConditions.add(cutCondition);
+				}
+			}
+			if (chainedCutCondition == null) throw new Error("Chained cut condition expected");
+			geneticCutCondition = chainedCutCondition;
+		}	}
+
+	private void initCrosser() {
+		String crosserName = configuration.getString("genetics.crossover");
+		if (Strings.isNullOrEmpty(crosserName)) throw new Error("No crossover method selected");
+		FenotypeBuilder builder = new NeuralNetworkFenotypeBuilder(getArchitecture(),
+				getTransferenceFunctions());
+		FenotypeSplitter splitter = new NeuralNetworkFenotypeSplitter();
+		double probability = configuration.getDouble("genetics.crossover[@probability]");
+		if (crosserName.compareToIgnoreCase("anular") == 0) {
+			crosser = new AnularCrossover(builder, splitter, probability);
+		} else if (crosserName.compareToIgnoreCase("one-point") == 0) {
+			crosser = new OnePointCrossover(builder, splitter, probability);
+		} else if (crosserName.compareToIgnoreCase("two-point") == 0) {
+			crosser = new TwoPointCrossover(builder, splitter, probability);
+		} else if (crosserName.compareToIgnoreCase("uniform") == 0) {
+			double ocurrenceProbability = configuration.getDouble("genetics.crossvoer[@ocurrence]");
+			crosser = new UniformCrossover(builder, splitter, probability, ocurrenceProbability);
+		} else {
+			throw new Error("Uknown crossover method");
+		}
+	}
+
+	private void initMutator() {
+		String selectorName = configuration.getString("genetics.mutator");
+		if (Strings.isNullOrEmpty(selectorName)) throw new Error("No mutator name found");
+		double probability = configuration.getDouble("genetics.mutator[@probability]");
+		if (selectorName.compareToIgnoreCase("classic") == 0) {
+			mutator = new ClassicMutator(probability);
+		} else if (selectorName.compareToIgnoreCase("modern") == 0) {
+			mutator = new ModernMutator(probability);
+		} else {
+			throw new Error("Unknown mutator");
+		}
+	}
+
+	public boolean getExportErrorHistory() {
+		return exportErrorHistory;
+	}
+
+	public boolean getExportFitnessHistory() {
+		return exportFitnessHistory;
+	}
+
+	public FenotypesExportation getFenotypeExportation() {
+		return fenotypeExportation;
+	}
+
+	public  int[] getArchitecture() {
 		return architecture;
 	}
 
 	public  ReplacementAlgorithm getReplacementAlgorithm() {
-		if (replacementAlgorithm == null) {
-			int replacementId = configuration.getInt("genetics.replacer");
-			switch (replacementId) {
-				case 1:
-					replacementAlgorithm = new ReplacementAlgorithmOne(getSelectionSelector(),
-																	getReplacementSelector(),
-																	getMutator(),
-																	getCrosser(),
-																	backpropagator);
-					break;
-				case 2:
-					replacementAlgorithm = new ReplacementAlgorithmTwo(getSelectionSelector(),
-																	getReplacementSelector(),
-																	getMutator(),
-																	getCrosser(),
-																	backpropagator);
-					break;
-				case 3:
-					replacementAlgorithm = new ReplacementAlgorithmThree(getSelectionSelector(),
-																	getReplacementSelector(),
-																	getMutator(),
-																	getCrosser(),
-																	backpropagator);
-			}
-		}
 		return replacementAlgorithm;
 	}
 
 	public  List<Pattern> getPatterns() {
-		if (patterns == null) {
-			patterns = new LinkedList<Pattern>();
-			String patternsFilePath = configuration.getString("patterns");
-			if (Strings.isNullOrEmpty(patternsFilePath)) throw new Error("No patterns file found");
-			try {
-				CSVReader csvReader = new CSVReader(new FileReader(patternsFilePath), ';');
-				String[] line;
-				while ((line = csvReader.readNext()) != null) {
-					double[] patternAr = new double[line.length];
-					for (int i = 0; i < line.length; i++) {
-						try {
-							patternAr[i] = Double.parseDouble(line[i]);
-						} catch (NumberFormatException nfe) {
-							patternAr[i] = Integer.parseInt(line[i]);
-						}
-					}
-					patterns.add(new Pattern(new DoubleMatrix(patternAr).transpose()));
-				}
-				csvReader.close();
-			} catch (FileNotFoundException e) {
-				throw new Error("Patterns file not found");
-			} catch (IOException e) {
-				throw new Error("An error occurred while reading the patterns");
-			} catch (NumberFormatException nfe) {
-				throw new Error("Pattern with unknown number format");
-			}
-		}
 		return patterns;
 	}
 
 	public  int getTestPatternsQty() {
-		if (testPatternsQty == 0) {
-			if (configuration.containsKey("patterns[@test]")) {
-				testPatternsQty = configuration.getInt("patterns[@test]");
-				if (testPatternsQty < 0) throw new Error("Invalid test patterns quantity");
-				if (testPatternsQty > patterns.size()) throw new Error("Test patterns quantity exceeds patterns quantity");
-			} else {
-				testPatternsQty = -1;
-			}
-		}
 		return testPatternsQty;
 	}
 
 	public  DeltaCalculator getDeltaCalculator() {
-		if (deltaCalculator == null) {
-			String deltaCalculatorName = configuration.getString("backpropagation.deltacalculator");
-			if (Strings.isNullOrEmpty(deltaCalculatorName)) throw new Error("No delta calculation method defined");
-			if (deltaCalculatorName.compareToIgnoreCase("gradient-descent") == 0) {
-				double etha = configuration.getDouble("backpropagation.deltacalculator[@etha]");
-				String functionName = configuration.getString("backpropagation.deltacalculator[@function]");
-				double a = configuration.getDouble("backpropagation.deltacalculator[@a]");
-				double b = configuration.getDouble("backpropagation.deltacalculator[@b]");
-				double alpha = configuration.getDouble("backpropagation.deltacalculator[@alpha]");
-				MatrixFunction dFunction;
-				if (Strings.isNullOrEmpty(functionName)) throw new Error("No function defined for gradient descent");
-				if (functionName.compareToIgnoreCase("tanh") == 0) {
-					dFunction = new TanhDMatrixFunction();
-				} else {
-					throw new Error("Uknown gradient descent function");
-				}
-				deltaCalculator = new GradientDescentDeltaCalculator(etha, a, b, alpha, dFunction);
-			} else {
-				throw new Error("Uknown delta calculation method");
-			}
-		}
 		return deltaCalculator;
 	}
 
 	public  Crossover getCrosser() {
-		if (crosser == null) {
-			String crosserName = configuration.getString("genetics.crossover");
-			if (Strings.isNullOrEmpty(crosserName)) throw new Error("No crossover method selected");
-			FenotypeBuilder builder = new NeuralNetworkFenotypeBuilder(getArchitecture(),
-					getTransferenceFunctions());
-			FenotypeSplitter splitter = new NeuralNetworkFenotypeSplitter();
-			double probability = configuration.getDouble("genetics.crossover[@probability]");
-			if (crosserName.compareToIgnoreCase("anular") == 0) {
-				crosser = new AnularCrossover(builder, splitter, probability);
-			} else if (crosserName.compareToIgnoreCase("one-point") == 0) {
-				crosser = new OnePointCrossover(builder, splitter, probability);
-			} else if (crosserName.compareToIgnoreCase("two-point") == 0) {
-				crosser = new TwoPointCrossover(builder, splitter, probability);
-			} else if (crosserName.compareToIgnoreCase("uniform") == 0) {
-				double ocurrenceProbability = configuration.getDouble("genetics.crossvoer[@ocurrence]");
-				crosser = new UniformCrossover(builder, splitter, probability, ocurrenceProbability);
-			} else {
-				throw new Error("Uknown crossover method");
-			}
-		}
 		return crosser;
 	}
 
@@ -284,32 +434,14 @@ public class ConfigurationService {
 	}
 
 	public  Mutator getMutator() {
-		if (mutator == null) {
-			String selectorName = configuration.getString("genetics.mutator");
-			if (Strings.isNullOrEmpty(selectorName)) throw new Error("No mutator name found");
-			double probability = configuration.getDouble("genetics.mutator[@probability]");
-			if (selectorName.compareToIgnoreCase("classic") == 0) {
-				mutator = new ClassicMutator(probability);
-			} else if (selectorName.compareToIgnoreCase("modern") == 0) {
-				mutator = new ModernMutator(probability);
-			} else {
-				throw new Error("Unknown mutator");
-			}
-		}
 		return mutator;
 	}
 
 	public  FenotypeSelector getReplacementSelector() {
-		if (replacementSelector == null) {
-			replacementSelector = getSelector("genetics.replacementselector");
-		}
 		return replacementSelector;
 	}
 
 	public  FenotypeSelector getSelectionSelector() {
-		if (selectionSelector == null) {
-			selectionSelector = getSelector("genetics.selectionselector");
-		}
 		return selectionSelector;
 	}
 
@@ -343,7 +475,7 @@ public class ConfigurationService {
 		} else {
 			int k = configuration.getInt(selectorPath + "[@k]");
 			if (selectorName.compareToIgnoreCase("elite") == 0) {
-				selector = new EliteFenotypeSelector(k, getFitnessFunction(), fenotypeComparator);
+				selector = new EliteFenotypeSelector(k, getFitnessFunction(), getFenotypeComparator());
 			} else if (selectorName.compareToIgnoreCase("boltzmann") == 0) {
 				selector = new BoltzmanFenotypeSelector(k, getFitnessFunction());
 			} else if (selectorName.compareToIgnoreCase("roulette") == 0) {
@@ -356,7 +488,7 @@ public class ConfigurationService {
 			} else if (selectorName.compareToIgnoreCase("universal") == 0) {
 				selector = new UniversalFenotypeSelector(k, getFitnessFunction());
 			} else {
-				throw new Error("Unknown selection selector");
+				throw new Error("Unknown selector in path " + selectorPath);
 			}
 		}
 		return selector;  //To change body of created methods use File | Settings | File Templates.
@@ -372,31 +504,6 @@ public class ConfigurationService {
 	}
 
 	public  ar.edu.itba.sia.perceptrons.backpropagation.CutCondition getBackpropagationCutCondition() {
-		if (backpropagationCutCondition == null) {
-			List<Object> cutConditionsNames = configuration.getList("backpropagation.cutconditions.cutcondition");
-			if (cutConditionsNames.isEmpty()) throw new Error("No cut condition especified for backpropagation");
-			if (cutConditionsNames.size() == 1) {
-				String cutConditionPath = "backpropagation.cutconditions.cutcondition";
-				backpropagationCutCondition = getSingleBackpropagationCutCondition(cutConditionPath, null);
-			} else {
-				List<ar.edu.itba.sia.perceptrons.backpropagation.CutCondition> cutConditions
-						= new ArrayList<ar.edu.itba.sia.perceptrons.backpropagation.CutCondition>(cutConditionsNames.size());
-				ar.edu.itba.sia.perceptrons.utils.ChainedCutCondition chainedCutCondition = null;
-				for (int i= 0; i < cutConditionsNames.size(); i++) {
-					String name = String.format("backpropagation.cutconditions.cutcondition(%d)", i);
-					if (Strings.isNullOrEmpty(name)) throw new Error("Empty cut condition found");
-					ar.edu.itba.sia.perceptrons.backpropagation.CutCondition cutCondition
-							= getSingleBackpropagationCutCondition(name, cutConditions);
-					if (cutCondition instanceof ar.edu.itba.sia.perceptrons.utils.ChainedCutCondition) {
-						chainedCutCondition = (ar.edu.itba.sia.perceptrons.utils.ChainedCutCondition)cutCondition;
-					} else {
-						cutConditions.add(cutCondition);
-					}
-				}
-				if (chainedCutCondition == null) throw new Error("Chained cut condition expected");
-				backpropagationCutCondition = chainedCutCondition;
-			}
-		}
 		return backpropagationCutCondition;
 	}
 
@@ -432,31 +539,6 @@ public class ConfigurationService {
 	}
 
 	public  CutCondition getGeneticCutCondition() {
-		if (geneticCutCondition == null) {
-			List<Object> cutConditionsNames = configuration.getList("genetics.cutconditions.cutcondition");
-			if (cutConditionsNames.isEmpty()) throw new Error("No cut condition especified for genetic algorithms");
-			if (cutConditionsNames.size() == 1) {
-				String cutConditionPath = "genetics.cutconditions.cutcondition";
-				geneticCutCondition = getSingleGeneticCutCondition(cutConditionPath, null);
-			} else {
-				List<CutCondition> cutConditions
-						= new ArrayList<CutCondition>(cutConditionsNames.size());
-				ChainedCutCondition chainedCutCondition = null;
-				for (int i = 0; i < cutConditionsNames.size(); i++) {
-					String name = String.format("genetics.cutconditions.cutcondition(%d)", i);
-					if (Strings.isNullOrEmpty(name)) throw new Error("Empty cut condition found");
-					CutCondition cutCondition
-							= getSingleGeneticCutCondition(name, cutConditions);
-					if (cutCondition instanceof ChainedCutCondition) {
-						chainedCutCondition = (ChainedCutCondition)cutCondition;
-					} else {
-						cutConditions.add(cutCondition);
-					}
-				}
-				if (chainedCutCondition == null) throw new Error("Chained cut condition expected");
-				geneticCutCondition = chainedCutCondition;
-			}
-		}
 		return geneticCutCondition;
 	}
 
@@ -488,10 +570,6 @@ public class ConfigurationService {
 	}
 
 	public  Backpropagator getBackpropagator() {
-		if (backpropagator == null) {
-			double probability = configuration.getDouble("genetics.backpropagation");
-			backpropagator = new Backpropagator(backpropagation, getTestPatterns(), probability);
-		}
 		return backpropagator;
 	}
 
@@ -508,9 +586,7 @@ public class ConfigurationService {
 
 	public int getPopulation() {
 		if (population <= 0) {
-			int population = configuration.getInt("genetics.population");
-			if (population <= 0) throw new Error("Invalid population");
-			this.population = population;
+
 		}
 		return population;
 	}
@@ -531,12 +607,6 @@ public class ConfigurationService {
 	}
 
 	public Path getExportPath() {
-		if (exportPath == null) {
-			String sExportPath = configuration.getString("exportpath");
-			if (Strings.isNullOrEmpty(sExportPath)) throw new Error("No export path found");
-			exportPath = Paths.get(sExportPath);
-			if (!exportPath.toFile().isDirectory()) throw new Error("The export path is not a directory");
-		}
 		return exportPath;
 	}
 }
