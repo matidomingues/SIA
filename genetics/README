@@ -1,0 +1,72 @@
+Sistemas de Inteligencia Artificail - 1Q-2014
+Algoritmos Genéticos
+
+REQUERIMIENTOS:
+Sistema Operativo UNIX-Compatible
+Java 1.7
+Maven 3.0.4
+
+INSTALACIÓN:
+Ejecutar el archivo install.sh para los sistemas operativos UNIX compatibles.
+
+EJECUCIÓN:
+Instalar el programa como indica la sección anterior. Una vez hecho eso, abrir el archivo de configuración XML y configurar correctamente los parámetros exportpath y patterns.
+Ejecutar el archivo run.sh para los sistemas operativos UNIX compatibles.
+
+CONFIGURACIÓN:
+La configuración para la ejecución del programa se hace mediante el archivo config.xml que se almacena en la misma carpeta en la que se ejecuta el programa. Todos los parámetros son obligatorios.
+
+Generales:
+Esto son los parámetros generales para el sistema.
+	patterns : Indica el path donde está el archivo CSV de los patrones a utilizar. Debe llevar un atributo de nombre «test» que tiene como valor un entero con la cantidad de patrones que se utilizarán como prueba para el algoritmo de backpropagation.
+	architecture : Indica la arquitectura de la red. Cada capa será definida por un elemento «layer» que tendrá un valor entero con la cantidad de neuronas para dicha capa y un atributo de nombre «function» con la función de transferencia utilizada. El único valor admitido por el momento es «tanh».
+	
+Exportación:
+Para esta sección se constan de 4 parámetros:
+	exportapath : Debe contener el path en donde se realizarán las exportaciones.
+	exporthistory : Indica si se desea exportar el historial de errores cuadráticos medios promedios de la corrida. Valores aceptados: true - false.
+	exportfitness : Indica si se desea exportar el historial de fitness promedio de los fenotipos en la corrida. Valores aceptados: true - false
+	fenotypes: Indica si se desea exportar los fenotipos de la corrida. Valores aceptados:
+		best : exporta el mejor de la última generación.
+		best_each_gen : exporta el mejor de cada generación.
+		all : exporta todos los de la última generación.
+		all_each_gen : exporta todos los fenotipos de cada generación.
+
+Genetics
+Esta sección cuenta con los parámetros para los algoritmos genéticos.
+	backpropagation : Elemento con un valor real de doble precisión que indica la probabilida de ocurrencia de backpropagation en una generación.
+	population : Indica la cantidad de individuos que habrá en la población. El valor debe ser un entero.
+	replacer : Indica el algoritmo de reemplazo a utilizar. Los valores aceptados son 1, 2 o 3 para los algoritmos 1, 2 o 3, respectivamente. Estos son los mostrados en las filminas de las cátedras.
+	fitnessfunction : Indica la función de fitness a utilizar. El único valor aceptado por el momento es 1, que indica la función de fitness 1/error_cuadrático_medio.
+	crossover : Indica el algoritmo de crossover. Debe tener el atributo «probability» con un valor real de doble precisión para indicar la probabilida de ocurrencia de una cruza.. Los posibles valores que puede tomar este parámetro son:
+		anular : Para el algoritmo anular de cruza.
+		one-point : Para el algoritmo con un sólo punto de cruza.
+		two-point : Para el algoritmo con dos puntos de cruza.
+		uniform : Para el algoritmo de cruza uniforme.
+	mutator : Indica el algoritmo de mutación. Debe tener el atributo «probability» con un valor real de doble precisión para indicar la probabilidad de ocurrencia de una mutación. Los posibles valores que puede tomar este parámetro son:
+		classic : Para mutación clásica.
+		modern : Para mutación no-uniforme.
+	selectionselector : Indicara el criterio de selección para la cruza de fenotipos. Adentro debe tener al menos un elemento del tipo «selector» el cual a su vez llevara un atributo, con un valor entero, «k» que indica la cantidad de individuos que seleccionará ese selector. Los valores que puede el elemento selector son : 
+		boltzmann : Indica que se utilizará el algoritmo de Boltzmann para la selección.
+		chained : Indica que se utilizarán más de un tipo de selector que deberán ser encadenados.
+		elite : Indica que se utilizará el algoritmo de elite para la selección de individuos.
+		roulette : Indica que se utilizará el algoritmo de ruleta para la selección de individuos.
+		tournaments-d : Indica que se utilizará el algoritmo de torneos determinísticos para la selección de individuos.
+		tournaments-e : Indica que se utilizará el algoritmo de torneso estocásticos para la selección de individuos.
+		universal : Indica que se utilizará el algoritmo universal para la selección de individuos.
+	Para poder tener más de un tipo de selector es obligatorio que se utilice el tipo chained. Esto habilitará la posiblidad de poner más de un tipo de selector. No pueden haber más de un selector tipo chained, ni puede haber un selector solamente de tipo chained. Tampoco se pueden anidar selectores de tipo chained. La cantidad de individuos seleccionados en un tipo chained será igual a la suma de sus selectores encadenados.
+	replacementselector : Idem selectionselector pero para el criterio de reemplazo. Se configura de la misma manera que parámetro anterior. Si se utiliza el algoritmo de reemplazo 3, debe ser un selector encadenado.
+	cutconditions : Indica los tipos de condiciones de corte para el algoritmo genético. Adentro debe tener al menos un elemento del tipo «cutcondition». Los posibles valores que pueden tomar estos elementos son los siguientes:
+		content : Condición de corte por fitness promedio y estancamiento. Debe tener los atributos «haltedMaxTime" con un valor entero que indica la cantidad máxima de generaciones en las que se tolera el estancamiento, y «epsilon» con un valor real de doble precisión con el fitness mínimo esperado.
+		generations : Condición de corte por cantidad máxima de generaciones. Debe tener el atributo «maxGenerations» con la cantidad máxima de generaciones a calcular.
+		scope : Condición de corte por máximo fitness de los fenotipos de una generación. Debe tener el atributo «maxScope» con un valor entero que indica el límite de fitness.
+		structure : Condición de corte por estructura repetitiva entre generaciones. Debe tener los atributos «populationPercentage» con un valor real de doble precisión que indica el porcentaje máximo que se acepta de similtud entre generaciones, y «maxConsecutiveTimes» con un valor entero que indica la cantidad máxima de veces que puede pasar el límite del anterior antributo dos generaciones consecutivas.
+	
+Backpropagation:
+En esta sección se mencionan los parámetros para backpropagation.
+	deltacalculator : Indica el método con el que se calcularán los deltas de cada peso. El único valor aceptado actualmente es «gradient-descent». Debe tener los atributos:
+		etha : Valor real de doble precisión que indica el factor de entrenamiento.
+		function : Cadena de caracteres que indica la función que se utilizará para calcular los deltas del gradiente descendiente. Actualmente solo se acepta el valor «tanh».
+		alpha : Valor real de doble precisión que indica cuanto se sumará del peso anterior en la optimización de momento.
+
+Si se elimina el la sección de Genetics del archivo de configuración, se utilizará solamente backpropagation.
