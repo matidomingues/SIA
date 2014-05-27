@@ -1,13 +1,13 @@
 <config>
     <output>
         <export>
-            <exportpath>/home/facundo/SIA/gps/genetics/exports/</exportpath>
+            <exportpath>exports/</exportpath>
             <errorhistory>true</errorhistory>
             <fitnesshistory>true</fitnesshistory>
             <fenotypes>best</fenotypes>
         </export>
     </output>
-    <patterns test="300">/home/facundo/SIA/gps/genetics/samples2.csv</patterns>
+    <patterns test="300">samples2.csv</patterns>
     <architecture>
         <layer function="tanh">2</layer>
         <layer function="tanh">75</layer>
@@ -31,10 +31,10 @@
         <backpropagation>0.5</backpropagation>
     </genetics>
     <backpropagation>
-        <deltacalculator etha="0.01" function="tanh" a="0.01" b="0.6" alpha="0.6">gradient-descent</deltacalculator>
+        <deltacalculator etha="0.1" function="tanh" a="0.01" b="0.6" alpha="0.6">gradient-descent</deltacalculator>
         <cutconditions>
             <cutcondition>chained</cutcondition>
-            <cutcondition epochs="100">epochs</cutcondition>
+            <cutcondition epochs="10000">epochs</cutcondition>
             <cutcondition epsilon="0.001">error</cutcondition>
         </cutconditions>
     </backpropagation>
